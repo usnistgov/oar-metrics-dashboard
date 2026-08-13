@@ -37,6 +37,10 @@ mkdir -p "$DISTDIR"
 
 VERSION=`node -p "require('$PACKAGE_DIR/package.json').version" 2>/dev/null || echo 0.0.0`
 
+# oar-build convention: a VERSION file (two words: name version) at the repo root; localbuild reads
+# it to confirm the build and derive the artifact version.
+echo "oar-metrics-dashboard $VERSION" > "$PACKAGE_DIR/VERSION"
+
 echo "$prog: building metrics-dashboard $VERSION (base-href $BASE_HREF) in $NODE_IMAGE ..."
 docker run --rm -v "$PACKAGE_DIR":/app -w /app "$NODE_IMAGE" \
     sh -c "npm ci && npx ng build --configuration production --base-href '$BASE_HREF'"
