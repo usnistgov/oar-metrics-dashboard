@@ -1,0 +1,50 @@
+#! /bin/bash
+#
+# makedist.docker -- build the metrics-dashboard distribution.
+#
+# This is the entry point oar-docker's localdeploy/localbuild invokes to build this repo. It builds
+# the Angular app inside a Node 20 container (self-contained; no host toolchain needed) and writes a
+# distribution archive, metrics-dashboard-<version>.zip, into the dist directory. localdeploy then
+# stages that archive into apps/metrics-dashboard/builtapp.
+#
+# Usage: makedist.docker [--dist-dir DIR] [angular|metrics-dashboard ...]
+#   --dist-dir DIR   write the distribution archive to DIR (default: ./dist)
+#   trailing args    component names (accepted and ignored; this repo is a single component)
+#
+# Env:
+#   BASE_HREF        URL sub-path the app is served under (default: /metrics/, the gateway location)
+#   NODE_IMAGE       build image (default: node:20-alpine)
+#
+set -e
+prog=`basename $0`
+execdir=`dirname $0`
+[ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
+PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
+
+DISTDIR="$PACKAGE_DIR/dist"
+BASE_HREF="${BASE_HREF:-/metrics/}"
+NODE_IMAGE="${NODE_IMAGE:-node:20-alpine}"
+
+while [ "$1" != "" ]; do
+    case "$1" in
+        --dist-dir)   DISTDIR="$2"; shift ;;
+        --dist-dir=*) DISTDIR="${1#*=}" ;;
+        *)            : ;;   # component name; single-component repo, nothing to select
+    esac
+    shift
+done
+mkdir -p "$DISTDIR"
+
+VERSION=`node -p "require('$PACKAGE_DIR/package.json').version" 2>/dev/null || echo 0.0.0`
+
+echo "$prog: building metrics-dashboard $VERSION (base-href $BASE_HREF) in $NODE_IMAGE ..."
+docker run --rm -v "$PACKAGE_DIR":/app -w /app "$NODE_IMAGE" \
+    sh -c "npm ci && npx ng build --configuration production --base-href '$BASE_HREF'"
+
+BROWSER="$PACKAGE_DIR/dist/data-practice/browser"
+[ -d "$BROWSER" ] || { echo "$prog: build output not found at $BROWSER"; exit 1; }
+
+ZIP="$DISTDIR/metrics-dashboard-$VERSION.zip"
+rm -f "$ZIP"
+( cd "$PACKAGE_DIR/dist/data-practice" && zip -qr "$ZIP" browser )
+echo "$prog: wrote $ZIP"

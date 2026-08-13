@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+
+<mat-dialog-content>
+  <ul class="ds-list ds-list--dialog">
+    @for (item of data.items; track $index) {
+      <li class="ds-item">
+        @if (item.rank !== undefined) { <span class="ds-rank">{{ item.rank }}</span> }
+        <div class="ds-main">
+          <div class="ds-title ds-title--wrap">{{ item.title }}</div>
+          @if (item.sub) { <div class="ds-sub">{{ item.sub }}</div> }
+        </div>
+        @if (item.chip) { <span class="ds-chip">{{ item.chip }}</span> }
+      </li>
+    } @empty {
+      <li class="ds-empty">No data available.</li>
+    }
+  </ul>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button class="tonal-btn" mat-dialog-close>Close</button>
+</mat-dialog-actions>

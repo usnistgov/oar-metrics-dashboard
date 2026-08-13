@@ -1,0 +1,76 @@
+<div class="watchlist-container">
+  @if (loading()) {
+    <ul class="ds-list" aria-hidden="true">
+      @for (i of [1, 2, 3]; track i) {
+        <li class="ds-item is-skeleton">
+          <div class="ds-main">
+            <div class="ds-title"><span class="skel skel-bar skel-bar-title"></span></div>
+            <div class="ds-sub"><span class="skel skel-bar skel-bar-sub"></span></div>
+          </div>
+        </li>
+      }
+    </ul>
+  } @else if (entries().length === 0) {
+    <div class="empty-state">
+      <span class="empty-state-icon"><mat-icon>star_border</mat-icon></span>
+      <p class="empty-state-title">Your watchlist is empty</p>
+      <p class="empty-state-text">
+        Tap the star on any dataset in Most Popular or Latest Downloads to track it here.
+      </p>
+    </div>
+  } @else {
+    <ul class="ds-list">
+      @if (pinnedEntries().length) {
+        <li class="wl-head"><mat-icon class="wl-head-icon">push_pin</mat-icon> Pinned</li>
+        @for (entry of pinnedEntries(); track entry.ediid) {
+          <li class="ds-item wl-pinned" role="button" tabindex="0"
+              (click)="openDetail(entry)" (keydown.enter)="openDetail(entry)"
+              (keydown.space)="$event.preventDefault(); openDetail(entry)"
+              [attr.aria-label]="'Open details for ' + entry.title">
+            <div class="ds-main">
+              <div class="ds-title" [title]="entry.title">{{ entry.title }}</div>
+              <div class="ds-sub">{{ entry.record_download | number }} downloads</div>
+            </div>
+            <button type="button" class="ds-pin pinned" [attr.aria-pressed]="true"
+                    (click)="$event.stopPropagation(); togglePin(entry.ediid)" matTooltip="Unpin">
+              <mat-icon>push_pin</mat-icon>
+            </button>
+            <button type="button" class="ds-star watched"
+                    (click)="$event.stopPropagation(); watch.remove(entry.ediid)"
+                    aria-label="Remove from watchlist" matTooltip="Remove from watchlist">
+              <mat-icon>star</mat-icon>
+            </button>
+          </li>
+        }
+        @if (!watch.canPinMore() && unpinnedEntries().length) {
+          <li class="wl-note">You can pin up to 3 datasets. Unpin one to add another.</li>
+        }
+        @if (unpinnedEntries().length) {
+          <li class="wl-head">Watching</li>
+        }
+      }
+      @for (entry of unpinnedEntries(); track entry.ediid) {
+        <li class="ds-item" role="button" tabindex="0"
+            (click)="openDetail(entry)" (keydown.enter)="openDetail(entry)"
+            (keydown.space)="$event.preventDefault(); openDetail(entry)"
+            [attr.aria-label]="'Open details for ' + entry.title">
+          <div class="ds-main">
+            <div class="ds-title" [title]="entry.title">{{ entry.title }}</div>
+            <div class="ds-sub">{{ entry.record_download | number }} downloads</div>
+          </div>
+          <button type="button" class="ds-pin" [class.cant-pin]="!watch.canPinMore()"
+                  [attr.aria-pressed]="false" [attr.aria-disabled]="!watch.canPinMore()"
+                  (click)="$event.stopPropagation(); togglePin(entry.ediid)"
+                  [matTooltip]="pinTooltip(entry.ediid)">
+            <mat-icon>push_pin</mat-icon>
+          </button>
+          <button type="button" class="ds-star watched"
+                  (click)="$event.stopPropagation(); watch.remove(entry.ediid)"
+                  aria-label="Remove from watchlist" matTooltip="Remove from watchlist">
+            <mat-icon>star</mat-icon>
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</div>

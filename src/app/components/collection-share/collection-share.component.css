@@ -1,0 +1,106 @@
+.share-toggle {
+  display: inline-flex;
+  gap: 0.2rem;
+  padding: 0.2rem;
+  margin-bottom: 0.6rem;
+  border: 1px solid var(--color-line);
+  border-radius: 9px;
+  background: var(--color-surface-2);
+}
+.share-toggle button {
+  border: 0;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.3rem 0.7rem;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+.share-toggle button:hover {
+  color: var(--color-text);
+}
+.share-toggle button.active {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+/* Fixed, compact height so the legend + caption always fit inside the card's fixed height
+   (the doughnut does not grow to fill; that is what pushed the legend out of view). */
+.chart-container {
+  position: relative;
+  flex: 0 0 auto;
+  height: 150px;
+  margin-bottom: 0.2rem;
+}
+
+.share-legend {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.share-legend-btn,
+.share-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  text-align: left;
+}
+.share-legend-btn {
+  cursor: pointer;
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+.share-legend-btn:hover,
+.share-legend-btn:focus-visible {
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-line));
+}
+.share-legend-row {
+  background: transparent;
+  border-style: dashed;
+}
+.swatch {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+.share-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.share-val {
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-accent-strong);
+}
+.share-pct {
+  font-size: 0.74rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-muted);
+  min-width: 3.2ch;
+  text-align: right;
+}
+.share-legend-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--color-muted);
+}

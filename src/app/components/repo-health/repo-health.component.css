@@ -1,0 +1,38 @@
+.health-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  align-content: start;
+  overflow-y: auto;
+}
+@media (min-width: 480px) {
+  .health-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.health-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  background: var(--color-surface-2);
+}
+.health-val {
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--color-text);
+}
+.health-tile.accent .health-val {
+  color: var(--color-accent-strong);
+}
+.health-lbl {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  line-height: 1.25;
+}

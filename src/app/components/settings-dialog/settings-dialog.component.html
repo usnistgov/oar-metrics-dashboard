@@ -1,0 +1,53 @@
+<div class="settings">
+  <header class="settings-head">
+    <h2 class="settings-title">Settings</h2>
+    <button type="button" class="settings-close" (click)="close()" aria-label="Close" matTooltip="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  <div class="settings-body">
+    <section class="settings-group">
+      <h3 class="settings-label">Appearance</h3>
+      <div class="settings-row">
+        <span class="settings-row-label">Dark mode</span>
+        <mat-slide-toggle [checked]="theme.mode() === 'dark'" (change)="theme.toggleMode()"
+                          aria-label="Toggle dark mode"></mat-slide-toggle>
+      </div>
+    </section>
+
+    <section class="settings-group">
+      <h3 class="settings-label">Accent color</h3>
+      <div class="color-swatches">
+        @for (preset of theme.presets; track preset.key) {
+          <button type="button" class="swatch" [class.is-active]="theme.isActive(preset.value)"
+                  [style.--swatch]="preset.value" (click)="theme.setColor(preset.value)"
+                  [matTooltip]="preset.label" [attr.aria-label]="preset.label"
+                  [attr.aria-pressed]="theme.isActive(preset.value)"></button>
+        }
+        <button type="button" class="swatch swatch-custom" (click)="openColorPicker()"
+                matTooltip="Custom color" aria-label="Custom color">
+          <mat-icon>colorize</mat-icon>
+        </button>
+      </div>
+    </section>
+
+    <section class="settings-group">
+      <div class="settings-group-head">
+        <h3 class="settings-label">Widgets</h3>
+        <div class="settings-actions">
+          <button type="button" class="settings-reset" (click)="layout.resetLayout()">Reset layout</button>
+          <button type="button" class="settings-reset" (click)="layout.reset()">Show all</button>
+        </div>
+      </div>
+      <p class="settings-hint">Choose which cards appear on the dashboard. Drag cards by their handle to reorder.</p>
+      <div class="settings-widgets">
+        @for (w of layout.widgets; track w.id) {
+          <mat-checkbox [checked]="layout.isVisible(w.id)" (change)="layout.toggle(w.id)">
+            {{ w.label }}
+          </mat-checkbox>
+        }
+      </div>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,123 @@
+.cp {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 256px;
+  padding-top: 0.25rem;
+}
+
+/* Saturation/value box: hue background + white(→left) and black(→bottom) overlays. */
+.cp-sv {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  border-radius: 10px;
+  cursor: crosshair;
+  touch-action: none;
+  overflow: hidden;
+}
+.cp-sv-sat,
+.cp-sv-val {
+  position: absolute;
+  inset: 0;
+}
+.cp-sv-sat {
+  background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
+}
+.cp-sv-val {
+  background: linear-gradient(to top, #000, rgba(0, 0, 0, 0));
+}
+.cp-thumb {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Hue slider */
+.cp-hue {
+  position: relative;
+  height: 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  touch-action: none;
+  background: linear-gradient(
+    to right,
+    #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%
+  );
+}
+.cp-hue-thumb {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Preview + hex */
+.cp-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.cp-preview {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--color-line);
+}
+.cp-hex {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: 36px;
+  padding: 0 0.6rem;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-surface);
+}
+.cp-hex span {
+  color: var(--color-muted);
+}
+.cp-hex input {
+  flex: 1 1 auto;
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  text-transform: lowercase;
+}
+
+/* Quick preset swatches */
+.cp-presets {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 0.4rem;
+}
+.cp-presets .swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: var(--swatch);
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
+  transition: transform 0.12s ease;
+}
+.cp-presets .swatch:hover {
+  transform: scale(1.14);
+}

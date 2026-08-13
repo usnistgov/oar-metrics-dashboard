@@ -1,0 +1,376 @@
+<!-- Header: matches the dashboard toolbar, with a link back to the dashboard. -->
+<mat-toolbar class="guide-toolbar">
+  <img src="nistlogowhite.png" alt="NIST logo" class="guide-logo" />
+  <div class="guide-brand">
+    <span class="guide-brand-title">Public Data Repository</span>
+    <span class="guide-brand-sub">Dashboard Guide</span>
+  </div>
+  <span class="guide-spacer"></span>
+  <a mat-button routerLink="/" class="guide-back" aria-label="Back to the dashboard">
+    <mat-icon>arrow_back</mat-icon>
+    <span class="hidden sm:inline">Back to dashboard</span>
+  </a>
+</mat-toolbar>
+
+<main class="guide">
+  <!-- Intro -->
+  <header class="guide-hero">
+    <h1>Your guide to the dashboard</h1>
+    <p class="guide-lead">
+      This dashboard tells the story of how the NIST Public Data Repository is used: how much data
+      people download, which datasets are popular, and how that changes over time. This page walks you
+      through everything on it, in plain language. No prior knowledge needed. Feel free to skip to
+      whatever you're curious about.
+    </p>
+  </header>
+
+  <!-- Table of contents -->
+  <nav class="guide-toc" aria-label="On this page">
+    <span class="guide-toc-title">On this page</span>
+    <ul>
+      <li><a href="#what">What this dashboard is</a></li>
+      <li><a href="#data">Where the numbers come from</a></li>
+      <li><a href="#kpis">The headline numbers (top strip)</a></li>
+      <li><a href="#cards">The cards, explained</a></li>
+      <li><a href="#collections">Collections</a></li>
+      <li><a href="#customise">Making it your own</a></li>
+      <li><a href="#watchlist">Watchlist &amp; favourites</a></li>
+      <li><a href="#details">Digging into a dataset</a></li>
+      <li><a href="#appearance">Dark mode &amp; colour</a></li>
+      <li><a href="#honest">Reading the numbers honestly</a></li>
+      <li><a href="#tips">Tips &amp; tricks</a></li>
+    </ul>
+  </nav>
+
+  <!-- What it is -->
+  <section id="what" class="guide-section">
+    <h2>What this dashboard is</h2>
+    <p>
+      The <strong>Public Data Repository (PDR)</strong> is where NIST publishes research data for
+      anyone to use. Every time someone downloads a dataset, that activity is recorded. This dashboard
+      gathers all of those records and turns them into charts and summaries so you can see, at a
+      glance, how the repository is being used.
+    </p>
+    <p>
+      It's a <strong>read-only</strong> view. Nothing here changes the data or the repository. Think
+      of it as a live scoreboard for data usage.
+    </p>
+  </section>
+
+  <!-- Data provenance -->
+  <section id="data" class="guide-section">
+    <h2>Where the numbers come from</h2>
+    <p>
+      Everything you see is pulled <strong>live</strong> from NIST's official metrics service at
+      <code>data.nist.gov</code>. There's no separate database, and nothing is made up or estimated.
+      It's the real usage record.
+    </p>
+    <ul class="guide-list">
+      <li>
+        <strong>Always fresh.</strong> The dashboard refreshes itself automatically every few minutes.
+        Up in the top bar you'll see <em>“Updated 3:42 PM (2 minutes ago)”</em>, so you always know how
+        current the numbers are.
+      </li>
+      <li>
+        <strong>Refresh on demand.</strong> Want the very latest right now? Click the refresh
+        <mat-icon class="ic">refresh</mat-icon> button in the top bar (or the round refresh button near
+        the headline numbers). The dashboard reloads everything from scratch.
+      </li>
+      <li>
+        <strong>All-time by default.</strong> Unless a card says otherwise, the totals cover the entire
+        history on record, every month since tracking began.
+      </li>
+    </ul>
+  </section>
+
+  <!-- KPI strip -->
+  <section id="kpis" class="guide-section">
+    <h2>The headline numbers (top strip)</h2>
+    <p>
+      The row of tiles across the top gives you the big picture in five numbers. Each tile has a small
+      <mat-icon class="ic">info_outline</mat-icon> you can hover for a reminder of what it means.
+    </p>
+    <dl class="guide-defs">
+      <dt>Total downloads</dt>
+      <dd>Every successful dataset download, added up across the whole history of the repository.</dd>
+
+      <dt>Download volume</dt>
+      <dd>
+        The total amount of data downloaded, measured in terabytes (TB), or petabytes (PB) once it
+        passes 1,000 TB. This is about the <em>size</em> of what people took, not the number of
+        downloads.
+      </dd>
+
+      <dt>Most recent download</dt>
+      <dd>When the newest download happened, anywhere in the repository. A pulse-check that data is
+        actively being used.</dd>
+
+      <dt>Datasets tracked</dt>
+      <dd>How many distinct datasets have usage on record.</dd>
+
+      <dt>Tracked since</dt>
+      <dd>The earliest month with data, so you know how far back the history goes.</dd>
+    </dl>
+    <p class="guide-note">
+      The little green or red arrow on some tiles (for example <span class="chip-up">▲ 4%</span>)
+      compares this month with last month. The tiny wavy line is a <strong>sparkline</strong>: a mini
+      trend of the last several months, just to show the shape of things.
+    </p>
+  </section>
+
+  <!-- Cards -->
+  <section id="cards" class="guide-section">
+    <h2>The cards, explained</h2>
+    <p>
+      Below the headline strip is a grid of cards, each answering a different question. You won't
+      necessarily see all of them at once; you choose which appear (see
+      <a href="#customise">Making it your own</a>). Here's what each one tells you.
+    </p>
+
+    <div class="guide-card-def">
+      <h3>Monthly Download Sizes</h3>
+      <p>A bar chart of how much data (in TB) was downloaded each month. Tall bars are heavy-traffic
+        months. Great for spotting seasonal patterns or a big release.</p>
+    </div>
+
+    <div class="guide-card-def">
+      <h3>Monthly Number of Downloads</h3>
+      <p>Like the one above, but counting <em>how many</em> downloads happened each month rather than
+        their size. A month can have many small downloads or a few huge ones, and comparing the two
+        charts tells you which.</p>
+    </div>
+
+    <div class="guide-card-def">
+      <h3>Unique Users per Month</h3>
+      <p>Roughly how many different people downloaded data each month. A good measure of reach: are
+        more people finding the data over time?</p>
+    </div>
+
+    <div class="guide-card-def">
+      <h3>Most Popular Datasets</h3>
+      <p>
+        A leaderboard of the most-used datasets. Use the <strong>Sort by</strong> menu in the card
+        header to rank them by <em>Downloads</em>, <em>Unique users</em>, <em>Data volume</em>, or
+        <em>Most recent</em> activity. The actions menu <mat-icon class="ic">more_vert</mat-icon> lets
+        you show more entries or <mat-icon class="ic">open_in_full</mat-icon> expand it into a bigger
+        view.
+      </p>
+    </div>
+
+    <div class="guide-card-def">
+      <h3>Latest Downloads</h3>
+      <p>The most recent activity as it happens: the datasets people just grabbed, newest first, with
+        a live clock so you can see how current it is.</p>
+    </div>
+
+    <div class="guide-card-def">
+      <h3>Popular Science Domains</h3>
+      <p>Which fields of science the most-downloaded data belongs to (materials, chemistry, physics,
+        and so on). It answers “what kind of data are people actually after?”</p>
+    </div>
+
+    <div class="guide-card-def">
+      <h3>Monthly Download Heatmap</h3>
+      <p>
+        A grid coloured by activity, with months across and years down, so busy periods glow and quiet
+        ones stay pale. It makes long-term seasonality easy to see at a glance (for example, a
+        recurring summer spike).
+      </p>
+    </div>
+
+    <div class="guide-card-def">
+      <h3>Repository Health</h3>
+      <p>A set of at-a-glance vitals for the whole collection:</p>
+      <ul class="guide-list tight">
+        <li><strong>Datasets tracked</strong>: how many datasets have usage records.</li>
+        <li><strong>With 1+ download</strong>: the share that have been downloaded at least once.</li>
+        <li><strong>Never downloaded</strong>: datasets that haven't been used yet.</li>
+        <li><strong>Median / dataset</strong>: the “typical” dataset's download count (half are above,
+          half below).</li>
+        <li><strong>Mean / dataset</strong>: the average across <em>all</em> datasets.</li>
+        <li><strong>Mean / active dataset</strong>: the average among only the ones that have been
+          downloaded.</li>
+      </ul>
+      <p class="guide-note">
+        When the median is much lower than the mean, it means usage is concentrated in a handful of
+        very popular datasets, a common and normal pattern.
+      </p>
+    </div>
+
+    <div class="guide-card-def">
+      <h3>Downloads by Collection</h3>
+      <p>
+        Downloads grouped by <strong>collection</strong> (see the next section). Click a bar, or a row
+        in the little list beneath the chart, to drill into that collection.
+      </p>
+    </div>
+
+    <div class="guide-card-def">
+      <h3>DataCite Metrics</h3>
+      <p>Pick a dataset's DOI to see its official DataCite citation and usage badge. Handy if you care
+        about how data is being cited in the literature, not just downloaded.</p>
+    </div>
+  </section>
+
+  <!-- Collections -->
+  <section id="collections" class="guide-section">
+    <h2>Collections</h2>
+    <p>
+      Most datasets stand alone, but some are grouped into a <strong>collection</strong>: a curated
+      theme that ties related datasets together (for example, <em>Forensics Science Data</em> or
+      <em>Additive Manufacturing</em>). A dataset can belong to a collection while still being its own
+      thing.
+    </p>
+    <p>
+      The <strong>Downloads by Collection</strong> card shows how much traffic each collection draws.
+      Open one to see:
+    </p>
+    <ul class="guide-list">
+      <li>its total downloads and what <strong>share of the whole repository</strong> that represents;</li>
+      <li>how many datasets it contains, and how much data has been downloaded from it;</li>
+      <li>a note on <strong>concentration</strong>: whether usage is spread evenly or driven by one
+        standout dataset;</li>
+      <li>the member datasets themselves, ranked, which you can sort and open just like anywhere else.</li>
+    </ul>
+  </section>
+
+  <!-- Customise -->
+  <section id="customise" class="guide-section">
+    <h2>Making it your own</h2>
+    <p>The dashboard is yours to arrange. Your choices are remembered in this browser, so it'll look
+      the same next time you visit.</p>
+    <ul class="guide-list">
+      <li>
+        <strong>Reorder cards.</strong> Grab a card by its handle
+        <mat-icon class="ic">drag_indicator</mat-icon> and drag it wherever you like.
+      </li>
+      <li>
+        <strong>Pin a card to the top.</strong> Open a card's menu
+        <mat-icon class="ic">more_vert</mat-icon> and choose <em>Pin to top</em> to keep your most
+        important card front and centre.
+      </li>
+      <li>
+        <strong>Hide what you don't need.</strong> That same menu has <em>Hide card</em>
+        <mat-icon class="ic">visibility_off</mat-icon>. To bring cards back, open
+        <strong>Settings</strong> <mat-icon class="ic">settings</mat-icon> (the cog, bottom-right) and
+        tick the ones you want.
+      </li>
+      <li>
+        <strong>Start over.</strong> In Settings you'll find <em>Reset layout</em> (restore the default
+        order) and <em>Show all</em> (bring back every card).
+      </li>
+    </ul>
+  </section>
+
+  <!-- Watchlist -->
+  <section id="watchlist" class="guide-section">
+    <h2>Watchlist &amp; favourites</h2>
+    <p>
+      Found a dataset you care about? Keep an eye on it. Wherever you see a dataset listed, in
+      <em>Most Popular</em>, <em>Latest Downloads</em>, or a collection, there's a star.
+    </p>
+    <ul class="guide-list">
+      <li>
+        <strong>Star it</strong> <mat-icon class="ic">star</mat-icon> to add it to your
+        <strong>Watchlist</strong> card, which collects everything you're tracking in one place.
+      </li>
+      <li>
+        <strong>Pin your top three.</strong> Inside the watchlist you can pin
+        <mat-icon class="ic">push_pin</mat-icon> up to three datasets so they float to the top: your
+        personal shortlist.
+      </li>
+      <li>
+        <strong>It stays with you.</strong> Your watchlist and pins are saved in this browser, so
+        they're still here when you come back.
+      </li>
+    </ul>
+    <p class="guide-note">
+      If your watchlist is empty, the card gently reminds you: tap the star on any dataset to start
+      tracking it.
+    </p>
+  </section>
+
+  <!-- Dataset detail -->
+  <section id="details" class="guide-section">
+    <h2>Digging into a dataset</h2>
+    <p>
+      Click any dataset row and a panel slides in from the right with its full story: total downloads,
+      unique users, data volume, when it was last downloaded, and the science domains it belongs to.
+    </p>
+    <p>From there you can jump straight to:</p>
+    <ul class="guide-list">
+      <li><strong>View on data.nist.gov</strong>: the dataset's public landing page;</li>
+      <li><strong>View detailed metrics</strong>: its full metrics page on the PDR.</li>
+    </ul>
+    <p>
+      Many charts can also be <mat-icon class="ic">open_in_full</mat-icon> expanded for a closer look,
+      where you can narrow the time range (last 12 months, last 24 months, or all) or focus on a
+      particular month or year.
+    </p>
+  </section>
+
+  <!-- Appearance -->
+  <section id="appearance" class="guide-section">
+    <h2>Dark mode &amp; colour</h2>
+    <p>
+      Open <strong>Settings</strong> <mat-icon class="ic">settings</mat-icon> (the cog in the
+      bottom-right corner) to switch on <strong>Dark mode</strong> or pick an <strong>accent
+      colour</strong>, including a custom one. The whole dashboard, charts and all, follows your
+      choice, and it's remembered for next time.
+    </p>
+  </section>
+
+  <!-- Honest reading -->
+  <section id="honest" class="guide-section">
+    <h2>Reading the numbers honestly</h2>
+    <p>A few things worth keeping in mind so you interpret the dashboard fairly:</p>
+    <ul class="guide-list">
+      <li>
+        <strong>“Unique users” is a count of visits, not verified people.</strong> The same person on
+        two different days, or across several datasets, may be counted more than once. Treat it as a
+        strong signal of reach, not a precise headcount.
+      </li>
+      <li>
+        <strong>Totals are cumulative.</strong> Most figures are all-time, so they only ever grow.
+        Month-by-month charts are where you'll see rises and dips.
+      </li>
+      <li>
+        <strong>Duplicates are cleaned up.</strong> A dataset is counted once, even where the raw
+        records list it more than once, so the “datasets tracked” number reflects real, distinct
+        datasets.
+      </li>
+      <li>
+        <strong>Some datasets have no downloads yet.</strong> That's normal. Newer or niche datasets
+        take time to find an audience, which is exactly what <em>Repository Health</em> shows.
+      </li>
+      <li>
+        <strong>Your settings are private to your browser.</strong> Layout, watchlist and theme live on
+        your device only. Nothing about your preferences is sent anywhere.
+      </li>
+    </ul>
+  </section>
+
+  <!-- Tips -->
+  <section id="tips" class="guide-section">
+    <h2>Tips &amp; tricks</h2>
+    <ul class="guide-tips">
+      <li><mat-icon class="ic">star</mat-icon> Star datasets you follow so they're always one glance away in the Watchlist.</li>
+      <li><mat-icon class="ic">push_pin</mat-icon> Pin your single most-watched card to the top, and your top three datasets within the watchlist.</li>
+      <li><mat-icon class="ic">swap_vert</mat-icon> Re-sort <em>Most Popular</em> by users or volume to see a different kind of “popular”.</li>
+      <li><mat-icon class="ic">grid_view</mat-icon> Hide cards you don't use to keep the view focused. You can always bring them back in Settings.</li>
+      <li><mat-icon class="ic">insights</mat-icon> Compare the two monthly charts (size vs. count) to tell “a few big downloads” apart from “lots of small ones”.</li>
+      <li><mat-icon class="ic">dark_mode</mat-icon> Try dark mode for long viewing sessions or presentations on a big screen.</li>
+    </ul>
+  </section>
+
+  <footer class="guide-footer">
+    <a mat-button routerLink="/" class="guide-back">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Back to the dashboard</span>
+    </a>
+    <p class="guide-footer-note">
+      Questions about the data itself? Everything here comes from the NIST Public Data Repository at
+      <a href="https://data.nist.gov" target="_blank" rel="noopener">data.nist.gov</a>.
+    </p>
+  </footer>
+</main>

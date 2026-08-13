@@ -1,0 +1,46 @@
+{
+  "name": "oar-metrics-dashboard",
+  "version": "1.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "jest",
+    "test:coverage": "jest --coverage"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/cdk": "^20.0.2",
+    "@angular/common": "^20.0.2",
+    "@angular/compiler": "^20.0.2",
+    "@angular/core": "^20.0.2",
+    "@angular/forms": "^20.0.2",
+    "@angular/material": "^20.0.2",
+    "@angular/platform-browser": "^20.0.2",
+    "@angular/platform-browser-dynamic": "^20.0.2",
+    "@angular/router": "^20.0.2",
+    "@webcomponents/webcomponentsjs": "^2.8.0",
+    "bootstrap": "^5.3.6",
+    "chart.js": "^4.4.9",
+    "datax-metrics": "^1.1.1",
+    "ng2-charts": "^8.0.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^20.0.1",
+    "@angular/cli": "^20.0.1",
+    "@angular/compiler-cli": "^20.0.2",
+    "@tailwindcss/postcss": "^4.3.1",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.4.2",
+    "jest-canvas-mock": "^2.5.2",
+    "jest-environment-jsdom": "^30.4.1",
+    "jest-preset-angular": "^17.0.0",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^4.3.1",
+    "typescript": "~5.8.3"
+  }
+}

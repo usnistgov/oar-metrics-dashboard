@@ -1,0 +1,11 @@
+:host {
+  display: block;
+}
+
+/* A comfortable dialog width; let titles wrap fully here (no ellipsis truncation). */
+.ds-list--dialog {
+  min-width: min(72vw, 460px);
+}
+.ds-title--wrap {
+  white-space: normal;
+}

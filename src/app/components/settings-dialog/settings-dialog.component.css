@@ -1,0 +1,125 @@
+.settings {
+  display: flex;
+  flex-direction: column;
+  max-height: 82vh;
+  padding: 1.3rem 1.4rem 1.4rem;
+  box-sizing: border-box;
+  color: var(--color-text);
+}
+
+.settings-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.settings-title {
+  margin: 0;
+  font-size: 1.12rem;
+  font-weight: 700;
+}
+.settings-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+.settings-close:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+.settings-close mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Scrollable stack of distinct, spaced setting groups. */
+.settings-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: 1rem;
+  padding-right: 0.15rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* Each group is its own breathable panel so the sections read as distinct. */
+.settings-group {
+  padding: 0.85rem 1rem 1rem;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+}
+.settings-label {
+  margin: 0 0 0.7rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.settings-row-label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Swatch grid sits flush inside the group (the grid styling is global). */
+.settings-group .color-swatches {
+  padding: 0;
+}
+
+/* Widgets group header with the "Show all" action. */
+.settings-group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.settings-group-head .settings-label {
+  margin-bottom: 0;
+}
+.settings-hint {
+  margin: 0.6rem 0 0.75rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--color-muted);
+}
+.settings-widgets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.settings-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+.settings-reset {
+  padding: 0.26rem 0.6rem;
+  border-radius: 7px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--color-accent-strong);
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 30%, var(--color-line));
+  cursor: pointer;
+  transition: background 0.16s ease;
+}
+.settings-reset:hover {
+  background: color-mix(in srgb, var(--color-accent) 20%, transparent);
+}

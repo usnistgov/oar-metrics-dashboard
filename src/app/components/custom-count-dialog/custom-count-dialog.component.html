@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Custom dataset count</h2>
+
+<mat-dialog-content>
+  <label class="ccd-label" for="ccd-input">Number of datasets to display</label>
+  <input id="ccd-input" class="filter-input ccd-input" type="number" min="1"
+         [(ngModel)]="value" (keyup.enter)="apply()" cdkFocusInitial />
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button class="tonal-btn" mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary" (click)="apply()">Apply</button>
+</mat-dialog-actions>

@@ -1,0 +1,29 @@
+<!-- Headline concentration figures -->
+<div class="conc-stats">
+  <div class="conc-stat">
+    <span class="conc-val">{{ top1() }}%</span>
+    <span class="conc-lbl">of downloads from the top 1%</span>
+  </div>
+  <div class="conc-stat">
+    <span class="conc-val">{{ top10() }}%</span>
+    <span class="conc-lbl">from the top 10%</span>
+  </div>
+  <div class="conc-stat">
+    <span class="conc-val">{{ zero() }}%</span>
+    <span class="conc-lbl">never downloaded</span>
+  </div>
+</div>
+
+<!-- Pareto / Lorenz curve -->
+<div class="chart-container">
+  @if (loading()) { <div class="card-spinner"><mat-spinner diameter="40"></mat-spinner></div> }
+  @if (errorMsg()) { <p class="status-msg error">{{ errorMsg() }}</p> }
+  <canvas #chartCanvas role="img"
+          aria-label="Cumulative download concentration curve across datasets"></canvas>
+</div>
+
+<p class="chart-help">
+  Each point reads "the top X% of datasets account for Y% of all downloads." The further the curve
+  bows above the dashed even-distribution line, the more concentrated usage is.
+  Concentration index (Gini): <strong>{{ giniLabel() }}</strong> (0 = even, 1 = all in one dataset).
+</p>

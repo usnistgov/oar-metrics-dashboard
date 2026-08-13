@@ -1,0 +1,72 @@
+<div class="detail">
+  <header class="detail-head">
+    <span class="detail-eyebrow">Dataset details</span>
+    <div class="detail-head-actions">
+      <button type="button" class="detail-star" [class.watched]="watch.isWatched(metric.ediid)"
+              (click)="watch.toggle(metric.ediid)" [attr.aria-pressed]="watch.isWatched(metric.ediid)"
+              [attr.aria-label]="(watch.isWatched(metric.ediid) ? 'Remove from' : 'Add to') + ' watchlist'"
+              [matTooltip]="watch.isWatched(metric.ediid) ? 'Remove from watchlist' : 'Add to watchlist'">
+        <mat-icon>{{ watch.isWatched(metric.ediid) ? 'star' : 'star_border' }}</mat-icon>
+      </button>
+      <button type="button" class="detail-close" (click)="close()" aria-label="Close panel" matTooltip="Close">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </header>
+
+  <h2 class="detail-title" [title]="title()">{{ title() }}</h2>
+
+  <div class="detail-stats">
+    <div class="detail-stat">
+      <span class="detail-stat-label">Downloads</span>
+      <span class="detail-stat-value">{{ count(metric.record_download) }}</span>
+    </div>
+    <div class="detail-stat">
+      <span class="detail-stat-label">Unique users</span>
+      <span class="detail-stat-value">{{ count(metric.number_users) }}</span>
+    </div>
+    <div class="detail-stat">
+      <span class="detail-stat-label">Data volume</span>
+      <span class="detail-stat-value">{{ volume(metric.total_size_download) }}</span>
+    </div>
+    <div class="detail-stat">
+      <span class="detail-stat-label">Last download</span>
+      <span class="detail-stat-value detail-stat-sm">{{ (metric.last_time_logged | date: 'MMM d, y') || '-' }}</span>
+    </div>
+  </div>
+
+  <a class="detail-metrics-link" [href]="metricsUrl()" target="_blank" rel="noopener">
+    <mat-icon>bar_chart</mat-icon>
+    <span>View detailed metrics</span>
+  </a>
+
+  @if (metric.first_time_logged) {
+    <p class="detail-meta">First recorded {{ metric.first_time_logged | date: 'MMM d, y' }}</p>
+  }
+
+  <section class="detail-section">
+    <h3 class="detail-section-title">Science domains</h3>
+    @if (loadingMeta()) {
+      <div class="detail-chips">
+        <span class="skel skel-chip"></span>
+        <span class="skel skel-chip"></span>
+        <span class="skel skel-chip"></span>
+      </div>
+    } @else if (domains().length) {
+      <div class="detail-chips">
+        @for (d of domains(); track d) {
+          <span class="detail-chip">{{ d }}</span>
+        }
+      </div>
+    } @else {
+      <p class="detail-empty">No science domains listed for this dataset.</p>
+    }
+  </section>
+
+  <footer class="detail-foot">
+    <a class="detail-view" [href]="datasetUrl()" target="_blank" rel="noopener">
+      <mat-icon>open_in_new</mat-icon>
+      <span>View on data.nist.gov</span>
+    </a>
+  </footer>
+</div>

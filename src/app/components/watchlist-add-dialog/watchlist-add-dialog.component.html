@@ -1,0 +1,69 @@
+<div class="add-dialog">
+  <header class="add-head">
+    <h2 class="add-title">Add dataset to watchlist</h2>
+    <button type="button" class="add-close" (click)="close()" aria-label="Close" matTooltip="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  <div class="add-search">
+    <mat-icon class="add-search-icon">search</mat-icon>
+    <input class="add-search-input" type="text" [ngModel]="query()" (ngModelChange)="query.set($event)"
+           placeholder="Search all datasets by title" aria-label="Search datasets by title" />
+    @if (query()) {
+      <button type="button" class="add-search-clear" (click)="query.set('')" aria-label="Clear search">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </div>
+
+  <div class="add-body">
+    @if (!active()) {
+      <div class="add-hint">
+        <span class="add-hint-icon"><mat-icon>search</mat-icon></span>
+        <p class="add-hint-title">Search the full catalog</p>
+        <p class="add-hint-text">
+          Find any of the repository's datasets by title, then add it to your watchlist.
+        </p>
+      </div>
+    } @else if (searching()) {
+      <div class="add-loading">
+        <mat-spinner diameter="34"></mat-spinner>
+        <span>Searching&hellip;</span>
+      </div>
+    } @else {
+      <ul class="add-list">
+        @for (row of results(); track row.ediid) {
+          <li class="add-row">
+            <div class="add-row-main">
+              <div class="add-row-title" [title]="row.title">{{ row.title }}</div>
+              <div class="add-row-meta">
+                <span class="add-row-id">{{ row.shortId }}</span>
+                @if (row.downloads) {
+                  <span class="add-row-dot">&middot;</span>
+                  <span>{{ row.downloads | number }} downloads</span>
+                }
+              </div>
+              @if (row.domains.length) {
+                <div class="add-row-domains">
+                  @for (d of row.domains.slice(0, 3); track d) {
+                    <span class="add-chip">{{ d }}</span>
+                  }
+                </div>
+              }
+            </div>
+            <button type="button" class="add-btn" [class.added]="watch.isWatched(row.ediid)"
+                    (click)="watch.toggle(row.ediid)"
+                    [attr.aria-pressed]="watch.isWatched(row.ediid)"
+                    [matTooltip]="watch.isWatched(row.ediid) ? 'Remove from watchlist' : 'Add to watchlist'">
+              <mat-icon>{{ watch.isWatched(row.ediid) ? 'check' : 'add' }}</mat-icon>
+              <span>{{ watch.isWatched(row.ediid) ? 'Added' : 'Add' }}</span>
+            </button>
+          </li>
+        } @empty {
+          <li class="add-empty">No datasets match &ldquo;{{ query() }}&rdquo;.</li>
+        }
+      </ul>
+    }
+  </div>
+</div>

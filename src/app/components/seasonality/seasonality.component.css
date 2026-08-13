@@ -1,0 +1,72 @@
+.heat-container {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.heat-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Year x month grid: a year label column + 12 month columns. Cells are capped so the grid stays
+   compact and leaves room for the legend below. */
+.heat-grid {
+  display: grid;
+  grid-template-columns: auto repeat(12, minmax(0, 2rem));
+  gap: 3px;
+  align-items: center;
+}
+.heat-corner {
+  width: 100%;
+}
+.heat-month {
+  text-align: center;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+.heat-year {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  text-align: right;
+  white-space: nowrap;
+  padding-right: 0.35rem;
+}
+.heat-cell {
+  aspect-ratio: 1;
+  min-width: 0;
+  border-radius: 2px;
+  background: var(--color-accent);
+  cursor: default;
+}
+/* Months with no data are a faint placeholder rather than an accent cell. */
+.heat-cell.empty {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-line);
+}
+
+/* Intensity legend. */
+.heat-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  font-size: 0.64rem;
+  color: var(--color-muted);
+}
+.heat-legend-scale {
+  flex: 1 1 auto;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--color-accent) 8%, var(--color-surface)),
+    var(--color-accent)
+  );
+}

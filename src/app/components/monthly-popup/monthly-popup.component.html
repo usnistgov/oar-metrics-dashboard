@@ -1,0 +1,24 @@
+<h2 mat-dialog-title>Monthly Download Sizes</h2>
+
+<mat-dialog-content>
+  <div class="filter-container" style="margin-bottom: 0.75rem;">
+    <app-month-year-filter [years]="years()" [month]="selectedMonth()" [year]="selectedYear()"
+                           (monthChange)="setMonth($event)" (yearChange)="setYear($event)" />
+    <button mat-button class="tonal-btn" (click)="resetFilter()">Reset</button>
+    <app-range-toggle style="margin-left:auto" [value]="range()" (valueChange)="setRange($event)" />
+  </div>
+
+  @if (loading()) { <div class="card-spinner"><mat-spinner diameter="40"></mat-spinner></div> }
+  @if (errorMsg()) { <p class="status-msg error">{{ errorMsg() }}</p> }
+  @if (emptySelection()) {
+    <p class="status-msg">No data for this selection. Try a different month, year, or range.</p>
+  }
+
+  <div class="chart-container">
+    <canvas #chartCanvas></canvas>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button class="tonal-btn" mat-dialog-close>Close</button>
+</mat-dialog-actions>

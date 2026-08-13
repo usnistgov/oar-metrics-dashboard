@@ -1,0 +1,22 @@
+<!-- Filter controls: custom Period (month/year) selector + range + expand. -->
+<div class="filter-container">
+  <app-month-year-filter [years]="years()" [month]="selectedMonth()" [year]="selectedYear()"
+                         (monthChange)="setMonth($event)" (yearChange)="setYear($event)" />
+  <button mat-button class="tonal-btn" (click)="resetFilter()">Reset</button>
+  <app-range-toggle [value]="range()" (valueChange)="setRange($event)" />
+  <button mat-icon-button (click)="openExpanded()" aria-label="Expand chart" matTooltip="Expand">
+    <mat-icon fontSet="material-symbols-outlined">pan_zoom</mat-icon>
+  </button>
+</div>
+<!-- Container for the Chart.js canvas element. -->
+<div class="chart-container">
+  @if (loading()) { <div class="card-spinner"><mat-spinner diameter="40"></mat-spinner></div> }
+  @if (errorMsg()) { <p class="status-msg error">{{ errorMsg() }}</p> }
+  @if (emptySelection()) { <p class="status-msg">No data for this selection.</p> }
+  <canvas #chartCanvas role="img" aria-label="Bar chart of unique users per month"></canvas>
+</div>
+
+<p class="chart-help">
+  Number of unique users per month. Use <strong>Period</strong> to focus on a month or year;
+  <strong>Reset</strong> restores all months; the expand icon opens a larger view.
+</p>

@@ -1,0 +1,49 @@
+<!-- Headline figures -->
+<div class="coll-stats">
+  <div class="coll-stat">
+    <span class="coll-val">{{ collectionCount() | number }}</span>
+    <span class="coll-lbl">collections</span>
+  </div>
+  <div class="coll-stat">
+    <span class="coll-val">{{ totalMembers() | number }}</span>
+    <span class="coll-lbl">member datasets</span>
+  </div>
+  <div class="coll-stat">
+    <span class="coll-val">{{ totalDownloads() | number }}</span>
+    <span class="coll-lbl">downloads across collections</span>
+  </div>
+</div>
+
+<!-- Downloads per collection (horizontal bars) -->
+<div class="chart-container">
+  @if (loading()) {
+    <div class="card-spinner"><mat-spinner diameter="40"></mat-spinner></div>
+  } @else if (errorMsg()) {
+    <p class="status-msg error">{{ errorMsg() }}</p>
+  } @else if (empty()) {
+    <p class="status-msg">No collections found.</p>
+  }
+  <canvas #chartCanvas role="img" aria-label="Total downloads for each PDR collection"></canvas>
+</div>
+
+<!-- Accessible drill-down triggers (the bars are clickable too, but this is keyboard-friendly). -->
+@if (items().length) {
+  <ul class="coll-legend">
+    @for (c of items(); track c.id) {
+      <li>
+        <button type="button" class="coll-legend-btn" (click)="openCollection(c)"
+                [attr.aria-label]="'Open ' + c.title + ' details'">
+          <span class="coll-legend-name" [title]="c.title">{{ c.title }}</span>
+          <span class="coll-legend-val">{{ c.downloads | number }}</span>
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </li>
+    }
+  </ul>
+}
+
+<p class="chart-help">
+  Total all-time downloads summed across the datasets curated into each collection (a collection is a
+  <code>nrda:ScienceTheme</code>; datasets join it via <code>isPartOf</code>). Hover a bar for member
+  counts, volume and user-sessions.
+</p>

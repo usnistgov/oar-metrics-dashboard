@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>Custom theme color</h2>
+
+<mat-dialog-content class="cp">
+  <!-- Saturation (x) / Value (y) box -->
+  <div class="cp-sv" #sv [style.background-color]="hueColor()" (pointerdown)="startSV($event)">
+    <div class="cp-sv-sat"></div>
+    <div class="cp-sv-val"></div>
+    <div class="cp-thumb" [style.left.%]="s() * 100" [style.top.%]="(1 - v()) * 100"></div>
+  </div>
+
+  <!-- Hue slider -->
+  <div class="cp-hue" #hue (pointerdown)="startHue($event)">
+    <div class="cp-hue-thumb" [style.left.%]="(h() / 360) * 100"></div>
+  </div>
+
+  <!-- Preview + hex entry -->
+  <div class="cp-row">
+    <span class="cp-preview" [style.background]="hex()"></span>
+    <div class="cp-hex">
+      <span>#</span>
+      <input [value]="hexInput()" (input)="onHexInput($any($event.target).value)"
+             maxlength="6" spellcheck="false" autocomplete="off" aria-label="Hex color value" />
+    </div>
+  </div>
+
+  <!-- Quick presets -->
+  <div class="cp-presets">
+    @for (p of data.presets; track p.key) {
+      <button type="button" class="swatch" [style.--swatch]="p.value"
+              (click)="pickPreset(p.value)" [matTooltip]="p.label" [attr.aria-label]="p.label"></button>
+    }
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button (click)="apply()">Apply</button>
+</mat-dialog-actions>

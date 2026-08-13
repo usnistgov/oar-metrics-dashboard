@@ -1,0 +1,85 @@
+<div class="detail">
+  <header class="detail-head">
+    <span class="detail-eyebrow">Collection</span>
+    <button type="button" class="detail-close" (click)="close()" aria-label="Close panel" matTooltip="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  <h2 class="detail-title" [title]="data.title">{{ data.title }}</h2>
+
+  @if (detail(); as d) {
+    <div class="detail-stats">
+      <div class="detail-stat">
+        <span class="detail-stat-label">Downloads</span>
+        <span class="detail-stat-value">{{ count(d.downloads) }}</span>
+      </div>
+      <div class="detail-stat">
+        <span class="detail-stat-label">Repo share</span>
+        <span class="detail-stat-value">{{ d.repoSharePct | number: '1.0-1' }}%</span>
+      </div>
+      <div class="detail-stat">
+        <span class="detail-stat-label">Datasets</span>
+        <span class="detail-stat-value">{{ d.memberCount | number }}</span>
+        <span class="detail-stat-note">{{ d.membersWithUsage }} with usage</span>
+      </div>
+      <div class="detail-stat">
+        <span class="detail-stat-label">Data volume</span>
+        <span class="detail-stat-value">{{ volume(d.size) }}</span>
+      </div>
+    </div>
+
+    <p class="detail-conc">
+      Top dataset holds <strong>{{ topShareLabel() }}</strong> of the collection's downloads ·
+      concentration (Gini) <strong>{{ giniLabel() }}</strong>
+    </p>
+
+    <a class="detail-metrics-link" [href]="collectionUrl()" target="_blank" rel="noopener">
+      <mat-icon>open_in_new</mat-icon>
+      <span>View collection on data.nist.gov</span>
+    </a>
+
+    <section class="detail-section">
+      <div class="detail-section-head">
+        <h3 class="detail-section-title">Member datasets</h3>
+        <app-sort-by label="Sort by" [options]="sortOptions" [value]="sortKey()"
+                     (valueChange)="setSort($any($event))" />
+      </div>
+
+      <div class="coll-members">
+        <ul class="ds-list">
+          @for (log of rows(); track log.ediid; let i = $index) {
+            <li class="ds-item" [class.is-title-pending]="log.pending">
+              <span class="ds-rank">{{ i + 1 }}</span>
+              <div class="ds-main">
+                @if (log.pending) {
+                  <div class="ds-title"><span class="skel skel-bar skel-bar-title"></span></div>
+                } @else {
+                  <div class="ds-title" [title]="log.title">{{ log.title }}</div>
+                }
+                <div class="ds-sub">{{ subLabel(log) }}</div>
+              </div>
+              <a class="ds-view" [href]="datasetUrl(log.ediid)" target="_blank" rel="noopener"
+                 aria-label="View dataset detail page">
+                View Dataset<mat-icon>open_in_new</mat-icon>
+              </a>
+              <button type="button" class="ds-star" [class.watched]="watch.isWatched(log.ediid)"
+                      (click)="watch.toggle(log.ediid)"
+                      [attr.aria-pressed]="watch.isWatched(log.ediid)"
+                      [attr.aria-label]="(watch.isWatched(log.ediid) ? 'Remove from' : 'Add to') + ' watchlist'"
+                      [matTooltip]="watch.isWatched(log.ediid) ? 'Remove from watchlist' : 'Add to watchlist'">
+                <mat-icon>{{ watch.isWatched(log.ediid) ? 'star' : 'star_border' }}</mat-icon>
+              </button>
+            </li>
+          } @empty {
+            <li class="ds-empty">No member datasets have recorded usage yet.</li>
+          }
+        </ul>
+      </div>
+    </section>
+  } @else if (loading()) {
+    <div class="card-spinner"><mat-spinner diameter="40"></mat-spinner></div>
+  } @else {
+    <p class="detail-empty">This collection could not be found.</p>
+  }
+</div>

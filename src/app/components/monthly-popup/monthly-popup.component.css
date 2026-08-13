@@ -1,0 +1,6 @@
+/* Enlarged chart inside the Material dialog. Sized to the viewport, not fixed pixels. */
+.chart-container {
+  position: relative;   /* required for Chart.js responsive sizing */
+  width: min(80vw, 1000px);
+  height: 60vh;
+}

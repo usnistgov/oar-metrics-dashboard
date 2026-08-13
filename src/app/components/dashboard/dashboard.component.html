@@ -1,0 +1,202 @@
+<!-- App header -->
+<mat-toolbar class="flex items-center gap-4">
+  <img src="nistlogowhite.png" alt="NIST logo" class="h-9 w-auto" />
+  <div class="flex flex-col leading-tight">
+    <span class="text-lg font-semibold">Public Data Repository</span>
+    <span class="text-sm opacity-80">Data Usage Metrics</span>
+  </div>
+
+  <span class="flex-1"></span>
+
+  @if (metrics.lastUpdated(); as updated) {
+    <span class="hidden sm:inline text-xs opacity-80">Updated {{ updated | date: 'shortTime' }} ({{ relativeUpdated() }})</span>
+  }
+  <a mat-button routerLink="/guide" class="nav-guide-link" aria-label="Open the dashboard guide"
+     matTooltip="How to use this dashboard">
+    <mat-icon>help_outline</mat-icon>
+    <span class="hidden sm:inline">Guide</span>
+  </a>
+  <button mat-icon-button (click)="metrics.refresh()" aria-label="Refresh data"
+          [matTooltip]="metrics.refreshing() ? 'Refreshing…' : 'Refresh data'">
+    <mat-icon [class.spin]="metrics.refreshing()">refresh</mat-icon>
+  </button>
+</mat-toolbar>
+
+<!-- Executive KPI strip + action stack. Always rendered so the Settings / Refresh buttons stay
+     available even when the KPI tiles are hidden (the band collapses to a compact action bar). -->
+<app-kpi-summary [showTiles]="layout.isVisible('kpi')" [ready]="metrics.ready()"
+                 [refreshing]="metrics.refreshing()"
+                 (settings)="openSettings()" (refresh)="metrics.refresh()" />
+
+<!-- Responsive widget grid: drag a card by its handle to reorder; order persists per user. -->
+<main class="p-3 sm:p-4 grid gap-3 sm:gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+      [class.is-ready]="metrics.ready()"
+      cdkDropList cdkDropListOrientation="mixed" [cdkDropListSortPredicate]="sortPredicate"
+      (cdkDropListDropped)="drop($event)">
+
+  @for (id of layout.visibleOrderedCards(); track id) {
+    @switch (id) {
+
+      <!-- Watchlist: header has an "Add dataset" action that needs the component ref -->
+      @case ('watchlist') {
+        <mat-card appearance="outlined" cdkDrag [cdkDragDisabled]="layout.isPinned(id)"
+                  [class.card-pinned]="layout.isPinned(id)">
+          <mat-card-header class="card-header-actions">
+            <mat-card-title>Watchlist</mat-card-title>
+            <div class="card-tools">
+              <button mat-stroked-button (click)="wl.openAddDialog()" matTooltip="Search and add datasets">
+                <mat-icon>add</mat-icon>
+                Add dataset
+              </button>
+              @if (layout.isPinned(id)) {
+                <button mat-icon-button class="pin-toggle pinned" (click)="layout.togglePin(id)"
+                        aria-label="Unpin card" matTooltip="Unpin (keep at top)">
+                  <mat-icon>push_pin</mat-icon>
+                </button>
+              } @else {
+                <button mat-icon-button cdkDragHandle class="drag-handle" aria-label="Drag to reorder" matTooltip="Drag to reorder">
+                  <mat-icon>drag_indicator</mat-icon>
+                </button>
+              }
+              <button mat-icon-button [matMenuTriggerFor]="wlMenu" aria-label="Card actions" matTooltip="Actions">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </div>
+            <mat-menu #wlMenu="matMenu" class="app-menu">
+              <button mat-menu-item (click)="layout.togglePin(id)"><mat-icon>push_pin</mat-icon><span>{{ layout.isPinned(id) ? 'Unpin card' : 'Pin to top' }}</span></button>
+              <button mat-menu-item (click)="layout.toggle(id)"><mat-icon>visibility_off</mat-icon><span>Hide card</span></button>
+            </mat-menu>
+          </mat-card-header>
+          <mat-card-content><app-watchlist #wl /></mat-card-content>
+        </mat-card>
+      }
+
+      <!-- Most Popular: rich actions menu (sort / count / expand) needs the component ref -->
+      @case ('mostPopular') {
+        <mat-card appearance="outlined" cdkDrag [cdkDragDisabled]="layout.isPinned(id)"
+                  [class.card-pinned]="layout.isPinned(id)">
+          <mat-card-header class="card-header-actions">
+            <mat-card-title>Most Popular Datasets</mat-card-title>
+            <div class="card-tools">
+              <app-sort-by label="Sort by" [options]="mp.sortOptions" [value]="mp.sortKey()"
+                           (valueChange)="mp.setSort($any($event))" />
+              @if (layout.isPinned(id)) {
+                <button mat-icon-button class="pin-toggle pinned" (click)="layout.togglePin(id)"
+                        aria-label="Unpin card" matTooltip="Unpin (keep at top)">
+                  <mat-icon>push_pin</mat-icon>
+                </button>
+              } @else {
+                <button mat-icon-button cdkDragHandle class="drag-handle" aria-label="Drag to reorder" matTooltip="Drag to reorder">
+                  <mat-icon>drag_indicator</mat-icon>
+                </button>
+              }
+              <button mat-icon-button [matMenuTriggerFor]="mpMenu" aria-label="Card actions" matTooltip="Actions">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </div>
+            <mat-menu #mpMenu="matMenu" class="app-menu">
+              <button mat-menu-item (click)="mp.showCount(5)"><mat-icon>format_list_numbered</mat-icon><span>Show 5</span></button>
+              <button mat-menu-item (click)="mp.showCount(10)"><mat-icon>format_list_numbered</mat-icon><span>Show 10</span></button>
+              <button mat-menu-item (click)="mp.enableCustom()"><mat-icon>tune</mat-icon><span>Custom…</span></button>
+              <button mat-menu-item (click)="mp.resetCount()"><mat-icon>refresh</mat-icon><span>Reset</span></button>
+              <button mat-menu-item (click)="mp.openExpanded()"><mat-icon>open_in_full</mat-icon><span>Expand</span></button>
+              <button mat-menu-item (click)="layout.togglePin(id)"><mat-icon>push_pin</mat-icon><span>{{ layout.isPinned(id) ? 'Unpin card' : 'Pin to top' }}</span></button>
+              <button mat-menu-item (click)="layout.toggle(id)"><mat-icon>visibility_off</mat-icon><span>Hide card</span></button>
+            </mat-menu>
+          </mat-card-header>
+          <mat-card-content><app-most-popular #mp /></mat-card-content>
+        </mat-card>
+      }
+
+      <!-- Science Domains: count / expand menu needs the component ref -->
+      @case ('scienceDomains') {
+        <mat-card appearance="outlined" cdkDrag [cdkDragDisabled]="layout.isPinned(id)"
+                  [class.card-pinned]="layout.isPinned(id)">
+          <mat-card-header class="card-header-actions">
+            <mat-card-title>Popular Science Domains</mat-card-title>
+            <div class="card-tools">
+              @if (layout.isPinned(id)) {
+                <button mat-icon-button class="pin-toggle pinned" (click)="layout.togglePin(id)"
+                        aria-label="Unpin card" matTooltip="Unpin (keep at top)">
+                  <mat-icon>push_pin</mat-icon>
+                </button>
+              } @else {
+                <button mat-icon-button cdkDragHandle class="drag-handle" aria-label="Drag to reorder" matTooltip="Drag to reorder">
+                  <mat-icon>drag_indicator</mat-icon>
+                </button>
+              }
+              <button mat-icon-button [matMenuTriggerFor]="sdMenu" aria-label="Card actions" matTooltip="Actions">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </div>
+            <mat-menu #sdMenu="matMenu" class="app-menu">
+              <button mat-menu-item (click)="sd.showCount(5)"><mat-icon>format_list_numbered</mat-icon><span>Show 5</span></button>
+              <button mat-menu-item (click)="sd.showCount(10)"><mat-icon>format_list_numbered</mat-icon><span>Show 10</span></button>
+              <button mat-menu-item (click)="sd.enableCustom()"><mat-icon>tune</mat-icon><span>Custom…</span></button>
+              <button mat-menu-item (click)="sd.resetCount()"><mat-icon>refresh</mat-icon><span>Reset</span></button>
+              <button mat-menu-item (click)="sd.openExpanded()"><mat-icon>open_in_full</mat-icon><span>Expand</span></button>
+              <button mat-menu-item (click)="layout.togglePin(id)"><mat-icon>push_pin</mat-icon><span>{{ layout.isPinned(id) ? 'Unpin card' : 'Pin to top' }}</span></button>
+              <button mat-menu-item (click)="layout.toggle(id)"><mat-icon>visibility_off</mat-icon><span>Hide card</span></button>
+            </mat-menu>
+          </mat-card-header>
+          <mat-card-content><app-popular-science-domains #sd /></mat-card-content>
+        </mat-card>
+      }
+
+      <!-- Every other card: shared shell with title + drag handle + Hide menu -->
+      @default {
+        <mat-card appearance="outlined" cdkDrag [cdkDragDisabled]="layout.isPinned(id)"
+                  [class.card-pinned]="layout.isPinned(id)">
+          <mat-card-header class="card-header-actions">
+            <mat-card-title>
+              @if (id === 'latestDownloads') {
+                <span class="title-with-meta"><span>Latest Downloads</span><app-current-date /></span>
+              } @else {
+                {{ layout.labelFor(id) }}
+              }
+            </mat-card-title>
+            <div class="card-tools">
+              @if (layout.isPinned(id)) {
+                <button mat-icon-button class="pin-toggle pinned" (click)="layout.togglePin(id)"
+                        aria-label="Unpin card" matTooltip="Unpin (keep at top)">
+                  <mat-icon>push_pin</mat-icon>
+                </button>
+              } @else {
+                <button mat-icon-button cdkDragHandle class="drag-handle" aria-label="Drag to reorder" matTooltip="Drag to reorder">
+                  <mat-icon>drag_indicator</mat-icon>
+                </button>
+              }
+              <button mat-icon-button [matMenuTriggerFor]="cardMenu" aria-label="Card actions" matTooltip="Actions">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </div>
+            <mat-menu #cardMenu="matMenu" class="app-menu">
+              <button mat-menu-item (click)="layout.togglePin(id)"><mat-icon>push_pin</mat-icon><span>{{ layout.isPinned(id) ? 'Unpin card' : 'Pin to top' }}</span></button>
+              <button mat-menu-item (click)="layout.toggle(id)"><mat-icon>visibility_off</mat-icon><span>Hide card</span></button>
+            </mat-menu>
+          </mat-card-header>
+          <mat-card-content>
+            @switch (id) {
+              @case ('downloadSizes') { <app-monthly-graph /> }
+              @case ('latestDownloads') { <app-latest-downloads /> }
+              @case ('monthlyDownloads') { <app-monthly-downloads /> }
+              @case ('monthlyUsers') { <app-monthly-users /> }
+              @case ('datacite') { <app-datacite-test /> }
+              @case ('engagement') { <app-engagement /> }
+              @case ('seasonality') { <app-seasonality /> }
+              @case ('concentration') { <app-concentration /> }
+              @case ('repoHealth') { <app-repo-health /> }
+              @case ('collections') { <app-collections /> }
+              @case ('collectionShare') { <app-collection-share /> }
+            }
+          </mat-card-content>
+        </mat-card>
+      }
+    }
+  }
+</main>
+
+<!-- Footer bar (responsive: never wider than the viewport) -->
+<footer class="p-4">
+  <img src="nistbottombar.png" alt="" class="w-full max-w-[1462px] mx-auto h-auto" />
+</footer>

@@ -1,0 +1,28 @@
+/* Inline-block in plain block flow (not flex): the parent `.dc-badge` centers us horizontally with
+   `text-align:center` and scrolls if we're tall. Block flow never clips its top edge - unlike a
+   flex `align-items:center` scroll container, which clips (and can't scroll to) the overflowing top,
+   especially with `zoom` applied. */
+:host {
+  display: inline-block;
+  max-width: 100%;
+  text-align: left; /* reset center for the widget's own content */
+}
+
+data-metrics-badge {
+  display: block;
+  max-width: 100%;
+}
+
+.dcb-unavailable {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+.dcb-unavailable mat-icon {
+  color: var(--color-accent-strong);
+}

@@ -1,0 +1,12 @@
+:host {
+  display: block;
+}
+.ccd-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+.ccd-input {
+  width: 100%;
+}

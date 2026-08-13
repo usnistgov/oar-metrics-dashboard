@@ -1,0 +1,42 @@
+/* Mirrors the Period (month/year) control so the header actions share one visual language. */
+.sort-by {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.sort-by-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+.sort-by-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1rem;
+  height: 32px;
+  padding: 0 0.35rem 0 0.65rem;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.sort-by-btn:hover {
+  background: var(--color-surface-2);
+}
+.sort-by-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+.sort-by-caret {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--color-muted);
+}

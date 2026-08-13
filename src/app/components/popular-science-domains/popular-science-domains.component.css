@@ -1,0 +1,3 @@
+
+.status-msg { margin: 4px 0; font-style: italic; opacity: 0.85; }
+.status-msg.error { color: #ff6b6b; font-style: normal; }

@@ -1,0 +1,30 @@
+<!-- Metric toggle -->
+<div class="filter-container">
+  <div class="eng-toggle" role="group" aria-label="Engagement metric">
+    <button type="button" class="eng-opt" [class.active]="metric() === 'peruser'"
+            [attr.aria-pressed]="metric() === 'peruser'" (click)="setMetric('peruser')">
+      Per user
+    </button>
+    <button type="button" class="eng-opt" [class.active]="metric() === 'avgsize'"
+            [attr.aria-pressed]="metric() === 'avgsize'" (click)="setMetric('avgsize')">
+      Avg size
+    </button>
+  </div>
+  <app-range-toggle [value]="range()" (valueChange)="setRange($event)" />
+</div>
+
+<!-- Chart -->
+<div class="chart-container">
+  @if (loading()) { <div class="card-spinner"><mat-spinner diameter="40"></mat-spinner></div> }
+  @if (errorMsg()) { <p class="status-msg error">{{ errorMsg() }}</p> }
+  <canvas #chartCanvas role="img"
+          [attr.aria-label]="metric() === 'peruser'
+            ? 'Line chart of average downloads per user per month'
+            : 'Line chart of average download size in megabytes per month'"></canvas>
+</div>
+
+<p class="chart-help">
+  How intensively the repository is used each month.
+  <strong>Per user</strong> is downloads divided by unique users;
+  <strong>Avg size</strong> is the average megabytes per download.
+</p>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>OAR PDR Usage Metrics</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=block" rel="stylesheet">
+  <script>
+    /* Apply the saved theme (mode + accent) before first paint to avoid a flash. */
+    (function () {
+      try {
+        var m = localStorage.getItem('theme.mode');
+        if (m !== 'light' && m !== 'dark') {
+          m = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = m;
+        var c = localStorage.getItem('theme.color');
+        if (!/^#[0-9a-fA-F]{6}$/.test(c || '')) c = '#0d9488'; /* teal default */
+        document.documentElement.style.setProperty('--color-accent', c);
+      } catch (e) {}
+    })();
+  </script>
+  <script src="https://unpkg.com/vue@^2/dist/vue.min.js"></script>
+  <script src="https://unpkg.com/data-metrics-badge/dist/data-metrics-badge.min.js"></script>
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>

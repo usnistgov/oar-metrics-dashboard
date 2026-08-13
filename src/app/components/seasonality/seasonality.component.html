@@ -1,0 +1,40 @@
+<div class="heat-container">
+  @if (loading()) {
+    <div class="card-spinner"><mat-spinner diameter="40"></mat-spinner></div>
+  } @else if (errorMsg() || years().length === 0) {
+    <div class="empty-state">
+      <span class="empty-state-icon"><mat-icon>calendar_month</mat-icon></span>
+      <p class="empty-state-title">No monthly data</p>
+      <p class="empty-state-text">
+        Seasonality needs the repository monthly metrics. Please check back in a little while.
+      </p>
+    </div>
+  } @else {
+    <div class="heat-scroll">
+      <div class="heat-grid">
+        <div class="heat-corner"></div>
+        @for (m of monthLabels; track $index) {
+          <div class="heat-month">{{ m }}</div>
+        }
+        @for (row of years(); track row.year) {
+          <div class="heat-year">{{ row.year }}</div>
+          @for (cell of row.cells; track cell.month) {
+            <div class="heat-cell" [class.empty]="!cell.present"
+                 [style.opacity]="cell.present ? cell.intensity : 1"
+                 [matTooltip]="cell.label" [attr.aria-label]="cell.label || 'No data'"></div>
+          }
+        }
+      </div>
+    </div>
+    <div class="heat-legend">
+      <span>Less</span>
+      <span class="heat-legend-scale" aria-hidden="true"></span>
+      <span>More</span>
+    </div>
+  }
+</div>
+
+<p class="chart-help">
+  Number of downloads each month (the count, not file size or per-user). Darker cells mean more
+  downloads; hover any cell for the exact total.
+</p>

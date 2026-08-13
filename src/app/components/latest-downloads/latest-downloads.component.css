@@ -1,0 +1,5 @@
+/* Layout + item styling come from the shared `.ds-*` classes in styles.css.
+   The container is a plain block so the cards size to the surrounding Material card. */
+.downloads-container {
+  width: 100%;
+}

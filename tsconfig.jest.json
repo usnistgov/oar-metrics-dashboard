@@ -1,0 +1,12 @@
+/* TypeScript config for the Jest runner (kept separate from tsconfig.spec.json so the Karma/Jasmine
+   suite is untouched during the spike). */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/jest",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "types": ["jest", "node"]
+  },
+  "include": ["src/**/*.spec.ts", "src/**/*.d.ts", "setup-jest.ts"]
+}

@@ -1,0 +1,125 @@
+/* Layout, scroll, and base item styling come from the shared `.watchlist-container` / `.ds-*` rules
+   in styles.css. The pinning UI below is specific to this card. */
+
+/* Section labels inside the single scrolling list. */
+.wl-head {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.2rem 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.wl-head-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  color: var(--color-accent-strong);
+}
+
+/* "You can pin up to 3" hint. */
+.wl-note {
+  list-style: none;
+  margin: 0.15rem 0.1rem 0.5rem;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: var(--color-muted);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+}
+
+/* Highlight pinned rows so it is obvious which ones to unpin. */
+.ds-item.wl-pinned {
+  border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-line));
+  background: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface));
+}
+
+/* Right room inside the scroll area so the corner badge (which sits half outside each row) is not
+   clipped by the list's overflow. */
+.watchlist-container .ds-list {
+  padding-right: 1rem;
+}
+/* Top-overhang clearance only when a row is the very first item (a Pinned header, when present,
+   already provides the space above the first pinned row). Keeps the top of the card compact. */
+.ds-list > .ds-item:first-child {
+  margin-top: 0.65rem;
+}
+
+/* Pin badge: centered ON the card's top-right corner, half overlapping the row, half outside it. */
+.ds-pin {
+  position: absolute;
+  top: -0.7rem;
+  right: -0.7rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  cursor: pointer;
+  opacity: 0; /* hidden until the row is hovered; the pinned state overrides this below */
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.12);
+  transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease,
+    box-shadow 0.16s ease, transform 0.12s ease, opacity 0.16s ease;
+}
+/* Reveal the unpinned badge on row hover or keyboard focus. */
+.ds-item:hover .ds-pin,
+.ds-pin:focus-visible {
+  opacity: 1;
+}
+.ds-pin:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-line));
+  color: var(--color-accent-strong);
+  transform: scale(1.08);
+}
+/* Pinned: filled accent badge that lifts off the card (premium, obviously active). */
+.ds-pin.pinned {
+  opacity: 1; /* pinned datasets always show the badge so the active state is obvious */
+  border-color: transparent;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--color-accent) 50%, transparent);
+}
+.ds-pin.pinned:hover {
+  background: var(--color-accent-strong);
+  color: var(--color-on-accent);
+  transform: scale(1.08);
+}
+/* At the pin limit, an unpinned badge reads as unavailable. */
+.ds-pin.cant-pin {
+  cursor: default;
+}
+/* At the pin limit, an unpinned badge still reveals on hover but reads as unavailable. */
+.ds-item:hover .ds-pin.cant-pin {
+  opacity: 0.5;
+}
+.ds-pin.cant-pin:hover {
+  border-color: var(--color-line);
+  color: var(--color-muted);
+  transform: none;
+}
+.ds-pin mat-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s ease;
+}
+/* Pinned datasets: the pin sits at a deliberate 45deg angle, as if pushed into the card. */
+.ds-pin.pinned mat-icon {
+  transform: rotate(45deg);
+}
+/* Hovering a pinned badge eases the pin upright, hinting it can be pulled back out (unpinned). */
+.ds-pin.pinned:hover mat-icon {
+  transform: rotate(0deg);
+}

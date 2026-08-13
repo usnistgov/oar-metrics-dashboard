@@ -1,0 +1,24 @@
+<!-- Routed page (dashboard / guide): blurred + non-interactive until the base data is ready, but the
+     blur only applies on the dashboard (the guide reads without waiting for metrics). -->
+<div class="app-shell" [class.app-loading]="!metrics.ready() && onDashboard()">
+  <router-outlet></router-outlet>
+</div>
+
+<!-- Floating Settings control (bottom-right): opens dark mode + accent color + widget visibility. -->
+<div class="fab-stack">
+  <button mat-fab class="theme-fab" (click)="openSettings()"
+          matTooltip="Settings" aria-label="Open settings">
+    <mat-icon>settings</mat-icon>
+  </button>
+</div>
+
+<!-- Initial load screen: top progress bar + a centered panel over a dimmed backdrop (dashboard only). -->
+<div class="loading-overlay" [class.is-hidden]="metrics.ready() || !onDashboard()"
+     role="status" aria-live="polite" [attr.aria-hidden]="metrics.ready() || !onDashboard()">
+  <mat-progress-bar mode="indeterminate" class="loading-bar"></mat-progress-bar>
+  <div class="loading-panel">
+    <mat-spinner [diameter]="46" [strokeWidth]="4"></mat-spinner>
+    <p class="loading-title">{{ metrics.refreshing() ? 'Refreshing…' : 'Loading dashboard…' }}</p>
+    <p class="loading-sub">Fetching the latest usage metrics</p>
+  </div>
+</div>

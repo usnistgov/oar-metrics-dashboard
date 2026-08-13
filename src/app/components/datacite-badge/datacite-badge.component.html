@@ -1,0 +1,10 @@
+@if (available() === false) {
+  <div class="dcb-unavailable">
+    <mat-icon>query_stats</mat-icon>
+    <span>DataCite metrics are temporarily unavailable.</span>
+  </div>
+} @else if (mounted()) {
+  <data-metrics-badge [attr.doi]="doi()" [attr.display]="display()" [style.zoom]="zoom()"></data-metrics-badge>
+} @else {
+  <mat-spinner [diameter]="28"></mat-spinner>
+}

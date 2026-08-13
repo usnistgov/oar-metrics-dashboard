@@ -1,0 +1,67 @@
+<div class="datacite-container">
+  @if (loading()) {
+    <div class="dc-skeleton" aria-hidden="true">
+      <span class="skel skel-label"></span>
+      <span class="skel skel-select"></span>
+      <span class="skel skel-panel"></span>
+      <span class="skel skel-badge"></span>
+    </div>
+  } @else if (showFallback()) {
+    <!-- Polished, non-alarming fallback when there are no datasets/DOIs to show. -->
+    <div class="empty-state">
+      <span class="empty-state-icon"><mat-icon>query_stats</mat-icon></span>
+      <p class="empty-state-title">Metrics temporarily unavailable</p>
+      <p class="empty-state-text">{{ fallbackMessage }}</p>
+    </div>
+  } @else {
+    <div class="dc-grid">
+      <!-- Top: dataset picker + selected dataset details -->
+      <section class="dc-picker">
+        <p class="dc-intro">Citation &amp; usage metrics from DataCite for a published dataset.</p>
+
+        <span class="dc-select-label" id="dc-doi-label">Dataset</span>
+        <button #trigger type="button" class="dc-select-trigger" [matMenuTriggerFor]="doiMenu" aria-labelledby="dc-doi-label">
+          <span class="dc-select-value">{{ selected?.title || 'Select a dataset' }}</span>
+          <mat-icon>expand_more</mat-icon>
+        </button>
+        <mat-menu #doiMenu="matMenu" class="app-menu dc-doi-menu">
+          @for (log of DOILogs; track log.ediid) {
+            <button mat-menu-item type="button" (click)="select(log)"
+                    [class.dc-item-selected]="log.doi === selectedDOI">
+              <mat-icon class="dc-item-check">check</mat-icon>
+              <span class="dc-item-text">{{ log.title }}</span>
+            </button>
+          }
+        </mat-menu>
+
+        @if (selected; as sel) {
+          <div class="dc-selected">
+            <div class="dc-selected-label">Selected dataset</div>
+            <div class="dc-selected-title" [title]="sel.title">{{ sel.title }}</div>
+            <a class="dc-doi" [href]="'https://doi.org/' + sel.doi" target="_blank" rel="noopener"
+               [matTooltip]="'Open ' + sel.doi + ' on doi.org'">
+              <mat-icon>link</mat-icon>
+              <span class="dc-doi-text">{{ sel.doi }}</span>
+              <mat-icon class="dc-doi-ext">open_in_new</mat-icon>
+            </a>
+          </div>
+        }
+      </section>
+
+      <!-- Bottom: the DataCite badge, under a collapsible header -->
+      <section class="dc-badge-panel" [class.dc-collapsed]="!badgeOpen()">
+        <button type="button" class="dc-badge-head" (click)="badgeOpen.set(!badgeOpen())"
+                [attr.aria-expanded]="badgeOpen()">
+          <mat-icon class="dc-head-icon">insights</mat-icon>
+          <span>Citations &amp; usage</span>
+          <mat-icon class="dc-head-chevron">{{ badgeOpen() ? 'expand_less' : 'expand_more' }}</mat-icon>
+        </button>
+        @if (badgeOpen()) {
+          <div class="dc-badge">
+            <app-datacite-badge [doi]="selectedDOI" [zoom]="0.6" [imageSize]="86" />
+          </div>
+        }
+      </section>
+    </div>
+  }
+</div>

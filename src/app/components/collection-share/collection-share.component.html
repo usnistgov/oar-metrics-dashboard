@@ -1,0 +1,45 @@
+<!-- Metric toggle -->
+<div class="share-toggle" role="group" aria-label="Choose metric">
+  <button type="button" [class.active]="metric() === 'downloads'" [attr.aria-pressed]="metric() === 'downloads'"
+          (click)="setMetric('downloads')">Downloads</button>
+  <button type="button" [class.active]="metric() === 'size'" [attr.aria-pressed]="metric() === 'size'"
+          (click)="setMetric('size')">Data volume</button>
+</div>
+
+<!-- Doughnut: each collection + a "Not in a collection" remainder -->
+<div class="chart-container">
+  @if (loading()) {
+    <div class="card-spinner"><mat-spinner diameter="40"></mat-spinner></div>
+  } @else if (errorMsg()) {
+    <p class="status-msg error">{{ errorMsg() }}</p>
+  } @else if (empty()) {
+    <p class="status-msg">No collections found.</p>
+  }
+  <canvas #chartCanvas role="img"
+          [attr.aria-label]="'Share of total ' + metricLabel() + ' captured by each PDR collection, versus datasets in no collection'"></canvas>
+</div>
+
+<!-- Accessible legend: each collection's share within collections; click to drill in. -->
+@if (share(); as s) {
+  <ul class="share-legend">
+    @for (sl of collectionSlices(); track sl.id; let i = $index) {
+      <li>
+        <button type="button" class="share-legend-btn" (click)="openCollection(sl.id!, sl.label)"
+                [attr.aria-label]="'Open ' + sl.label + ' details'">
+          <span class="swatch" [style.background]="colors()[i]"></span>
+          <span class="share-name" [title]="sl.label">{{ sl.label }}</span>
+          <span class="share-val">{{ formatValue(sl.value) }}</span>
+          <span class="share-pct">{{ pctOfCollections(sl.value) | number: '1.0-1' }}%</span>
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </li>
+    }
+  </ul>
+
+  <p class="chart-help">
+    Split of {{ metricLabel() }} <strong>among curated collections</strong> (percentages are of the
+    collections' total). Together they are <strong>{{ s.coveredPct | number: '1.0-1' }}%</strong> of
+    the repository; the other {{ 100 - s.coveredPct | number: '1.0-1' }}% belongs to no collection. A
+    dataset in more than one collection is counted once. Click a collection for its drill-down.
+  </p>
+}

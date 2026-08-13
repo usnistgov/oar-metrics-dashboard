@@ -1,0 +1,97 @@
+/* ---------------------------------------------------------------------------
+ * Floating theme controls (bottom-right).
+ * ------------------------------------------------------------------------- */
+.fab-stack {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.theme-fab.mat-mdc-fab {
+  --mat-fab-foreground-color: var(--color-on-accent);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  box-shadow:
+    0 2px 6px rgba(16, 24, 40, 0.18),
+    0 8px 22px rgba(16, 24, 40, 0.22) !important;
+}
+.theme-fab.mat-mdc-fab:hover {
+  background: var(--color-accent-strong);
+}
+
+/* (The accent swatch grid lives in global styles.css - it renders inside the menu overlay.) */
+
+/* ---------------------------------------------------------------------------
+ * Initial loading screen - blur the dashboard, show a top progress bar + panel.
+ * ------------------------------------------------------------------------- */
+
+.app-shell {
+  transition: filter 0.4s ease, opacity 0.4s ease;
+}
+.app-shell.app-loading {
+  filter: blur(7px);
+  opacity: 0.55;
+  pointer-events: none;   /* nothing is clickable until the data is ready */
+  user-select: none;
+}
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;          /* above the toolbar and cards */
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--color-bg, #eef2f7) 62%, transparent);
+  backdrop-filter: blur(2px);
+  opacity: 1;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+/* Smoothly fade the whole load screen out once ready (kept in the DOM for the transition). */
+.loading-overlay.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.loading-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.75rem 2.25rem;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-line, #e3e8ef);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px rgba(16, 24, 40, 0.06),
+    0 18px 48px rgba(16, 24, 40, 0.18);
+}
+.loading-title {
+  margin: 0.35rem 0 0;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--color-text, #1e293b);
+}
+.loading-sub {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--color-muted, #64748b);
+}
+
+/* Respect reduced-motion: drop the blur transition, keep the reveal instant. */
+@media (prefers-reduced-motion: reduce) {
+  .app-shell,
+  .loading-overlay {
+    transition: none;
+  }
+}

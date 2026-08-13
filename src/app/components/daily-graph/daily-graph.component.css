@@ -1,0 +1,24 @@
+/* Styles for the container holding the chart */
+.chart-container {
+  width: 100%;       /* Makes the chart container take up the full width available */
+  height: 300px;     /* Sets a fixed height for the chart container */
+  position: relative; /* Establishes a positioning context for absolutely positioned children */
+  margin-bottom: 10px; /* Adds space below the chart container */
+}
+
+/* Styles for the container holding the filter inputs and buttons */
+.filter-container {
+  display: flex;         /* Uses flexbox for layout, arranging items in a row */
+  align-items: center;   /* Vertically aligns items in the center */
+  gap: 8px;              /* Adds space between flex items */
+  margin-bottom: 16px;   /* Adds space below the filter container */
+}
+
+/* Specific styles for search input fields (though not directly used by current inputs) */
+.search-input {
+  width: 250px;      /* Sets a fixed width for search input fields */
+  font-size: 12px;   /* Sets the font size for search input text */
+}
+
+.status-msg { margin: 4px 0; font-style: italic; opacity: 0.85; }
+.status-msg.error { color: #ff6b6b; font-style: normal; }

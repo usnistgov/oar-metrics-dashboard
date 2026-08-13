@@ -1,0 +1,200 @@
+.detail {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1.1rem 1.3rem 1.3rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.detail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.detail-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.detail-head-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.detail-star,
+.detail-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+}
+.detail-close:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+.detail-star:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+.detail-star.watched {
+  color: var(--color-accent-strong);
+  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-line));
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
+}
+.detail-star mat-icon,
+.detail-close mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.detail-title {
+  margin: 0.5rem 0 0.7rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.32;
+  color: var(--color-text);
+}
+
+/* Stat tiles. */
+.detail-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+.detail-stat {
+  padding: 0.7rem 0.8rem;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+}
+.detail-stat-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.detail-stat-value {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
+.detail-stat-sm {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Outline button to the dataset's detailed metrics page, sitting under the stat tiles. */
+.detail-metrics-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  margin-top: 0.85rem;
+  padding: 0.55rem;
+  border-radius: 8px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-accent-strong);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 40%, var(--color-line));
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+.detail-metrics-link:hover {
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  border-color: var(--color-accent);
+}
+.detail-metrics-link mat-icon {
+  font-size: 17px;
+  width: 17px;
+  height: 17px;
+}
+
+.detail-meta {
+  margin: 0.7rem 0 0;
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+.detail-section {
+  margin-top: 1.1rem;
+}
+.detail-section-title {
+  margin: 0 0 0.55rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+.detail-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.detail-chip {
+  padding: 0.22rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 5px;
+  color: var(--color-accent-strong);
+  background: color-mix(in srgb, var(--color-accent) 12%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--color-accent) 22%, var(--color-line));
+}
+.skel-chip {
+  width: 5.5rem;
+  height: 1.55rem;
+  border-radius: 5px;
+}
+.detail-empty {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--color-muted);
+}
+
+/* Footer action pinned to the bottom. */
+.detail-foot {
+  margin-top: auto;
+  padding-top: 1.2rem;
+}
+.detail-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.6rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+  transition: background 0.16s ease;
+}
+.detail-view:hover {
+  background: var(--color-accent-strong);
+}
+.detail-view mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}

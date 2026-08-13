@@ -1,0 +1,37 @@
+@if (stats(); as s) {
+  <div class="health-grid">
+    <div class="health-tile">
+      <div class="health-val">{{ s.total | number }}</div>
+      <div class="health-lbl">Datasets tracked</div>
+    </div>
+    <div class="health-tile accent">
+      <div class="health-val">{{ s.pctWithDownloads | number: '1.0-0' }}%</div>
+      <div class="health-lbl">With 1+ download</div>
+    </div>
+    <div class="health-tile">
+      <div class="health-val">{{ s.zeroDownloads | number }}</div>
+      <div class="health-lbl">Never downloaded</div>
+    </div>
+    <div class="health-tile">
+      <div class="health-val">{{ s.median | number: '1.0-0' }}</div>
+      <div class="health-lbl">Median / dataset</div>
+    </div>
+    <div class="health-tile">
+      <div class="health-val">{{ s.mean | number: '1.0-0' }}</div>
+      <div class="health-lbl">Mean / dataset</div>
+    </div>
+    <div class="health-tile">
+      <div class="health-val">{{ s.meanActive | number: '1.0-0' }}</div>
+      <div class="health-lbl">Mean / active dataset</div>
+    </div>
+  </div>
+
+  <p class="chart-help">
+    "Mean / dataset" averages across all datasets (pulled down by the never-downloaded ones);
+    "active" excludes those. A median far below the mean signals usage concentrated in a few datasets.
+  </p>
+} @else if (loading()) {
+  <div class="card-spinner"><mat-spinner diameter="40"></mat-spinner></div>
+} @else {
+  <p class="status-msg error">{{ errorMsg() }}</p>
+}

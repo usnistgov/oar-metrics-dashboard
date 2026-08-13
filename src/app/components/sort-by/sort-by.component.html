@@ -1,0 +1,16 @@
+<div class="sort-by">
+  <span class="sort-by-label">{{ label() }}</span>
+  <button type="button" class="sort-by-btn" [matMenuTriggerFor]="menu"
+          [attr.aria-label]="label()" matTooltip="Change sort">
+    <span class="sort-by-text">{{ currentLabel() }}</span>
+    <mat-icon class="sort-by-caret">expand_more</mat-icon>
+  </button>
+
+  <mat-menu #menu="matMenu" class="app-menu">
+    @for (o of options(); track o.value) {
+      <button mat-menu-item (click)="valueChange.emit(o.value)">
+        <mat-icon>{{ value() === o.value ? 'check' : '' }}</mat-icon><span>{{ o.label }}</span>
+      </button>
+    }
+  </mat-menu>
+</div>

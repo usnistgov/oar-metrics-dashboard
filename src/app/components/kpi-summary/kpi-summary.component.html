@@ -1,0 +1,114 @@
+<div class="kpi-band" [class.kpi-band-solo]="!showTiles()" [class.is-ready]="ready()">
+  @if (showTiles()) {
+  <section class="kpi-row">
+  <!-- Total downloads (all-time) + this-year delta -->
+  <div class="kpi">
+    <div class="kpi-label">
+      <span class="kpi-label-text">Total downloads</span>
+      <button type="button" class="kpi-info" aria-label="About total downloads" matTooltipPosition="above"
+              matTooltip="Total successful dataset downloads, summed across every month on record (all-time).">
+        <mat-icon>info_outline</mat-icon>
+      </button>
+    </div>
+    <div class="kpi-main">
+      <div class="kpi-value-wrap">
+        <span class="kpi-value">{{ downloadsLabel() }}</span>
+        @if (downloadsMoMChip(); as mom) {
+          <span class="kpi-mom" [class.up]="mom.dir === 'up'" [class.down]="mom.dir === 'down'"
+                matTooltip="vs last month">
+            <mat-icon class="kpi-mom-icon">{{ mom.dir === 'up' ? 'trending_up' : 'trending_down' }}</mat-icon>
+            {{ mom.text }}
+          </span>
+        }
+      </div>
+      <svg class="kpi-spark" viewBox="0 0 100 28" preserveAspectRatio="none" aria-hidden="true">
+        <polygon class="kpi-spark-area" [attr.points]="dlArea()"></polygon>
+        <polyline class="kpi-spark-line" [attr.points]="dlLine()"></polyline>
+      </svg>
+    </div>
+    <div class="kpi-sub kpi-delta">{{ downloadsYear() }}</div>
+  </div>
+
+  <!-- Download volume (all-time) + this-year delta -->
+  <div class="kpi">
+    <div class="kpi-label">
+      <span class="kpi-label-text">Download volume</span>
+      <button type="button" class="kpi-info" aria-label="About download volume" matTooltipPosition="above"
+              matTooltip="Total data downloaded, summed across every month (all-time). Shown in TB, or PB once it passes 1,000 TB.">
+        <mat-icon>info_outline</mat-icon>
+      </button>
+    </div>
+    <div class="kpi-main">
+      <div class="kpi-value-wrap">
+        <span class="kpi-value">{{ volumeLabel() }}<span class="kpi-unit">{{ volumeUnit() }}</span></span>
+        @if (volumeMoMChip(); as mom) {
+          <span class="kpi-mom" [class.up]="mom.dir === 'up'" [class.down]="mom.dir === 'down'"
+                matTooltip="vs last month">
+            <mat-icon class="kpi-mom-icon">{{ mom.dir === 'up' ? 'trending_up' : 'trending_down' }}</mat-icon>
+            {{ mom.text }}
+          </span>
+        }
+      </div>
+      <svg class="kpi-spark" viewBox="0 0 100 28" preserveAspectRatio="none" aria-hidden="true">
+        <polygon class="kpi-spark-area" [attr.points]="volArea()"></polygon>
+        <polyline class="kpi-spark-line" [attr.points]="volLine()"></polyline>
+      </svg>
+    </div>
+    <div class="kpi-sub kpi-delta">{{ volumeYear() }}</div>
+  </div>
+
+  <!-- Most recent download -->
+  <div class="kpi">
+    <div class="kpi-label">
+      <span class="kpi-label-text">Most recent download</span>
+      <button type="button" class="kpi-info" aria-label="About most recent download" matTooltipPosition="above"
+              matTooltip="When the latest download happened, across all datasets (the newest activity on record).">
+        <mat-icon>info_outline</mat-icon>
+      </button>
+    </div>
+    <div class="kpi-main"><span class="kpi-value kpi-value-sm">{{ recentRelative() }}</span></div>
+    <div class="kpi-sub">{{ recentAbsolute() }}</div>
+  </div>
+
+  <!-- Datasets tracked -->
+  <div class="kpi">
+    <div class="kpi-label">
+      <span class="kpi-label-text">Datasets tracked</span>
+      <button type="button" class="kpi-info" aria-label="About datasets tracked" matTooltipPosition="above"
+              matTooltip="Number of distinct datasets that have usage records (duplicate rows collapsed).">
+        <mat-icon>info_outline</mat-icon>
+      </button>
+    </div>
+    <div class="kpi-main"><span class="kpi-value">{{ datasetsLabel() }}</span></div>
+    <div class="kpi-sub">distinct datasets</div>
+  </div>
+
+  <!-- Tracked since -->
+  <div class="kpi">
+    <div class="kpi-label">
+      <span class="kpi-label-text">Tracked since</span>
+      <button type="button" class="kpi-info" aria-label="About tracking start" matTooltipPosition="above"
+              matTooltip="The earliest month with usage data (how far back the metrics go).">
+        <mat-icon>info_outline</mat-icon>
+      </button>
+    </div>
+    <div class="kpi-main"><span class="kpi-value kpi-value-sm">{{ since() }}</span></div>
+    <div class="kpi-sub">{{ span() }}</div>
+  </div>
+  </section>
+  }
+
+  <!-- Action stack (beside the KPI tiles, or a compact bar when tiles are hidden): Settings + Refresh -->
+  <div class="kpi-actions" role="group" aria-label="Dashboard actions">
+    <button type="button" class="kpi-fab" #fab (click)="settings.emit()"
+            matTooltip="Settings" matTooltipPosition="left" aria-label="Open settings">
+      <mat-icon>settings</mat-icon>
+    </button>
+    <button type="button" class="kpi-fab kpi-fab-primary" #fab (click)="refresh.emit()"
+            [disabled]="refreshing()" [attr.aria-busy]="refreshing()"
+            [matTooltip]="refreshing() ? 'Refreshing…' : 'Refresh data'"
+            matTooltipPosition="left" aria-label="Refresh data">
+      <mat-icon [class.spin]="refreshing()">refresh</mat-icon>
+    </button>
+  </div>
+</div>

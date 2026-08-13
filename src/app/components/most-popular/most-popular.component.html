@@ -1,0 +1,45 @@
+<div class="popular-container">
+  @if (loading()) {
+    <ul class="ds-list" aria-hidden="true">
+      @for (i of [1, 2, 3, 4, 5]; track i) {
+        <li class="ds-item is-skeleton">
+          <span class="skel skel-rank"></span>
+          <div class="ds-main">
+            <div class="ds-title"><span class="skel skel-bar skel-bar-title"></span></div>
+            <div class="ds-sub"><span class="skel skel-bar skel-bar-sub"></span></div>
+          </div>
+        </li>
+      }
+    </ul>
+  } @else if (errorMsg()) {
+    <p class="status-msg error">{{ errorMsg() }}</p>
+  } @else {
+    <ul class="ds-list">
+      @for (log of mostPopularLog; track log.ediid; let i = $index) {
+        <li class="ds-item" role="button" tabindex="0"
+            (click)="openDetail(log)" (keydown.enter)="openDetail(log)"
+            (keydown.space)="$event.preventDefault(); openDetail(log)"
+            [attr.aria-label]="'Open details for ' + log.title">
+          <span class="ds-rank">{{ i + 1 }}</span>
+          <div class="ds-main">
+            <div class="ds-title" [title]="log.title">{{ log.title }}</div>
+            <div class="ds-sub">{{ subLabel(log) }}</div>
+          </div>
+          <a class="ds-view" [href]="datasetUrl(log.ediid)" target="_blank" rel="noopener"
+             (click)="$event.stopPropagation()" aria-label="View dataset detail page">
+            View Dataset<mat-icon>open_in_new</mat-icon>
+          </a>
+          <button type="button" class="ds-star" [class.watched]="watch.isWatched(log.ediid)"
+                  (click)="$event.stopPropagation(); watch.toggle(log.ediid)"
+                  [attr.aria-pressed]="watch.isWatched(log.ediid)"
+                  [attr.aria-label]="(watch.isWatched(log.ediid) ? 'Remove from' : 'Add to') + ' watchlist'"
+                  [matTooltip]="watch.isWatched(log.ediid) ? 'Remove from watchlist' : 'Add to watchlist'">
+            <mat-icon>{{ watch.isWatched(log.ediid) ? 'star' : 'star_border' }}</mat-icon>
+          </button>
+        </li>
+      } @empty {
+        <li class="ds-empty">No datasets found.</li>
+      }
+    </ul>
+  }
+</div>

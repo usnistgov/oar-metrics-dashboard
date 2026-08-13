@@ -1,0 +1,17 @@
+// Angular Material 3 theme for the dashboard (dark).
+// Uses the modern `mat.theme()` API (Angular 19+). Replaces the old prebuilt CSS theme.
+@use '@angular/material' as mat;
+
+html {
+  // Light, professional theme (no black). Surfaces/shadows are tuned in styles.css.
+  color-scheme: light;
+
+  @include mat.theme((
+    color: (
+      primary: mat.$cyan-palette,
+      tertiary: mat.$azure-palette,
+    ),
+    typography: Roboto,
+    density: -2,
+  ));
+}

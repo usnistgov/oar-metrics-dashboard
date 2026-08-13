@@ -1,0 +1,37 @@
+<div class="my-filter">
+  <span class="my-filter-label">Period</span>
+  <div class="my-filter-group" role="group" aria-label="Filter by month and year">
+    <button type="button" class="my-filter-seg" [matMenuTriggerFor]="monthMenu"
+            aria-label="Select month" matTooltip="Month">
+      <span class="my-filter-text">{{ monthLabel() }}</span>
+      <mat-icon class="my-filter-caret">expand_more</mat-icon>
+    </button>
+    <button type="button" class="my-filter-seg" [matMenuTriggerFor]="yearMenu"
+            aria-label="Select year" matTooltip="Year">
+      <span class="my-filter-text">{{ yearLabel() }}</span>
+      <mat-icon class="my-filter-caret">expand_more</mat-icon>
+    </button>
+  </div>
+
+  <mat-menu #monthMenu="matMenu" class="app-menu my-filter-menu">
+    <button mat-menu-item (click)="monthChange.emit('all')">
+      <mat-icon>{{ month() === 'all' ? 'check' : '' }}</mat-icon><span>All months</span>
+    </button>
+    @for (mo of months; track mo.value) {
+      <button mat-menu-item (click)="monthChange.emit(mo.value)">
+        <mat-icon>{{ month() === mo.value ? 'check' : '' }}</mat-icon><span>{{ mo.label }}</span>
+      </button>
+    }
+  </mat-menu>
+
+  <mat-menu #yearMenu="matMenu" class="app-menu my-filter-menu">
+    <button mat-menu-item (click)="yearChange.emit('all')">
+      <mat-icon>{{ year() === 'all' ? 'check' : '' }}</mat-icon><span>All years</span>
+    </button>
+    @for (y of years(); track y) {
+      <button mat-menu-item (click)="yearChange.emit(y)">
+        <mat-icon>{{ year() === y ? 'check' : '' }}</mat-icon><span>{{ y }}</span>
+      </button>
+    }
+  </mat-menu>
+</div>
