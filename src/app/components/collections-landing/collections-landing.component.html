@@ -1,0 +1,41 @@
+<app-header />
+
+<main class="landing">
+  <header class="landing-head">
+    <h1>Collections Metrics</h1>
+    <p>
+      Usage for a curated group of datasets. Pick a collection to see its downloads, reach and
+      standing within the repository.
+    </p>
+  </header>
+
+  @if (collections().length) {
+    <div class="landing-grid">
+      @for (c of collections(); track c.id) {
+        <a class="col-card" [routerLink]="['/collections', slug(c.id)]">
+          <div class="col-card-head">
+            <mat-icon>collections_bookmark</mat-icon>
+            <h2>{{ c.title }}</h2>
+          </div>
+          <div class="col-metric">
+            <span class="col-metric-value">{{ fmtCount(c.downloads) }}</span>
+            <span class="col-metric-label">downloads</span>
+          </div>
+          <div class="col-sub">
+            <span>{{ fmtPct(share(c.downloads)) }} of repo</span>
+            <span class="dot">·</span>
+            <span>{{ fmtSize(c.size) }}</span>
+            <span class="dot">·</span>
+            <span>{{ fmtCount(c.memberCount) }} datasets</span>
+          </div>
+          <span class="col-go">View metrics <mat-icon>arrow_forward</mat-icon></span>
+        </a>
+      }
+    </div>
+  } @else {
+    <div class="landing-empty">
+      <mat-icon>hourglass_empty</mat-icon>
+      <p>Loading collections…</p>
+    </div>
+  }
+</main>

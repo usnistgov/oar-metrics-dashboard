@@ -1,0 +1,66 @@
+<app-header />
+
+@if (!scope.membershipsLoaded()) {
+  <main class="scoped">
+    <section class="loading">
+      <mat-spinner [diameter]="40" [strokeWidth]="4"></mat-spinner>
+      <p>Loading collection…</p>
+    </section>
+  </main>
+} @else if (scope.resolved()) {
+  <app-scope-bar />
+
+  @if (scope.detail(); as d) {
+    <main class="scoped">
+      <section class="kpi-strip">
+        <div class="kpi">
+          <div class="kpi-label">Downloads</div>
+          <div class="kpi-value">{{ fmtCount(d.downloads) }}</div>
+          <div class="kpi-sub">
+            {{ fmtPct(sharePct(d.downloads, scope.repo().downloads)) }} of repo
+            @if (scope.rank(); as r) {
+              <span class="dot">·</span> #{{ r.rank }} of {{ r.total }}
+            }
+          </div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">User-sessions</div>
+          <div class="kpi-value">{{ fmtCount(d.users) }}</div>
+          <div class="kpi-sub">{{ fmtPct(sharePct(d.users, scope.repo().users)) }} of repo</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Data volume</div>
+          <div class="kpi-value">{{ fmtSize(d.size) }}</div>
+          <div class="kpi-sub">{{ fmtPct(sharePct(d.size, scope.repo().size)) }} of repo</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Datasets</div>
+          <div class="kpi-value">{{ fmtCount(d.membersWithUsage) }}</div>
+          <div class="kpi-sub">of {{ fmtCount(d.memberCount) }} in collection</div>
+        </div>
+      </section>
+
+      <section class="ts-note" role="note">
+        <mat-icon>info</mat-icon>
+        <p>
+          <strong>Trends over time are repository-wide.</strong>
+          Monthly downloads, users, sizes and the seasonality heatmap can't yet be scoped to a single
+          collection: the usage feed stores lifetime totals per dataset, not monthly history. These
+          charts will appear here once a per-dataset monthly series is available.
+        </p>
+      </section>
+    </main>
+  }
+} @else if (scope.membershipsLoaded()) {
+  <app-scope-bar />
+  <main class="scoped">
+    <section class="empty">
+      <mat-icon>folder_off</mat-icon>
+      <h2>Collection not found</h2>
+      <p>We couldn't find a collection for this link.</p>
+      <a mat-stroked-button routerLink="/collections">
+        <mat-icon>arrow_back</mat-icon> Browse collections
+      </a>
+    </section>
+  </main>
+}

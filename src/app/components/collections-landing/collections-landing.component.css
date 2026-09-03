@@ -1,0 +1,113 @@
+.landing {
+  padding: 1.25rem 1rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.landing-head h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.landing-head p {
+  color: var(--color-muted);
+  margin-top: 0.25rem;
+  max-width: 60ch;
+}
+
+.landing-grid {
+  margin-top: 1.25rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.col-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem 1.1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--color-text);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.col-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  border-color: var(--color-accent);
+}
+
+.col-card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.col-card-head mat-icon {
+  color: var(--color-accent);
+}
+
+.col-card-head h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.col-metric {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.col-metric-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.col-metric-label {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.col-sub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.col-sub .dot {
+  opacity: 0.5;
+}
+
+.col-go {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.col-go mat-icon {
+  font-size: 1.1rem;
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.landing-empty {
+  text-align: center;
+  color: var(--color-muted);
+  padding: 3rem 0;
+}

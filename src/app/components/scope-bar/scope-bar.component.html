@@ -1,0 +1,42 @@
+<div class="scope-bar">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a routerLink="/">Home</a>
+    <mat-icon>chevron_right</mat-icon>
+    <a routerLink="/collections">Collections</a>
+    @if (activeTitle()) {
+      <mat-icon>chevron_right</mat-icon>
+      <span class="crumb-current">{{ activeTitle() }}</span>
+    }
+  </nav>
+
+  <div class="scope-row">
+    <span class="viewing-label">Viewing</span>
+
+    <mat-form-field appearance="outline" class="scope-picker" subscriptSizing="dynamic">
+      <mat-icon matPrefix>collections_bookmark</mat-icon>
+      <input matInput [formControl]="search" [matAutocomplete]="auto"
+             placeholder="Switch collection…" aria-label="Search collections" />
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelect($event)">
+        @for (c of filtered(); track c.id) {
+          <mat-option [value]="c">{{ c.title }}</mat-option>
+        } @empty {
+          <mat-option [disabled]="true">No matching collections</mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+
+    @if (scope.detail(); as d) {
+      <span class="scope-count" matTooltip="Datasets with usage / curated into this collection">
+        {{ fmtCount(d.membersWithUsage) }} of {{ fmtCount(d.memberCount) }} datasets
+      </span>
+    }
+
+    <span class="spacer"></span>
+
+    @if (scope.activeMembership()) {
+      <button mat-stroked-button (click)="clear()" matTooltip="Back to all collections">
+        <mat-icon>clear</mat-icon> All collections
+      </button>
+    }
+  </div>
+</div>

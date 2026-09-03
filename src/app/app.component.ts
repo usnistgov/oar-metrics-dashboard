@@ -39,7 +39,10 @@ export class AppComponent {
   private dialog = inject(MatDialog);
   private router = inject(Router);
 
-  /** True while on the dashboard route - the loading overlay/blur only applies there. */
+  /**
+   * True on the dashboard route - the loading overlay/blur applies only there. The Collections pages
+   * manage their own loading/empty states, and the Guide reads without waiting for data.
+   */
   readonly onDashboard = toSignal(
     this.router.events.pipe(
       filter((e): e is NavigationEnd => e instanceof NavigationEnd),
