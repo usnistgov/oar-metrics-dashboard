@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -32,12 +32,26 @@ export class PopularScienceDomainsComponent implements OnInit {
 
   private allDatasets: DataSetMetric[] = []; // Shared usage metrics from the service.
   mostPopularCategories: CategoryCount[] = []; // Rendered inline as dataset cards.
-  count = '5';                                  // How many categories to show (persisted to localStorage).
+  count = this.loadCount();                     // How many categories to show (persisted to localStorage).
+
+  /**
+   * Optional scoped dataset list. When bound (the Collections view passes a collection's member
+   * rows), domains are aggregated over THIS list; unbound, the dashboard reads the global stream.
+   */
+  private scoped: DataSetMetric[] | null = null;
+  @Input() set datasets(value: DataSetMetric[] | null) {
+    this.scoped = value;
+    if (value != null) {
+      this.allDatasets = value;
+      this.render(this.parsedCount());
+    }
+  }
   loading = signal(true);
   errorMsg = signal<string | null>(null);
 
   ngOnInit(): void {
-    this.count = this.loadCount(); // Restore the remembered count (custom or preset).
+    // Scoped mode (a `datasets` input was bound) renders that list; skip the global stream.
+    if (this.scoped != null) return;
     this.metrics.datasetMetrics$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => {
       this.allDatasets = data;
       this.render(this.parsedCount());

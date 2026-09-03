@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -38,7 +38,21 @@ export class MostPopularComponent implements OnInit {
 
   private allDatasets: DataSetMetric[] = []; // Shared usage metrics from the service.
   mostPopularLog: EnrichedDataSetMetric[] = []; // The list rendered inline as dataset cards.
-  count = '5';                                   // How many cards to show (persisted to localStorage).
+  count = this.loadCount();                      // How many cards to show (persisted to localStorage).
+
+  /**
+   * Optional scoped dataset list. When bound (e.g. the Collections view passes a collection's member
+   * rows), the card ranks THIS list instead of the global stream. Unbound (the dashboard) keeps the
+   * original behaviour: read the shared `datasetMetrics$`.
+   */
+  private scoped: DataSetMetric[] | null = null;
+  @Input() set datasets(value: DataSetMetric[] | null) {
+    this.scoped = value;
+    if (value != null) {
+      this.allDatasets = value;
+      this.render(this.parsedCount());
+    }
+  }
   readonly sortKey = signal<PopularSort>('downloads'); // Active ranking metric.
   // Options for the header "Sort by" dropdown (value matches PopularSort).
   readonly sortOptions: { value: PopularSort; label: string }[] = [
@@ -51,8 +65,9 @@ export class MostPopularComponent implements OnInit {
   errorMsg = signal<string | null>(null);
 
   ngOnInit(): void {
-    this.count = this.loadCount(); // Restore the remembered count (custom or preset).
-    // Read the shared dataset list; re-render on auto/manual refresh.
+    // Scoped mode (a `datasets` input was bound) renders that list; skip the global stream.
+    if (this.scoped != null) return;
+    // Global mode: read the shared dataset list; re-render on auto/manual refresh.
     this.metrics.datasetMetrics$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => {
       this.allDatasets = data;
       this.render(this.parsedCount());
