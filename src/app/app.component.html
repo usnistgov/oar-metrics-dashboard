@@ -4,13 +4,14 @@
   <router-outlet></router-outlet>
 </div>
 
-<!-- Floating Settings control (bottom-right): opens dark mode + accent color + widget visibility. -->
-<div class="fab-stack">
+<!-- Floating Settings control (bottom-right): opens dark mode + accent color + widget visibility.
+     Temporarily hidden. -->
+<!-- <div class="fab-stack">
   <button mat-fab class="theme-fab" (click)="openSettings()"
           matTooltip="Settings" aria-label="Open settings">
     <mat-icon>settings</mat-icon>
   </button>
-</div>
+</div> -->
 
 <!-- Initial load screen: top progress bar + a centered panel over a dimmed backdrop (dashboard only). -->
 <div class="loading-overlay" [class.is-hidden]="metrics.ready() || !onDashboard()"
