@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, DestroyRef, ElementRef, effect, inject, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, DestroyRef, ElementRef, Input, effect, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -9,6 +10,7 @@ import { MetricsService } from '../../services/metrics.service';
 import { ThemeService } from '../../services/theme.service';
 import { CollectionMetric } from '../../models/metrics.models';
 import { chartTheme } from '../../chart-theme';
+import { collectionSlug } from '../../scope-stats';
 import { CollectionDetailComponent } from '../collection-detail/collection-detail.component';
 
 Chart.register(...registerables);
@@ -31,6 +33,13 @@ export class CollectionsComponent implements AfterViewInit {
   private theme = inject(ThemeService);
   private destroyRef = inject(DestroyRef);
   private dialog = inject(MatDialog);
+  private router = inject(Router);
+
+  /**
+   * When true, clicking a collection navigates to its Collections Metrics page instead of opening the
+   * drill-down drawer. The dashboard keeps the drawer (default); the Collections landing sets this.
+   */
+  @Input() linkToPage = false;
 
   chart: Chart | undefined;
   chartCanvas = viewChild<ElementRef<HTMLCanvasElement>>('chartCanvas');
@@ -70,8 +79,15 @@ export class CollectionsComponent implements AfterViewInit {
     this.draw();
   }
 
-  /** Open the right-side drill-down drawer for a collection (from a bar click or the legend). */
+  /**
+   * From a bar click or the legend: navigate to the collection's scoped page (landing usage) or open
+   * the right-side drill-down drawer (dashboard usage).
+   */
   openCollection(r: CollectionMetric): void {
+    if (this.linkToPage) {
+      this.router.navigate(['/collections', collectionSlug(r.id)]);
+      return;
+    }
     this.dialog.open(CollectionDetailComponent, {
       panelClass: 'detail-panel',
       position: { right: '0', top: '0' },
