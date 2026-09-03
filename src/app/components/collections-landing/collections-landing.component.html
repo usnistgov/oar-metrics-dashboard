@@ -14,7 +14,6 @@
       @for (c of collections(); track c.id) {
         <a class="col-card" [routerLink]="['/collections', slug(c.id)]">
           <div class="col-card-head">
-            <mat-icon>collections_bookmark</mat-icon>
             <h2>{{ c.title }}</h2>
           </div>
           <div class="col-metric">

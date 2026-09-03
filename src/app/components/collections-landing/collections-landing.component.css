@@ -63,10 +63,6 @@
   gap: 0.5rem;
 }
 
-.col-card-head mat-icon {
-  color: var(--color-accent);
-}
-
 .col-card-head h2 {
   font-size: 1rem;
   font-weight: 600;
@@ -104,6 +100,7 @@
 
 .col-go {
   margin-top: auto;
+  align-self: flex-end;
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
