@@ -1,3 +1,11 @@
+<div class="growth-head">
+  <div class="growth-title">
+    <h3>Collection growth</h3>
+    <span class="growth-sub">datasets active over time (by first usage)</span>
+  </div>
+  <app-range-toggle [value]="range()" (valueChange)="range.set($event)" />
+</div>
+
 <div class="growth-chart">
   @if (!hasData()) {
     <p class="growth-empty">No activity dates recorded for this collection's datasets yet.</p>

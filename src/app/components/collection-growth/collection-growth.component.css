@@ -1,3 +1,22 @@
+.growth-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
+.growth-title h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.growth-sub {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
 .growth-chart {
   position: relative;
   height: 260px;
