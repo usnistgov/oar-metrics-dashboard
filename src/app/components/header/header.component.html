@@ -1,0 +1,28 @@
+<mat-toolbar class="flex items-center gap-4">
+  <img src="nistlogowhite.png" alt="NIST logo" class="h-9 w-auto" />
+  <div class="flex flex-col leading-tight">
+    <span class="text-lg font-semibold">Public Data Repository</span>
+    <span class="text-sm opacity-80">Data Usage Metrics</span>
+  </div>
+
+  <nav class="header-nav hidden sm:flex items-center gap-1 ml-2">
+    <a mat-button routerLink="/" routerLinkActive="nav-active"
+       [routerLinkActiveOptions]="{ exact: true }">All Metrics</a>
+    <a mat-button routerLink="/collections" routerLinkActive="nav-active">Collections</a>
+  </nav>
+
+  <span class="flex-1"></span>
+
+  @if (metrics.lastUpdated(); as updated) {
+    <span class="hidden md:inline text-xs opacity-80">Updated {{ updated | date: 'shortTime' }} ({{ relativeUpdated() }})</span>
+  }
+  <a mat-button routerLink="/guide" class="nav-guide-link" aria-label="Open the dashboard guide"
+     matTooltip="How to use this dashboard">
+    <mat-icon>help_outline</mat-icon>
+    <span class="hidden sm:inline">Guide</span>
+  </a>
+  <button mat-icon-button (click)="metrics.refresh()" aria-label="Refresh data"
+          [matTooltip]="metrics.refreshing() ? 'Refreshing…' : 'Refresh data'">
+    <mat-icon [class.spin]="metrics.refreshing()">refresh</mat-icon>
+  </button>
+</mat-toolbar>

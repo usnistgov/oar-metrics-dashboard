@@ -1,26 +1,5 @@
-<!-- App header -->
-<mat-toolbar class="flex items-center gap-4">
-  <img src="nistlogowhite.png" alt="NIST logo" class="h-9 w-auto" />
-  <div class="flex flex-col leading-tight">
-    <span class="text-lg font-semibold">Public Data Repository</span>
-    <span class="text-sm opacity-80">Data Usage Metrics</span>
-  </div>
-
-  <span class="flex-1"></span>
-
-  @if (metrics.lastUpdated(); as updated) {
-    <span class="hidden sm:inline text-xs opacity-80">Updated {{ updated | date: 'shortTime' }} ({{ relativeUpdated() }})</span>
-  }
-  <a mat-button routerLink="/guide" class="nav-guide-link" aria-label="Open the dashboard guide"
-     matTooltip="How to use this dashboard">
-    <mat-icon>help_outline</mat-icon>
-    <span class="hidden sm:inline">Guide</span>
-  </a>
-  <button mat-icon-button (click)="metrics.refresh()" aria-label="Refresh data"
-          [matTooltip]="metrics.refreshing() ? 'Refreshing…' : 'Refresh data'">
-    <mat-icon [class.spin]="metrics.refreshing()">refresh</mat-icon>
-  </button>
-</mat-toolbar>
+<!-- App header (shared shell: brand, nav, last-updated, refresh) -->
+<app-header />
 
 <!-- Executive KPI strip + action stack. Always rendered so the Settings / Refresh buttons stay
      available even when the KPI tiles are hidden (the band collapses to a compact action bar). -->

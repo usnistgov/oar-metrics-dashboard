@@ -1,0 +1,15 @@
+.header-nav a {
+  color: #fff;
+  font-weight: 500;
+  opacity: 0.82;
+}
+
+.header-nav a:hover {
+  opacity: 1;
+}
+
+.header-nav a.nav-active {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+}
