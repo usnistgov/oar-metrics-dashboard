@@ -76,7 +76,7 @@
         <mat-card appearance="outlined" cdkDrag [cdkDragDisabled]="layout.isPinned(id)"
                   [class.card-pinned]="layout.isPinned(id)">
           <mat-card-header class="card-header-actions">
-            <mat-card-title>Most Popular Datasets</mat-card-title>
+            <mat-card-title>Most Accessed Datasets</mat-card-title>
             <div class="card-tools">
               <app-sort-by label="Sort by" [options]="mp.sortOptions" [value]="mp.sortKey()"
                            (valueChange)="mp.setSort($any($event))" />

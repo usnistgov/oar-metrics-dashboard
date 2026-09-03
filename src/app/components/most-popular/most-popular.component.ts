@@ -133,7 +133,7 @@ export class MostPopularComponent implements OnInit {
       maxWidth: '95vw',
       autoFocus: 'dialog',   // focus the dialog, not the Close button
       data: {
-        title: 'Most Popular Datasets',
+        title: 'Most Accessed Datasets',
         items: this.mostPopularLog.map((log, i) => ({
           rank: i + 1,
           title: log.title,

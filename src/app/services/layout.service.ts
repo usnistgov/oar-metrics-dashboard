@@ -26,7 +26,7 @@ export class LayoutService {
     { id: 'kpi', label: 'KPI summary' },
     { id: 'watchlist', label: 'Watchlist' },
     { id: 'downloadSizes', label: 'Monthly Download Sizes' },
-    { id: 'mostPopular', label: 'Most Popular Datasets' },
+    { id: 'mostPopular', label: 'Most Accessed Datasets' },
     { id: 'scienceDomains', label: 'Popular Science Domains' },
     { id: 'latestDownloads', label: 'Latest Downloads' },
     { id: 'monthlyDownloads', label: 'Monthly Number of Downloads' },
