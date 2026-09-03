@@ -56,6 +56,7 @@ export class CollectionsComponent implements AfterViewInit {
   readonly totalMembers = signal(0);
   readonly totalDownloads = signal(0);
   readonly totalSizeLabel = signal(''); // total download volume across collections (formatted)
+  readonly totalUsers = signal(0); // total user-sessions across collections (sessions, not distinct people)
 
   constructor() {
     effect(() => {
@@ -70,6 +71,7 @@ export class CollectionsComponent implements AfterViewInit {
       this.totalMembers.set(data.reduce((s, r) => s + r.memberCount, 0));
       this.totalDownloads.set(data.reduce((s, r) => s + r.downloads, 0));
       this.totalSizeLabel.set(this.formatSize(data.reduce((s, r) => s + r.size, 0)));
+      this.totalUsers.set(data.reduce((s, r) => s + r.users, 0));
       this.loading.set(false);
       this.empty.set(data.length === 0);
       this.errorMsg.set(this.metrics.datasetError() && data.length === 0 ? 'Failed to load data.' : null);
