@@ -8,6 +8,7 @@ import { HeaderComponent } from '../header/header.component';
 import { ScopeBarComponent } from '../scope-bar/scope-bar.component';
 import { MostPopularComponent } from '../most-popular/most-popular.component';
 import { PopularScienceDomainsComponent } from '../popular-science-domains/popular-science-domains.component';
+import { CollectionGrowthComponent } from '../collection-growth/collection-growth.component';
 import { SortByComponent } from '../sort-by/sort-by.component';
 import { ScopeService } from '../../services/scope.service';
 import { formatCount, formatPct, formatSize } from '../../format';
@@ -31,6 +32,7 @@ import { sharePct } from '../../scope-stats';
     ScopeBarComponent,
     MostPopularComponent,
     PopularScienceDomainsComponent,
+    CollectionGrowthComponent,
     SortByComponent,
   ],
   templateUrl: './collection-scoped.component.html',

@@ -1,0 +1,7 @@
+<div class="growth-chart">
+  @if (!hasData()) {
+    <p class="growth-empty">No activity dates recorded for this collection's datasets yet.</p>
+  }
+  <canvas #chartCanvas role="img"
+          aria-label="Cumulative number of the collection's datasets active over time"></canvas>
+</div>

@@ -1,0 +1,15 @@
+.growth-chart {
+  position: relative;
+  height: 260px;
+}
+
+.growth-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  text-align: center;
+}

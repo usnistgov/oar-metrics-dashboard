@@ -70,6 +70,15 @@
   color: var(--color-text);
 }
 
+.s-card-sub {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.growth-card {
+  margin-top: 1rem;
+}
+
 .ts-note {
   display: flex;
   align-items: flex-start;
