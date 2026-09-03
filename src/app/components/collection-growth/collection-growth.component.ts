@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, computed, effect, inject, input, 
 import { Chart, ChartConfiguration, ChartOptions, TooltipItem, registerables } from 'chart.js';
 import { ThemeService } from '../../services/theme.service';
 import { DataSetMetric } from '../../models/metrics.models';
-import { lineChartOptions, lineDataset } from '../../chart-theme';
+import { chartTheme, lineChartOptions, lineDataset } from '../../chart-theme';
 import { datasetGrowthSeries } from '../../growth-stats';
 
 Chart.register(...registerables);
@@ -52,8 +52,27 @@ export class CollectionGrowthComponent implements AfterViewInit {
     const pts = this.series();
 
     const base = lineChartOptions('', 'Datasets active');
+    const t = chartTheme();
     const options: ChartOptions<'line'> = {
       ...base,
+      scales: {
+        ...base.scales,
+        x: {
+          ...base.scales?.['x'],
+          ticks: {
+            color: t.text,
+            autoSkip: false,
+            maxRotation: 0,
+            // Multi-year monthly data: label only the January of each year (plus the first point),
+            // so the axis reads as clean year boundaries instead of arbitrary evenly-spaced months.
+            callback: (_value, index) => {
+              const p = pts[index];
+              if (!p) return '';
+              return p.period.endsWith('-01') || index === 0 ? p.period.slice(0, 4) : '';
+            },
+          },
+        },
+      },
       plugins: {
         ...base.plugins,
         tooltip: {
