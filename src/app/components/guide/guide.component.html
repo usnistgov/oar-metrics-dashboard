@@ -1,18 +1,4 @@
-<!-- Header: matches the dashboard toolbar, with a link back to the dashboard. -->
-<mat-toolbar class="guide-toolbar">
-  <img src="nistlogowhite.png" alt="NIST logo" class="guide-logo" />
-  <div class="guide-brand">
-    <span class="guide-brand-title">Public Data Repository</span>
-    <span class="guide-brand-sub">Dashboard Guide</span>
-  </div>
-  <span class="guide-spacer"></span>
-  <a mat-button routerLink="/" class="guide-back" aria-label="Back to the dashboard">
-    <mat-icon>arrow_back</mat-icon>
-    <span class="hidden sm:inline">Back to dashboard</span>
-  </a>
-</mat-toolbar>
-
-<main class="guide">
+<main class="guide" (click)="onAnchorClick($event)">
   <!-- Intro -->
   <header class="guide-hero">
     <h1>Your guide to the dashboard</h1>
