@@ -56,22 +56,25 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* Segmented pill navigation */
+/* Segmented pill navigation: centered between the brand and the actions, tabs span it equally. */
 .header-nav {
   display: flex;
   align-items: center;
   gap: 0.25rem;
   padding: 0.25rem;
+  width: 340px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 999px;
 }
 
 .nav-pill {
+  flex: 1 1 0;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.4rem;
-  padding: 0.45rem 0.9rem;
+  padding: 0.5rem 0.9rem;
   border-radius: 999px;
   color: rgba(255, 255, 255, 0.75);
   font-weight: 600;
@@ -183,10 +186,14 @@
 }
 
 @media (max-width: 900px) {
+  .header-nav {
+    width: auto;
+  }
   .nav-pill span {
     display: none;
   }
   .nav-pill {
+    flex: 0 0 auto;
     padding: 0.45rem 0.6rem;
   }
 }
