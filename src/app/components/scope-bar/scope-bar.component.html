@@ -16,7 +16,16 @@
       <span class="scope-selector-icon"><mat-icon>collections_bookmark</mat-icon></span>
       <span class="scope-selector-text">
         <span class="scope-selector-label">Viewing collection</span>
-        <span class="scope-selector-name">{{ activeTitle() }}</span>
+        <span class="scope-selector-name">
+          <!-- invisible sizer: reserves the width of the LONGEST collection name so the pill is a
+               stable width and never resizes when switching collections -->
+          <span class="sizer" aria-hidden="true">
+            @for (c of scope.collections(); track c.id) {
+              <span>{{ c.title }}</span>
+            }
+          </span>
+          <span class="active">{{ activeTitle() }}</span>
+        </span>
       </span>
       <mat-icon class="scope-selector-caret">expand_more</mat-icon>
     </button>

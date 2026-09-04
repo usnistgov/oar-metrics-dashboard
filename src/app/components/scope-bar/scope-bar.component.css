@@ -107,10 +107,27 @@
 }
 
 .scope-selector-name {
+  display: grid;
+  align-items: center;
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--color-text);
+}
+
+/* Sizer and active label share one grid cell; the cell (and thus the pill) width is the max-content
+   of the sizer, i.e. the longest collection name. Height comes from the active label only. */
+.scope-selector-name > .sizer,
+.scope-selector-name > .active {
+  grid-area: 1 / 1;
   white-space: nowrap;
+}
+
+.scope-selector-name > .sizer {
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .scope-selector-caret {
@@ -164,7 +181,11 @@
 }
 
 @media (max-width: 640px) {
-  .scope-selector-name {
+  /* On small screens drop the fixed-longest width and just truncate the active name. */
+  .scope-selector-name > .sizer {
+    display: none;
+  }
+  .scope-selector-name > .active {
     max-width: 180px;
     overflow: hidden;
     text-overflow: ellipsis;
