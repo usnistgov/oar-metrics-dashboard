@@ -57,6 +57,28 @@
     <div class="kpi-sub kpi-delta">{{ volumeYear() }}</div>
   </div>
 
+  <!-- This month (month-to-date): downloads + volume together -->
+  <div class="kpi">
+    <div class="kpi-label">
+      <span class="kpi-label-text">This month</span>
+      <button type="button" class="kpi-info" aria-label="About this month" matTooltipPosition="above"
+              matTooltip="The current month so far (month-to-date): total downloads and data volume. The month is still in progress, so these keep growing.">
+        <mat-icon>info_outline</mat-icon>
+      </button>
+    </div>
+    <div class="kpi-main kpi-dual">
+      <span class="kpi-dual-item">
+        <span class="kpi-value kpi-value-sm">{{ monthDownloads() }}</span>
+        <span class="kpi-dual-label">downloads</span>
+      </span>
+      <span class="kpi-dual-item">
+        <span class="kpi-value kpi-value-sm">{{ monthVolume() }}</span>
+        <span class="kpi-dual-label">volume</span>
+      </span>
+    </div>
+    <div class="kpi-sub">{{ monthName() }} · to date</div>
+  </div>
+
   <!-- Most recent download -->
   <div class="kpi">
     <div class="kpi-label">

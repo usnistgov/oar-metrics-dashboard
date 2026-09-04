@@ -5,6 +5,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { combineLatest } from 'rxjs';
 import { MetricsService } from '../../services/metrics.service';
 import { DataSetMetric, RepoMetric } from '../../models/metrics.models';
+import { formatSize } from '../../format';
 
 /**
  * Executive KPI strip across the top of the dashboard: all-time downloads and download volume (each
@@ -45,6 +46,11 @@ export class KpiSummaryComponent {
   readonly recentAbsolute = signal('');
   readonly since = signal('-');
   readonly span = signal('');
+
+  // Current month (month-to-date) downloads + volume, shown together in one tile.
+  readonly monthName = signal('');
+  readonly monthDownloads = signal('-');
+  readonly monthVolume = signal('-');
 
   // Month-over-month change (latest month vs the previous one) for the two download tiles.
   readonly downloadsMoM = signal<number | null>(null);
@@ -145,6 +151,11 @@ export class KpiSummaryComponent {
       const ytdVolume = ytd.reduce((s, x) => s + (x.m.total_size ?? 0) * 1e-12, 0);
       this.downloadsYear.set(`+${this.compact(ytdDownloads)} in ${year}`);
       this.volumeYear.set(`+${this.volumeText(ytdVolume)} in ${year}`);
+
+      // Current month (the latest row) - downloads + volume, month-to-date.
+      this.monthName.set(latest.m.month_year);
+      this.monthDownloads.set(this.compact(latest.m.success_download ?? 0));
+      this.monthVolume.set(formatSize(latest.m.total_size ?? 0));
 
       this.since.set(months[0].m.month_year);
       const years = (latest.d.getTime() - months[0].d.getTime()) / (365.25 * 864e5);
