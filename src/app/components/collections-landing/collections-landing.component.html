@@ -13,17 +13,17 @@
     <div class="landing-grid">
       @for (c of collections(); track c.id) {
         <a class="col-card" [routerLink]="['/collections', slug(c.id)]">
-          <div class="col-card-head">
-            <h2>{{ c.title }}</h2>
+          <h2 class="col-title">{{ c.title }}</h2>
+
+          <div class="col-figure">
+            <span class="col-figure-value">{{ fmtCount(c.downloads) }}</span>
+            <span class="col-figure-label">downloads</span>
           </div>
-          <div class="col-metric">
-            <span class="col-metric-value">{{ fmtCount(c.downloads) }}</span>
-            <span class="col-metric-label">downloads</span>
+
+          <div class="col-foot">
+            <span class="col-badge"><mat-icon>dataset</mat-icon>{{ fmtCount(c.memberCount) }} datasets</span>
+            <span class="col-go">View metrics <mat-icon>arrow_forward</mat-icon></span>
           </div>
-          <div class="col-sub">
-            <span>{{ fmtCount(c.memberCount) }} datasets</span>
-          </div>
-          <span class="col-go">View metrics <mat-icon>arrow_forward</mat-icon></span>
         </a>
       }
 
