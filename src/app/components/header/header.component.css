@@ -1,64 +1,205 @@
+:host {
+  display: block;
+}
+
+/* Taller bar so the logo reads as the brand and the dashboard name sits under it as a sub-brand. */
+.header-bar.mat-toolbar {
+  height: auto;
+  min-height: 82px;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  box-shadow:
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+    0 2px 12px rgba(0, 0, 0, 0.18);
+}
+
 /* Co-brand lockup: NIST logo + divider + dashboard sub-brand */
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
   text-decoration: none;
 }
 
 .brand-logo {
-  height: 38px;
+  height: 46px;
   width: auto;
   display: block;
 }
 
 .brand-divider {
   width: 1px;
-  align-self: stretch;
-  min-height: 34px;
-  background: rgba(255, 255, 255, 0.32);
+  align-self: center;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.26);
 }
 
 .brand-sub {
   display: flex;
   flex-direction: column;
-  line-height: 1.15;
+  justify-content: center;
+  line-height: 1.2;
   color: #fff;
 }
 
 .brand-sub-title {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.005em;
 }
 
 .brand-sub-desc {
   font-size: 0.8rem;
-  opacity: 0.8;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
 }
 
-/* On small screens, drop the sub-brand so the full agency logo still fits. */
-@media (max-width: 767px) {
+/* Segmented pill navigation */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+}
+
+.nav-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.nav-pill mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.nav-pill:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.nav-pill.active {
+  color: var(--color-on-accent, #fff);
+  background: var(--color-accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+/* Last-updated chip with a live dot */
+.updated-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.82);
+  white-space: nowrap;
+}
+
+.updated-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.2);
+  flex: none;
+}
+
+/* Action buttons: Guide, Settings, Refresh (refresh emphasized) */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.action-btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.action-btn:active {
+  transform: translateY(1px);
+}
+
+.action-btn mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.action-btn-primary {
+  background: var(--color-accent);
+  color: var(--color-on-accent, #fff);
+}
+
+.action-btn-primary:hover {
+  background: var(--color-accent-strong, var(--color-accent));
+  color: #fff;
+}
+
+/* Responsive: shed the sub-brand, nav labels, and updated chip as space tightens. */
+@media (max-width: 1100px) {
+  .updated-chip {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .nav-pill span {
+    display: none;
+  }
+  .nav-pill {
+    padding: 0.45rem 0.6rem;
+  }
+}
+
+@media (max-width: 720px) {
   .brand-divider,
   .brand-sub {
     display: none;
   }
   .brand-logo {
-    height: 30px;
+    height: 34px;
   }
-}
-
-.header-nav a {
-  color: #fff;
-  font-weight: 500;
-  opacity: 0.82;
-}
-
-.header-nav a:hover {
-  opacity: 1;
-}
-
-.header-nav a.nav-active {
-  opacity: 1;
-  background: rgba(255, 255, 255, 0.16);
-  border-radius: 8px;
+  .header-nav {
+    display: none;
+  }
 }

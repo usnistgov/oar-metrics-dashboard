@@ -1,4 +1,4 @@
-<mat-toolbar class="flex items-center gap-4">
+<mat-toolbar class="header-bar">
   <!-- Co-brand lockup: official NIST logo + a divider + this dashboard's name -->
   <a routerLink="/" class="brand" aria-label="Public Data Repository - Data Usage Metrics home">
     <svg class="brand-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 275.3 38.5" fill="#fff" role="img" aria-label="National Institute of Standards and Technology">
@@ -84,24 +84,38 @@
     </span>
   </a>
 
-  <nav class="header-nav hidden md:flex items-center gap-1 ml-2">
-    <a mat-button routerLink="/" routerLinkActive="nav-active"
-       [routerLinkActiveOptions]="{ exact: true }">All Metrics</a>
-    <a mat-button routerLink="/collections" routerLinkActive="nav-active">Collections</a>
+  <nav class="header-nav" aria-label="Primary">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+       class="nav-pill">
+      <mat-icon>insights</mat-icon><span>All Metrics</span>
+    </a>
+    <a routerLink="/collections" routerLinkActive="active" class="nav-pill">
+      <mat-icon>collections_bookmark</mat-icon><span>Collections</span>
+    </a>
   </nav>
 
   <span class="flex-1"></span>
 
   @if (metrics.lastUpdated(); as updated) {
-    <span class="hidden lg:inline text-xs opacity-80">Updated {{ updated | date: 'shortTime' }} ({{ relativeUpdated() }})</span>
+    <span class="updated-chip" matTooltip="When the data was last refreshed">
+      <span class="updated-dot"></span>
+      <span class="updated-text">Updated {{ updated | date: 'shortTime' }} · {{ relativeUpdated() }}</span>
+    </span>
   }
-  <a mat-button routerLink="/guide" class="nav-guide-link" aria-label="Open the dashboard guide"
-     matTooltip="How to use this dashboard">
-    <mat-icon>help_outline</mat-icon>
-    <span class="hidden sm:inline">Guide</span>
-  </a>
-  <button mat-icon-button (click)="metrics.refresh()" aria-label="Refresh data"
-          [matTooltip]="metrics.refreshing() ? 'Refreshing…' : 'Refresh data'">
-    <mat-icon [class.spin]="metrics.refreshing()">refresh</mat-icon>
-  </button>
+
+  <div class="header-actions">
+    <a routerLink="/guide" class="action-btn" aria-label="Open the dashboard guide"
+       matTooltip="How to use this dashboard">
+      <mat-icon>help_outline</mat-icon>
+    </a>
+    <button type="button" class="action-btn" (click)="openSettings()" aria-label="Open settings"
+            matTooltip="Settings">
+      <mat-icon>settings</mat-icon>
+    </button>
+    <button type="button" class="action-btn action-btn-primary" (click)="metrics.refresh()"
+            aria-label="Refresh data"
+            [matTooltip]="metrics.refreshing() ? 'Refreshing…' : 'Refresh data'">
+      <mat-icon [class.spin]="metrics.refreshing()">refresh</mat-icon>
+    </button>
+  </div>
 </mat-toolbar>

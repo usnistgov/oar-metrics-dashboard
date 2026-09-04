@@ -4,15 +4,16 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { timer } from 'rxjs';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MetricsService } from '../../services/metrics.service';
+import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
 
 /**
- * Shared app header: brand, primary nav (All Metrics / Collections), the last-updated indicator and
- * the manual refresh button. Used by the dashboard and the Collections pages so navigation and the
- * refresh control stay consistent across views.
+ * Shared app header: co-brand lockup (official NIST logo + dashboard name), primary nav (All Metrics
+ * / Collections), the last-updated indicator, and the action buttons (Guide, Settings, Refresh).
+ * Rendered in the app shell so it paints instantly and stays interactive during data load.
  */
 @Component({
   selector: 'app-header',
@@ -22,15 +23,16 @@ import { MetricsService } from '../../services/metrics.service';
     RouterLink,
     RouterLinkActive,
     MatToolbarModule,
-    MatButtonModule,
     MatIconModule,
     MatTooltipModule,
+    MatDialogModule,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
 export class HeaderComponent {
   readonly metrics = inject(MetricsService);
+  private dialog = inject(MatDialog);
 
   // Ticks every 30s so the relative "(X ago)" label stays current.
   private readonly tick = toSignal(timer(0, 30_000), { initialValue: 0 });
@@ -40,6 +42,17 @@ export class HeaderComponent {
     const updated = this.metrics.lastUpdated();
     return updated ? this.formatRelative(updated) : '';
   });
+
+  /** Open the settings dialog (dark mode, accent color, widget visibility). */
+  openSettings(): void {
+    this.dialog.open(SettingsDialogComponent, {
+      width: '420px',
+      maxWidth: '94vw',
+      maxHeight: '85vh',
+      autoFocus: 'dialog',
+      ariaLabel: 'Settings',
+    });
+  }
 
   private formatRelative(date: Date): string {
     const seconds = Math.max(0, Math.round((Date.now() - date.getTime()) / 1000));
