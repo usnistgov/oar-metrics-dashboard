@@ -43,3 +43,50 @@ export function filterByMonthYear(
     return (year === 'all' || d.getFullYear() === year) && (month === 'all' || d.getMonth() === month);
   });
 }
+
+// --- Custom month-year range (From -> To) ------------------------------------
+
+/** A selectable month-year for the From/To range pickers. `value` is a sortable 'YYYY-MM' key. */
+export interface MonthOption {
+  value: string; // 'YYYY-MM'
+  label: string; // 'Mon YYYY'
+}
+
+const MONTH_ABBR = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/** 'YYYY-MM' key for a month_year string (lexically comparable), or null if unparseable. */
+export function monthKey(monthYear: string): string | null {
+  const d = new Date(monthYear ?? '');
+  if (isNaN(d.getTime())) return null;
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
+/** Distinct month-years present in the data, oldest first - drives the From/To pickers. */
+export function monthYearOptions(data: RepoMetric[]): MonthOption[] {
+  const map = new Map<string, string>();
+  for (const item of data) {
+    const d = new Date(item.month_year ?? '');
+    if (isNaN(d.getTime())) continue;
+    const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    map.set(value, `${MONTH_ABBR[d.getMonth()]} ${d.getFullYear()}`);
+  }
+  return [...map.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([value, label]) => ({ value, label }));
+}
+
+/** Keep rows within the inclusive [from, to] month range (either bound may be null = open-ended). */
+export function filterByMonthRange(
+  data: RepoMetric[],
+  from: string | null,
+  to: string | null,
+): RepoMetric[] {
+  if (!from && !to) return data;
+  return data.filter((item) => {
+    const k = monthKey(item.month_year ?? '');
+    if (!k) return false;
+    if (from && k < from) return false;
+    if (to && k > to) return false;
+    return true;
+  });
+}

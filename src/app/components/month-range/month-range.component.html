@@ -1,0 +1,40 @@
+<div class="my-filter">
+  <span class="my-filter-label">Period</span>
+  <div class="my-filter-group" role="group" aria-label="Filter by month range">
+    <button type="button" class="my-filter-seg" [matMenuTriggerFor]="fromMenu"
+            aria-label="Range start" matTooltip="From">
+      <span class="my-filter-text">{{ fromLabel() }}</span>
+      <mat-icon class="my-filter-caret">expand_more</mat-icon>
+    </button>
+    <span class="my-filter-arrow" aria-hidden="true">
+      <mat-icon>arrow_forward</mat-icon>
+    </span>
+    <button type="button" class="my-filter-seg" [matMenuTriggerFor]="toMenu"
+            aria-label="Range end" matTooltip="To">
+      <span class="my-filter-text">{{ toLabel() }}</span>
+      <mat-icon class="my-filter-caret">expand_more</mat-icon>
+    </button>
+  </div>
+
+  <mat-menu #fromMenu="matMenu" class="app-menu my-filter-menu">
+    <button mat-menu-item (click)="fromChange.emit(null)">
+      <mat-icon>{{ from() === null ? 'check' : '' }}</mat-icon><span>Earliest</span>
+    </button>
+    @for (o of options(); track o.value) {
+      <button mat-menu-item (click)="fromChange.emit(o.value)">
+        <mat-icon>{{ from() === o.value ? 'check' : '' }}</mat-icon><span>{{ o.label }}</span>
+      </button>
+    }
+  </mat-menu>
+
+  <mat-menu #toMenu="matMenu" class="app-menu my-filter-menu">
+    <button mat-menu-item (click)="toChange.emit(null)">
+      <mat-icon>{{ to() === null ? 'check' : '' }}</mat-icon><span>Latest</span>
+    </button>
+    @for (o of options(); track o.value) {
+      <button mat-menu-item (click)="toChange.emit(o.value)">
+        <mat-icon>{{ to() === o.value ? 'check' : '' }}</mat-icon><span>{{ o.label }}</span>
+      </button>
+    }
+  </mat-menu>
+</div>
