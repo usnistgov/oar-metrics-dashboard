@@ -28,6 +28,14 @@
  * Initial loading screen - blur the dashboard, show a top progress bar + panel.
  * ------------------------------------------------------------------------- */
 
+/* Header sits above the loading overlay (z 1200) so the brand/nav stay crisp and clickable while the
+   dashboard data loads. */
+app-header {
+  position: relative;
+  z-index: 1300;
+  display: block;
+}
+
 .app-shell {
   transition: filter 0.4s ease, opacity 0.4s ease;
 }

@@ -1,3 +1,7 @@
+<!-- App header (brand + nav + refresh): rendered in the shell so it paints instantly and stays
+     interactive, independent of the data-loading blur/overlay below. -->
+<app-header />
+
 <!-- Routed page (dashboard / guide): blurred + non-interactive until the base data is ready, but the
      blur only applies on the dashboard (the guide reads without waiting for metrics). -->
 <div class="app-shell" [class.app-loading]="!metrics.ready() && onDashboard()">

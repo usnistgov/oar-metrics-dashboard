@@ -3,7 +3,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MetricsService } from '../../services/metrics.service';
-import { HeaderComponent } from '../header/header.component';
 import { CollectionsComponent } from '../collections/collections.component';
 import { CollectionMetric } from '../../models/metrics.models';
 import { formatCount } from '../../format';
@@ -17,7 +16,7 @@ import { collectionSlug } from '../../scope-stats';
 @Component({
   selector: 'app-collections-landing',
   standalone: true,
-  imports: [RouterLink, MatIconModule, HeaderComponent, CollectionsComponent],
+  imports: [RouterLink, MatIconModule, CollectionsComponent],
   templateUrl: './collections-landing.component.html',
   styleUrl: './collections-landing.component.css',
 })

@@ -10,7 +10,6 @@ import { CdkDropList, CdkDrag, CdkDragHandle, CdkDragDrop } from '@angular/cdk/d
 import { MetricsService } from '../../services/metrics.service';
 import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
 import { LayoutService } from '../../services/layout.service';
-import { HeaderComponent } from '../header/header.component';
 import { KpiSummaryComponent } from '../kpi-summary/kpi-summary.component';
 import { CurrentDateComponent } from '../current-date/current-date.component';
 import { MonthlyGraphComponent } from '../monthly-graph/monthly-graph.component';
@@ -35,7 +34,7 @@ import { CollectionShareComponent } from '../collection-share/collection-share.c
  */
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, HeaderComponent, MatCardModule, MatButtonModule, MatIconModule, MatMenuModule,
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatMenuModule,
     MatTooltipModule, MatDialogModule, CdkDropList, CdkDrag, CdkDragHandle, KpiSummaryComponent, CurrentDateComponent,
     MonthlyGraphComponent, LatestDownloadsComponent, MostPopularComponent, PopularScienceDomainsComponent,
     MonthlyDownloadsComponent, MonthlyUsersComponent, DataciteTestComponent, WatchlistComponent,

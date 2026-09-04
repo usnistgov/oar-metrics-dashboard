@@ -1,6 +1,3 @@
-<!-- App header (shared shell: brand, nav, last-updated, refresh) -->
-<app-header />
-
 <!-- Executive KPI strip + action stack. Always rendered so the Settings / Refresh buttons stay
      available even when the KPI tiles are hidden (the band collapses to a compact action bar). -->
 <app-kpi-summary [showTiles]="layout.isVisible('kpi')" [ready]="metrics.ready()"

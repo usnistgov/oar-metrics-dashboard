@@ -4,7 +4,6 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { HeaderComponent } from '../header/header.component';
 import { ScopeBarComponent } from '../scope-bar/scope-bar.component';
 import { MostPopularComponent } from '../most-popular/most-popular.component';
 import { PopularScienceDomainsComponent } from '../popular-science-domains/popular-science-domains.component';
@@ -28,7 +27,6 @@ import { sharePct } from '../../scope-stats';
     MatIconModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    HeaderComponent,
     ScopeBarComponent,
     MostPopularComponent,
     PopularScienceDomainsComponent,
