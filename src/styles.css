@@ -394,6 +394,15 @@ mat-card.card-pinned {
   background: color-mix(in srgb, var(--color-accent) 10%, transparent);
 }
 
+/* Collection scope picker menu: drop the 280px cap and keep items on one line so the panel widens to
+   fit the longest collection name (matching the trigger pill). */
+.scope-menu.mat-mdc-menu-panel {
+  max-width: none;
+}
+.scope-menu .mat-mdc-menu-item {
+  white-space: nowrap;
+}
+
 /* Accent color swatch grid (used in the Settings dialog). */
 .color-swatches {
   display: grid;
