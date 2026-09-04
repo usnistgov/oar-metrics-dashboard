@@ -41,6 +41,12 @@ export class CollectionsComponent implements AfterViewInit {
    */
   @Input() linkToPage = false;
 
+  /**
+   * When true, show the extra headline KPIs (total download size + user-sessions). Only the
+   * Collections page enables these; the dashboard card keeps its original three stats.
+   */
+  @Input() extraStats = false;
+
   chart: Chart | undefined;
   chartCanvas = viewChild<ElementRef<HTMLCanvasElement>>('chartCanvas');
 
