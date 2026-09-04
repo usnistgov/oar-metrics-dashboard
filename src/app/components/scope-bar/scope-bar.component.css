@@ -9,10 +9,11 @@
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-line);
   border-left: 4px solid var(--color-accent);
-  padding: 0.6rem 1rem 0.7rem;
+  padding: 0.6rem 1rem 0.75rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
+/* Breadcrumb (unchanged) */
 .crumbs {
   display: flex;
   align-items: center;
@@ -42,40 +43,134 @@
   font-weight: 600;
 }
 
+/* Scope selector row */
 .scope-row {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-top: 0.35rem;
+  margin-top: 0.55rem;
 }
 
-.viewing-label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--color-muted);
-}
-
-.scope-picker {
-  width: 300px;
-  max-width: 60vw;
-}
-
-.scope-picker mat-icon[matPrefix] {
-  color: var(--color-muted);
-  margin-right: 0.25rem;
-}
-
-.scope-count {
-  font-size: 0.8rem;
-  color: var(--color-muted);
-  background: var(--color-surface-2);
+/* The active-collection pill / picker trigger */
+.scope-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.6rem 0.4rem 0.45rem;
+  background: var(--color-surface);
   border: 1px solid var(--color-line);
-  border-radius: 999px;
-  padding: 0.15rem 0.6rem;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.scope-selector:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.09);
+  transform: translateY(-1px);
+}
+
+.scope-selector-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  color: var(--color-accent);
+  flex: none;
+}
+
+.scope-selector-icon mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.scope-selector-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  min-width: 0;
+}
+
+.scope-selector-label {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.scope-selector-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text);
+  max-width: 340px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scope-selector-caret {
+  color: var(--color-muted);
+  flex: none;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
 }
 
 .spacer {
   flex: 1;
+}
+
+/* Back-to-all ghost link */
+.scope-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 10px;
+  color: var(--color-muted);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.scope-all:hover {
+  background: var(--color-surface-2);
+  color: var(--color-accent);
+}
+
+.scope-all mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Active row highlight in the collection menu */
+.scope-menu .is-active {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.scope-menu .is-active mat-icon {
+  color: var(--color-accent);
+}
+
+@media (max-width: 640px) {
+  .scope-selector-name {
+    max-width: 180px;
+  }
+  .scope-all span {
+    display: none;
+  }
 }

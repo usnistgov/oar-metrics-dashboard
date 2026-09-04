@@ -10,33 +10,31 @@
   </nav>
 
   <div class="scope-row">
-    <span class="viewing-label">Viewing</span>
-
-    <mat-form-field appearance="outline" class="scope-picker" subscriptSizing="dynamic">
-      <mat-icon matPrefix>collections_bookmark</mat-icon>
-      <input matInput [formControl]="search" [matAutocomplete]="auto"
-             placeholder="Switch collection…" aria-label="Search collections" />
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelect($event)">
-        @for (c of filtered(); track c.id) {
-          <mat-option [value]="c">{{ c.title }}</mat-option>
-        } @empty {
-          <mat-option [disabled]="true">No matching collections</mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
-
-    @if (scope.detail(); as d) {
-      <span class="scope-count" matTooltip="Datasets with usage / curated into this collection">
-        {{ fmtCount(d.membersWithUsage) }} of {{ fmtCount(d.memberCount) }} datasets
+    <!-- Scope selector: shows the active collection, opens a menu to switch -->
+    <button type="button" class="scope-selector" [matMenuTriggerFor]="collMenu"
+            aria-label="Switch collection" matTooltip="Switch collection">
+      <span class="scope-selector-icon"><mat-icon>collections_bookmark</mat-icon></span>
+      <span class="scope-selector-text">
+        <span class="scope-selector-label">Viewing collection</span>
+        <span class="scope-selector-name">{{ activeTitle() }}</span>
       </span>
-    }
+      <mat-icon class="scope-selector-caret">expand_more</mat-icon>
+    </button>
+
+    <mat-menu #collMenu="matMenu" class="app-menu scope-menu">
+      @for (c of scope.collections(); track c.id) {
+        <button mat-menu-item (click)="select(c)" [class.is-active]="c.id === activeId()">
+          <mat-icon>{{ c.id === activeId() ? 'check_circle' : 'collections_bookmark' }}</mat-icon>
+          <span>{{ c.title }}</span>
+        </button>
+      }
+    </mat-menu>
 
     <span class="spacer"></span>
 
-    @if (scope.activeMembership()) {
-      <button mat-stroked-button (click)="clear()" matTooltip="Back to all collections">
-        <mat-icon>clear</mat-icon> All collections
-      </button>
-    }
+    <a routerLink="/collections" class="scope-all" matTooltip="Back to all collections">
+      <mat-icon>grid_view</mat-icon>
+      <span>All collections</span>
+    </a>
   </div>
 </div>
