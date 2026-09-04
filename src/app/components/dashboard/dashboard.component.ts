@@ -5,10 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CdkDropList, CdkDrag, CdkDragHandle, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { MetricsService } from '../../services/metrics.service';
-import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
 import { LayoutService } from '../../services/layout.service';
 import { KpiSummaryComponent } from '../kpi-summary/kpi-summary.component';
 import { CurrentDateComponent } from '../current-date/current-date.component';
@@ -35,7 +33,7 @@ import { CollectionShareComponent } from '../collection-share/collection-share.c
 @Component({
   selector: 'app-dashboard',
   imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatMenuModule,
-    MatTooltipModule, MatDialogModule, CdkDropList, CdkDrag, CdkDragHandle, KpiSummaryComponent, CurrentDateComponent,
+    MatTooltipModule, CdkDropList, CdkDrag, CdkDragHandle, KpiSummaryComponent, CurrentDateComponent,
     MonthlyGraphComponent, LatestDownloadsComponent, MostPopularComponent, PopularScienceDomainsComponent,
     MonthlyDownloadsComponent, MonthlyUsersComponent, DataciteTestComponent, WatchlistComponent,
     EngagementComponent, SeasonalityComponent, SortByComponent,
@@ -48,18 +46,6 @@ export class DashboardComponent {
   readonly metrics = inject(MetricsService);
   // Per-widget show/hide state + draggable card order.
   readonly layout = inject(LayoutService);
-  private dialog = inject(MatDialog);
-
-  /** Open the settings dialog (from the KPI action stack). */
-  openSettings(): void {
-    this.dialog.open(SettingsDialogComponent, {
-      width: '420px',
-      maxWidth: '94vw',
-      maxHeight: '85vh',
-      autoFocus: 'dialog',
-      ariaLabel: 'Settings',
-    });
-  }
 
   /** Persist a drag-to-reorder of the visible cards. */
   drop(event: CdkDragDrop<string[]>): void {

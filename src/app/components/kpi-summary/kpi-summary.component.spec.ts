@@ -43,27 +43,11 @@ describe('KpiSummaryComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('emits settings when the settings FAB is clicked', () => {
-    fixture.detectChanges();
-    let emitted = false;
-    component.settings.subscribe(() => (emitted = true));
-    fixture.nativeElement.querySelector('.kpi-fab:not(.kpi-fab-primary)').click();
-    expect(emitted).toBe(true);
-  });
-
-  it('emits refresh when the refresh FAB is clicked', () => {
-    fixture.detectChanges();
-    let emitted = false;
-    component.refresh.subscribe(() => (emitted = true));
-    fixture.nativeElement.querySelector('.kpi-fab-primary').click();
-    expect(emitted).toBe(true);
-  });
-
-  it('hides the KPI tiles but keeps the action stack when showTiles is false', () => {
+  it('renders nothing when showTiles is false (Settings/Refresh live in the header)', () => {
     fixture.componentRef.setInput('showTiles', false);
     fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.kpi-band')).toBeNull();
     expect(fixture.nativeElement.querySelector('.kpi-row')).toBeNull();
-    expect(fixture.nativeElement.querySelectorAll('.kpi-fab').length).toBe(2);
   });
 
   it('flags the band ready (gates the rise-in animation) only when ready is true', () => {

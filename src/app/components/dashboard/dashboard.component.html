@@ -1,8 +1,6 @@
 <!-- Executive KPI strip + action stack. Always rendered so the Settings / Refresh buttons stay
      available even when the KPI tiles are hidden (the band collapses to a compact action bar). -->
-<app-kpi-summary [showTiles]="layout.isVisible('kpi')" [ready]="metrics.ready()"
-                 [refreshing]="metrics.refreshing()"
-                 (settings)="openSettings()" (refresh)="metrics.refresh()" />
+<app-kpi-summary [showTiles]="layout.isVisible('kpi')" [ready]="metrics.ready()" />
 
 <!-- Responsive widget grid: drag a card by its handle to reorder; order persists per user. -->
 <main class="p-3 sm:p-4 grid gap-3 sm:gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3"

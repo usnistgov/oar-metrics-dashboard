@@ -1,5 +1,5 @@
-<div class="kpi-band" [class.kpi-band-solo]="!showTiles()" [class.is-ready]="ready()">
-  @if (showTiles()) {
+@if (showTiles()) {
+<div class="kpi-band" [class.is-ready]="ready()">
   <section class="kpi-row">
   <!-- Total downloads (all-time) + this-year delta -->
   <div class="kpi">
@@ -118,19 +118,5 @@
     <div class="kpi-sub">{{ span() }}</div>
   </div>
   </section>
-  }
-
-  <!-- Action stack (beside the KPI tiles, or a compact bar when tiles are hidden): Settings + Refresh -->
-  <div class="kpi-actions" role="group" aria-label="Dashboard actions">
-    <button type="button" class="kpi-fab" #fab (click)="settings.emit()"
-            matTooltip="Settings" matTooltipPosition="left" aria-label="Open settings">
-      <mat-icon>settings</mat-icon>
-    </button>
-    <button type="button" class="kpi-fab kpi-fab-primary" #fab (click)="refresh.emit()"
-            [disabled]="refreshing()" [attr.aria-busy]="refreshing()"
-            [matTooltip]="refreshing() ? 'Refreshing…' : 'Refresh data'"
-            matTooltipPosition="left" aria-label="Refresh data">
-      <mat-icon [class.spin]="refreshing()">refresh</mat-icon>
-    </button>
-  </div>
 </div>
+}

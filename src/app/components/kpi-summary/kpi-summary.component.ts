@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, WritableSignal, computed, effect, inject, input, output, signal, viewChildren } from '@angular/core';
+import { Component, DestroyRef, WritableSignal, computed, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -23,15 +23,11 @@ export class KpiSummaryComponent {
   private metrics = inject(MetricsService);
   private destroyRef = inject(DestroyRef);
 
-  // Whether to render the KPI tiles. When false, only the action stack shows (as a compact bar),
-  // so hiding the KPI cards does not also hide the Settings / Refresh buttons.
+  // Whether to render the KPI tiles. When false (the KPI widget is hidden in Settings), nothing
+  // renders - the Settings / Refresh actions live in the app header now.
   readonly showTiles = input(true);
   // Gates the tile rise-in animation so it plays as the loading overlay clears (not behind the blur).
   readonly ready = input(false);
-  // Action stack rendered beside the KPI tiles; the dashboard wires these up.
-  readonly refreshing = input(false);
-  readonly settings = output<void>();
-  readonly refresh = output<void>();
 
   // Animated big numbers.
   readonly downloads = signal(0);
@@ -76,52 +72,10 @@ export class KpiSummaryComponent {
 
   private animated = false;
 
-  // The two action FABs, for the FLIP (vertical-stack <-> horizontal-bar) morph.
-  private readonly fabs = viewChildren<ElementRef<HTMLElement>>('fab');
-  private prevRects: DOMRect[] | null = null;
-
   constructor() {
     combineLatest([this.metrics.repoMetrics$, this.metrics.datasetMetrics$])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(([repo, datasets]) => this.compute(repo, datasets));
-
-    // When showTiles flips, the band layout changes (column <-> row). flex-direction can't be
-    // CSS-transitioned, so animate the FABs with FLIP: measure after reflow, then play the delta.
-    effect(() => {
-      this.showTiles();
-      this.fabs();
-      requestAnimationFrame(() => this.flipActions());
-    });
-  }
-
-  /** Smoothly morph the FABs from their previous layout to the current one (FLIP). */
-  private flipActions(): void {
-    const els = this.fabs().map((ref) => ref.nativeElement);
-    if (els.length < 2) return;
-    const next = els.map((el) => el.getBoundingClientRect());
-    const prev = this.prevRects;
-    this.prevRects = next;
-    if (!prev || prev.length !== next.length || this.prefersReducedMotion()) return;
-
-    els.forEach((el, i) => {
-      const a = prev[i];
-      const b = next[i];
-      const dx = a.left - b.left;
-      const dy = a.top - b.top;
-      const sx = b.width ? a.width / b.width : 1;
-      const sy = b.height ? a.height / b.height : 1;
-      // Skip if nothing meaningfully moved or resized.
-      if (Math.abs(dx) < 1 && Math.abs(dy) < 1 && Math.abs(sx - 1) < 0.02 && Math.abs(sy - 1) < 0.02) {
-        return;
-      }
-      el.animate(
-        [
-          { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` },
-          { transform: 'translate(0, 0) scale(1, 1)' },
-        ],
-        { duration: 680, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' },
-      );
-    });
   }
 
   private compute(repo: RepoMetric[], datasets: DataSetMetric[]): void {
