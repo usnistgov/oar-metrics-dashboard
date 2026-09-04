@@ -6,8 +6,9 @@ import { MonthOption } from '../../month-filter';
 
 /**
  * A custom month-year range selector: two connected dropdowns, From -> To, each picking a specific
- * month-year present in the data (or Earliest / Latest for an open bound). Uses the app's themed
- * mat-menu (no native <select>). Stateless - the parent owns the values and reacts to the changes.
+ * month-year present in the data. The lists stay valid: From only offers months before To, and To
+ * only offers months after From (so the two can never cross). Uses the app's themed mat-menu.
+ * Stateless - the parent owns the values and reacts to the change events.
  */
 @Component({
   selector: 'app-month-range',
@@ -18,15 +19,23 @@ import { MonthOption } from '../../month-filter';
 })
 export class MonthRangeComponent {
   readonly options = input<MonthOption[]>([]);
-  readonly from = input<string | null>(null);
-  readonly to = input<string | null>(null);
-  readonly fromChange = output<string | null>();
-  readonly toChange = output<string | null>();
+  readonly from = input<string>('');
+  readonly to = input<string>('');
+  readonly fromChange = output<string>();
+  readonly toChange = output<string>();
 
-  readonly fromLabel = computed(
-    () => this.options().find((o) => o.value === this.from())?.label ?? 'Earliest',
-  );
-  readonly toLabel = computed(
-    () => this.options().find((o) => o.value === this.to())?.label ?? 'Latest',
-  );
+  /** From can only be a month strictly before the current To. */
+  readonly fromOptions = computed(() => {
+    const to = this.to();
+    return to ? this.options().filter((o) => o.value < to) : this.options();
+  });
+
+  /** To can only be a month strictly after the current From. */
+  readonly toOptions = computed(() => {
+    const from = this.from();
+    return from ? this.options().filter((o) => o.value > from) : this.options();
+  });
+
+  readonly fromLabel = computed(() => this.options().find((o) => o.value === this.from())?.label ?? '');
+  readonly toLabel = computed(() => this.options().find((o) => o.value === this.to())?.label ?? '');
 }

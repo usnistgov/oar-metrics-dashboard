@@ -31,16 +31,21 @@ export class MonthlyDownloadsPopupComponent implements OnInit {
   loading = signal(true);
   errorMsg = signal<string | null>(null);
 
-  // Custom month-year range (From -> To); null = open bound.
+  // Custom month-year range (From -> To); defaults to the full span (earliest -> latest).
   readonly options = signal<MonthOption[]>([]);
-  readonly from = signal<string | null>(null);
-  readonly to = signal<string | null>(null);
+  readonly from = signal<string>('');
+  readonly to = signal<string>('');
   readonly emptySelection = signal(false);
 
   ngOnInit(): void {
     this.metrics.repoMetrics$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => {
       this.rawData = data;
-      this.options.set(monthYearOptions(data));
+      const opts = monthYearOptions(data);
+      this.options.set(opts);
+      if (opts.length) {
+        this.from.set(opts[0].value);
+        this.to.set(opts[opts.length - 1].value);
+      }
       this.loading.set(false);
       this.errorMsg.set(this.metrics.repoError() && data.length === 0 ? 'Failed to load data.' : null);
       this.applyFilter();
@@ -54,9 +59,14 @@ export class MonthlyDownloadsPopupComponent implements OnInit {
     this.updateChart(data);
   }
 
-  setFrom(v: string | null) { this.from.set(v); this.applyFilter(); }
-  setTo(v: string | null) { this.to.set(v); this.applyFilter(); }
-  resetFilter() { this.from.set(null); this.to.set(null); this.applyFilter(); }
+  setFrom(v: string) { this.from.set(v); this.applyFilter(); }
+  setTo(v: string) { this.to.set(v); this.applyFilter(); }
+  resetFilter() {
+    const opts = this.options();
+    this.from.set(opts[0]?.value ?? '');
+    this.to.set(opts[opts.length - 1]?.value ?? '');
+    this.applyFilter();
+  }
 
   // Configures and renders the Chart.js bar graph using the provided data.
   updateChart(data: RepoMetric[]) {

@@ -15,7 +15,7 @@
 
   <mat-menu #monthMenu="matMenu" class="app-menu my-filter-menu">
     <button mat-menu-item (click)="monthChange.emit('all')">
-      <mat-icon>{{ month() === 'all' ? 'check' : '' }}</mat-icon><span>All months</span>
+      <mat-icon>{{ month() === 'all' ? 'check' : '' }}</mat-icon><span>Month</span>
     </button>
     @for (mo of months; track mo.value) {
       <button mat-menu-item (click)="monthChange.emit(mo.value)">
@@ -26,7 +26,7 @@
 
   <mat-menu #yearMenu="matMenu" class="app-menu my-filter-menu">
     <button mat-menu-item (click)="yearChange.emit('all')">
-      <mat-icon>{{ year() === 'all' ? 'check' : '' }}</mat-icon><span>All years</span>
+      <mat-icon>{{ year() === 'all' ? 'check' : '' }}</mat-icon><span>Year</span>
     </button>
     @for (y of years(); track y) {
       <button mat-menu-item (click)="yearChange.emit(y)">

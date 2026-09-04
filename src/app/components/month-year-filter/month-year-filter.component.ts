@@ -26,10 +26,10 @@ export class MonthYearFilterComponent {
   readonly months = MONTHS;
   readonly monthLabel = computed(() => {
     const m = this.month();
-    return m === 'all' ? 'All months' : MONTHS[m].label;
+    return m === 'all' ? 'Month' : MONTHS[m].label;
   });
   readonly yearLabel = computed(() => {
     const y = this.year();
-    return y === 'all' ? 'All years' : String(y);
+    return y === 'all' ? 'Year' : String(y);
   });
 }

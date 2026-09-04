@@ -403,6 +403,12 @@ mat-card.card-pinned {
   white-space: nowrap;
 }
 
+/* Month range (From/To) menus can be long (one item per month), so let their content scroll. */
+.my-filter-menu .mat-mdc-menu-content {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
 /* Accent color swatch grid (used in the Settings dialog). */
 .color-swatches {
   display: grid;

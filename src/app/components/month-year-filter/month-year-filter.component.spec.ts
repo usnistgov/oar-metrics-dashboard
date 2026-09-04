@@ -18,9 +18,9 @@ describe('MonthYearFilterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('defaults to the "All months" / "All years" labels', () => {
-    expect(component.monthLabel()).toBe('All months');
-    expect(component.yearLabel()).toBe('All years');
+  it('defaults to the "Month" / "Year" labels', () => {
+    expect(component.monthLabel()).toBe('Month');
+    expect(component.yearLabel()).toBe('Year');
   });
 
   it('reflects a selected month and year in the labels', () => {

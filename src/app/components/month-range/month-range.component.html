@@ -17,10 +17,7 @@
   </div>
 
   <mat-menu #fromMenu="matMenu" class="app-menu my-filter-menu">
-    <button mat-menu-item (click)="fromChange.emit(null)">
-      <mat-icon>{{ from() === null ? 'check' : '' }}</mat-icon><span>Earliest</span>
-    </button>
-    @for (o of options(); track o.value) {
+    @for (o of fromOptions(); track o.value) {
       <button mat-menu-item (click)="fromChange.emit(o.value)">
         <mat-icon>{{ from() === o.value ? 'check' : '' }}</mat-icon><span>{{ o.label }}</span>
       </button>
@@ -28,10 +25,7 @@
   </mat-menu>
 
   <mat-menu #toMenu="matMenu" class="app-menu my-filter-menu">
-    <button mat-menu-item (click)="toChange.emit(null)">
-      <mat-icon>{{ to() === null ? 'check' : '' }}</mat-icon><span>Latest</span>
-    </button>
-    @for (o of options(); track o.value) {
+    @for (o of toOptions(); track o.value) {
       <button mat-menu-item (click)="toChange.emit(o.value)">
         <mat-icon>{{ to() === o.value ? 'check' : '' }}</mat-icon><span>{{ o.label }}</span>
       </button>
