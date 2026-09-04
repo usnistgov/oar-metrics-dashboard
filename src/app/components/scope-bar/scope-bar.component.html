@@ -1,14 +1,4 @@
 <div class="scope-bar">
-  <nav class="crumbs" aria-label="Breadcrumb">
-    <a routerLink="/">Home</a>
-    <mat-icon>chevron_right</mat-icon>
-    <a routerLink="/collections">Collections</a>
-    @if (activeTitle()) {
-      <mat-icon>chevron_right</mat-icon>
-      <span class="crumb-current">{{ activeTitle() }}</span>
-    }
-  </nav>
-
   <div class="scope-row">
     <!-- Scope selector: shows the active collection, opens a menu to switch -->
     <button type="button" class="scope-selector" [matMenuTriggerFor]="collMenu"
