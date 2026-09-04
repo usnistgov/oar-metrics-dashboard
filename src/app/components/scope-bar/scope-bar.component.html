@@ -31,9 +31,16 @@
 
     <span class="spacer"></span>
 
-    <a routerLink="/collections" class="scope-all" matTooltip="Back to all collections">
-      <mat-icon>grid_view</mat-icon>
-      <span>All collections</span>
-    </a>
+    <div class="scope-actions">
+      <a [href]="collectionUrl()" target="_blank" rel="noopener"
+         class="scope-btn scope-btn-primary" matTooltip="Open this collection on the data repository">
+        <mat-icon>open_in_new</mat-icon>
+        <span>View collection</span>
+      </a>
+      <a routerLink="/collections" class="scope-btn" matTooltip="Browse all collections">
+        <mat-icon>grid_view</mat-icon>
+        <span>All collections</span>
+      </a>
+    </div>
   </div>
 </div>

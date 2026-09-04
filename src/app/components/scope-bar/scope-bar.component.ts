@@ -28,6 +28,12 @@ export class ScopeBarComponent {
   readonly activeTitle = computed(() => this.scope.activeMembership()?.title ?? '');
   readonly activeId = computed(() => this.scope.activeMembership()?.id ?? null);
 
+  /** Public landing page for the active collection on the data repository. */
+  readonly collectionUrl = computed(() => {
+    const id = this.scope.activeMembership()?.id;
+    return id ? `https://data.nist.gov/od/id/${id}` : '';
+  });
+
   select(c: CollectionMembership): void {
     if (c?.id) this.router.navigate(['/collections', collectionSlug(c.id)]);
   }
