@@ -110,10 +110,7 @@
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--color-text);
-  max-width: 340px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .scope-selector-caret {
@@ -169,6 +166,8 @@
 @media (max-width: 640px) {
   .scope-selector-name {
     max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .scope-all span {
     display: none;
