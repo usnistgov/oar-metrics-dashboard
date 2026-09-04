@@ -30,10 +30,11 @@
 }
 
 .brand-divider {
-  width: 1px;
+  width: 3px;
   align-self: center;
   height: 44px;
-  background: rgba(255, 255, 255, 0.26);
+  border-radius: 999px;
+  background: var(--color-accent);
 }
 
 .brand-sub {
