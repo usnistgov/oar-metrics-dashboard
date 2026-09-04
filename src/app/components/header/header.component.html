@@ -1,11 +1,16 @@
 <mat-toolbar class="flex items-center gap-4">
-  <img src="nistlogowhite.png" alt="NIST logo" class="h-9 w-auto" />
-  <div class="flex flex-col leading-tight">
-    <span class="text-lg font-semibold">Public Data Repository</span>
-    <span class="text-sm opacity-80">Data Usage Metrics</span>
-  </div>
+  <!-- Co-brand lockup: official NIST logo + a divider + this dashboard's name -->
+  <a routerLink="/" class="brand" aria-label="Public Data Repository - Data Usage Metrics home">
+    <img src="nist-brand-white.svg" alt="National Institute of Standards and Technology"
+         class="brand-logo" />
+    <span class="brand-divider" aria-hidden="true"></span>
+    <span class="brand-sub">
+      <span class="brand-sub-title">Public Data Repository</span>
+      <span class="brand-sub-desc">Data Usage Metrics</span>
+    </span>
+  </a>
 
-  <nav class="header-nav hidden sm:flex items-center gap-1 ml-2">
+  <nav class="header-nav hidden md:flex items-center gap-1 ml-2">
     <a mat-button routerLink="/" routerLinkActive="nav-active"
        [routerLinkActiveOptions]="{ exact: true }">All Metrics</a>
     <a mat-button routerLink="/collections" routerLinkActive="nav-active">Collections</a>
@@ -14,7 +19,7 @@
   <span class="flex-1"></span>
 
   @if (metrics.lastUpdated(); as updated) {
-    <span class="hidden md:inline text-xs opacity-80">Updated {{ updated | date: 'shortTime' }} ({{ relativeUpdated() }})</span>
+    <span class="hidden lg:inline text-xs opacity-80">Updated {{ updated | date: 'shortTime' }} ({{ relativeUpdated() }})</span>
   }
   <a mat-button routerLink="/guide" class="nav-guide-link" aria-label="Open the dashboard guide"
      matTooltip="How to use this dashboard">

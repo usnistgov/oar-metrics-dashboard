@@ -1,3 +1,52 @@
+/* Co-brand lockup: NIST logo + divider + dashboard sub-brand */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.brand-logo {
+  height: 38px;
+  width: auto;
+  display: block;
+}
+
+.brand-divider {
+  width: 1px;
+  align-self: stretch;
+  min-height: 34px;
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.brand-sub {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  color: #fff;
+}
+
+.brand-sub-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.brand-sub-desc {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+/* On small screens, drop the sub-brand so the full agency logo still fits. */
+@media (max-width: 767px) {
+  .brand-divider,
+  .brand-sub {
+    display: none;
+  }
+  .brand-logo {
+    height: 30px;
+  }
+}
+
 .header-nav a {
   color: #fff;
   font-weight: 500;
