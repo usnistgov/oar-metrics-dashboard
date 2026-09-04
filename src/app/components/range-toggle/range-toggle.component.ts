@@ -30,7 +30,8 @@ export type RangeKey = 'l12' | 'l24' | 'all';
   styleUrl: './range-toggle.component.css',
 })
 export class RangeToggleComponent {
-  readonly value = input<RangeKey>('all');
+  // Accepts any string so a custom (non-preset) range highlights none of the options.
+  readonly value = input<string>('all');
   readonly valueChange = output<RangeKey>();
 
   readonly options = [

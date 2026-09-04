@@ -5,6 +5,7 @@
     <app-month-range [options]="options()" [from]="from()" [to]="to()"
                      (fromChange)="setFrom($event)" (toChange)="setTo($event)" />
     <button mat-button class="tonal-btn" (click)="resetFilter()">Reset</button>
+    <app-range-toggle style="margin-left:auto" [value]="activePreset()" (valueChange)="setRange($event)" />
   </div>
 
   @if (loading()) { <div class="card-spinner"><mat-spinner diameter="40"></mat-spinner></div> }

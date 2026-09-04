@@ -90,3 +90,24 @@ export function filterByMonthRange(
     return true;
   });
 }
+
+/** Preset window keys shared with the range toggle (last 12 / 24 months / all). */
+export type RangePreset = 'l12' | 'l24' | 'all';
+
+/** The [from, to] month keys for a preset window over the given options (oldest-first). */
+export function presetRange(options: MonthOption[], key: RangePreset): { from: string; to: string } {
+  if (!options.length) return { from: '', to: '' };
+  const to = options[options.length - 1].value;
+  if (key === 'all') return { from: options[0].value, to };
+  const n = key === 'l12' ? 12 : 24;
+  return { from: options[Math.max(0, options.length - n)].value, to };
+}
+
+/** Which preset the current from/to matches (for highlighting the toggle), or '' when custom. */
+export function matchPreset(options: MonthOption[], from: string, to: string): RangePreset | '' {
+  if (!options.length || to !== options[options.length - 1].value) return '';
+  if (from === presetRange(options, 'all').from) return 'all';
+  if (from === presetRange(options, 'l12').from) return 'l12';
+  if (from === presetRange(options, 'l24').from) return 'l24';
+  return '';
+}

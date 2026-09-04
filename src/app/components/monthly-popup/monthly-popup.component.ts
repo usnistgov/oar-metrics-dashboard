@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, ElementRef, viewChild, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, ElementRef, computed, viewChild, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import { FormsModule } from '@angular/forms';
@@ -9,8 +9,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MetricsService } from '../../services/metrics.service';
 import { RepoMetric } from '../../models/metrics.models';
 import { barChartOptions, barDataset } from '../../chart-theme';
-import { MonthOption, filterByMonthRange, monthYearOptions } from '../../month-filter';
+import { MonthOption, filterByMonthRange, matchPreset, monthYearOptions, presetRange } from '../../month-filter';
 import { MonthRangeComponent } from '../month-range/month-range.component';
+import { RangeToggleComponent, RangeKey } from '../range-toggle/range-toggle.component';
 
 Chart.register(...registerables);
 
@@ -18,7 +19,7 @@ Chart.register(...registerables);
 @Component({
   selector: 'app-monthly-popup',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule, MatButtonModule, MatProgressSpinnerModule, MonthRangeComponent],
+  imports: [CommonModule, FormsModule, MatDialogModule, MatButtonModule, MatProgressSpinnerModule, MonthRangeComponent, RangeToggleComponent],
   templateUrl: './monthly-popup.component.html',
   styleUrl: './monthly-popup.component.css'
 })
@@ -66,6 +67,15 @@ export class MonthlyPopupComponent implements OnInit {
     const opts = this.options();
     this.from.set(opts[0]?.value ?? '');
     this.to.set(opts[opts.length - 1]?.value ?? '');
+    this.applyFilter();
+  }
+
+  // Preset windows set the From/To for you; the toggle highlights only when the range matches one.
+  readonly activePreset = computed(() => matchPreset(this.options(), this.from(), this.to()));
+  setRange(key: RangeKey) {
+    const r = presetRange(this.options(), key);
+    this.from.set(r.from);
+    this.to.set(r.to);
     this.applyFilter();
   }
 
