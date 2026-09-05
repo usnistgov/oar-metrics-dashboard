@@ -409,6 +409,12 @@ mat-card.card-pinned {
   overflow-y: auto;
 }
 
+/* Keep CDK overlays (tooltips, menus, dialogs) above the sticky header (z-index 1300) so they are
+   never clipped behind it, regardless of which side they open on. */
+.cdk-overlay-container {
+  z-index: 1400 !important;
+}
+
 /* Accent color swatch grid (used in the Settings dialog). */
 .color-swatches {
   display: grid;
