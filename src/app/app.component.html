@@ -4,7 +4,7 @@
 
 <!-- Routed page (dashboard / guide): blurred + non-interactive until the base data is ready, but the
      blur only applies on the dashboard (the guide reads without waiting for metrics). -->
-<div class="app-shell" [class.app-loading]="!metrics.ready() && onDashboard()">
+<div class="app-shell" [class.app-loading]="metrics.refreshing() || (!metrics.ready() && onDashboard())">
   <router-outlet></router-outlet>
 </div>
 
@@ -17,9 +17,12 @@
   </button>
 </div> -->
 
-<!-- Initial load screen: top progress bar + a centered panel over a dimmed backdrop (dashboard only). -->
-<div class="loading-overlay" [class.is-hidden]="metrics.ready() || !onDashboard()"
-     role="status" aria-live="polite" [attr.aria-hidden]="metrics.ready() || !onDashboard()">
+<!-- Initial load screen: top progress bar + a centered panel over a dimmed backdrop. Shown on the
+     dashboard during first load, and on ANY route while a manual refresh is in flight (so the
+     Refresh button gives feedback even on the Collections pages). -->
+<div class="loading-overlay" [class.is-hidden]="!metrics.refreshing() && (metrics.ready() || !onDashboard())"
+     role="status" aria-live="polite"
+     [attr.aria-hidden]="!metrics.refreshing() && (metrics.ready() || !onDashboard())">
   <mat-progress-bar mode="indeterminate" class="loading-bar"></mat-progress-bar>
   <div class="loading-panel">
     <mat-spinner [diameter]="46" [strokeWidth]="4"></mat-spinner>
