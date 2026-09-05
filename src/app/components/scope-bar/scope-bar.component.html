@@ -2,7 +2,7 @@
   <div class="scope-row">
     <!-- Left: back to all collections -->
     <a routerLink="/collections" class="scope-btn" matTooltip="Browse all collections">
-      <mat-icon>grid_view</mat-icon>
+      <mat-icon>reply</mat-icon>
       <span>All collections</span>
     </a>
 
@@ -11,7 +11,7 @@
     <!-- Center: scope selector - shows the active collection, opens a menu to switch -->
     <button type="button" class="scope-selector" [matMenuTriggerFor]="collMenu"
             aria-label="Switch collection" matTooltip="Switch collection">
-      <span class="scope-selector-icon"><mat-icon>collections_bookmark</mat-icon></span>
+      <span class="scope-selector-icon"><mat-icon>dataset</mat-icon></span>
       <span class="scope-selector-text">
         <span class="scope-selector-label">Viewing collection</span>
         <span class="scope-selector-name">
@@ -31,7 +31,7 @@
     <mat-menu #collMenu="matMenu" class="app-menu scope-menu">
       @for (c of scope.collections(); track c.id) {
         <button mat-menu-item (click)="select(c)" [class.is-active]="c.id === activeId()">
-          <mat-icon>{{ c.id === activeId() ? 'check_circle' : 'collections_bookmark' }}</mat-icon>
+          <mat-icon>{{ c.id === activeId() ? 'check_circle' : 'dataset' }}</mat-icon>
           <span>{{ c.title }}</span>
         </button>
       }
