@@ -27,6 +27,10 @@
   color: var(--color-muted);
 }
 
+.kpi-label-text {
+  color: var(--color-accent-strong);
+}
+
 .kpi-info {
   display: inline-grid;
   place-items: center;
