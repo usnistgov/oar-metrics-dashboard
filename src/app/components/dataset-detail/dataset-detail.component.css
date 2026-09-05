@@ -110,19 +110,22 @@
   gap: 0.4rem;
   width: 100%;
   margin-top: 0.85rem;
-  padding: 0.55rem;
+  padding: 0.6rem;
+  border: none;
   border-radius: 8px;
-  font-size: 0.83rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 700;
   text-decoration: none;
-  color: var(--color-accent-strong);
-  background: transparent;
-  border: 1px solid color-mix(in srgb, var(--color-accent) 40%, var(--color-line));
-  transition: background 0.16s ease, border-color 0.16s ease;
+  color: var(--color-on-accent, #fff);
+  background: var(--color-accent);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-accent) 32%, transparent);
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease;
 }
 .detail-metrics-link:hover {
-  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
-  border-color: var(--color-accent);
+  background: var(--color-accent-strong, var(--color-accent));
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--color-accent) 40%, transparent);
 }
 .detail-metrics-link mat-icon {
   font-size: 17px;
@@ -181,17 +184,21 @@
   justify-content: center;
   gap: 0.4rem;
   width: 100%;
-  padding: 0.6rem;
+  padding: 0.55rem;
   border-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 0.83rem;
   font-weight: 600;
   text-decoration: none;
-  color: var(--color-on-accent);
-  background: var(--color-accent);
-  transition: background 0.16s ease;
+  color: var(--color-accent-strong);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 40%, var(--color-line));
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease;
 }
 .detail-view:hover {
-  background: var(--color-accent-strong);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  border-color: var(--color-accent);
 }
 .detail-view mat-icon {
   font-size: 18px;
