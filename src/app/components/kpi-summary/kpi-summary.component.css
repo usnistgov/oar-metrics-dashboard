@@ -112,7 +112,7 @@
 }
 /* Typography on the text only, keeping `text-transform` off the icon so its ligature isn't broken. */
 .kpi-label-text {
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
