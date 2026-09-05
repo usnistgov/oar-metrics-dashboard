@@ -131,6 +131,29 @@
   flex: none;
 }
 
+.ts-note-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ts-note-body p {
+  margin: 0;
+}
+
+.ts-note-tag {
+  align-self: flex-start;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-accent-strong);
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+}
+
 .ts-note strong {
   color: var(--color-text);
 }
