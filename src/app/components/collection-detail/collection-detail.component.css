@@ -97,13 +97,44 @@
   color: var(--color-text);
 }
 
-.detail-metrics-link {
+/* Primary in-app action: go to the collection's scoped Metrics view. */
+.detail-metrics-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
   width: 100%;
   margin-top: 0.85rem;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--color-on-accent, #fff);
+  background: var(--color-accent);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-accent) 32%, transparent);
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.detail-metrics-btn:hover {
+  background: var(--color-accent-strong, var(--color-accent));
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--color-accent) 40%, transparent);
+}
+.detail-metrics-btn mat-icon {
+  font-size: 17px;
+  width: 17px;
+  height: 17px;
+}
+
+.detail-metrics-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  margin-top: 0.5rem;
   padding: 0.55rem;
   border-radius: 8px;
   font-size: 0.83rem;

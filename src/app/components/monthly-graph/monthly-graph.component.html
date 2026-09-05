@@ -3,10 +3,7 @@
   <app-month-year-filter [years]="years()" [month]="selectedMonth()" [year]="selectedYear()"
                          (monthChange)="setMonth($event)" (yearChange)="setYear($event)" />
   <button mat-button class="tonal-btn" (click)="resetFilter()">Reset</button>
-  <app-range-toggle [value]="range()" (valueChange)="setRange($event)" />
-  <button mat-icon-button (click)="openExpanded()" aria-label="Expand chart" matTooltip="Expand">
-    <mat-icon fontSet="material-symbols-outlined">pan_zoom</mat-icon>
-  </button>
+  <app-range-toggle style="margin-left:auto" [value]="range()" (valueChange)="setRange($event)" />
 </div>
 
 <!-- Chart -->

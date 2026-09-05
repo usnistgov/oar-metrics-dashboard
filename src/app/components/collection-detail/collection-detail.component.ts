@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -12,6 +13,7 @@ import { CollectionDetail, DataSetMetric, EnrichedDataSetMetric } from '../../mo
 import { gini } from '../../download-stats';
 import { PopularSort } from '../most-popular/most-popular.component';
 import { SortByComponent } from '../sort-by/sort-by.component';
+import { collectionSlug } from '../../scope-stats';
 
 /** A member dataset row for the list; `pending` is true until its title resolves (shows a skeleton). */
 interface MemberRow extends EnrichedDataSetMetric {
@@ -39,6 +41,7 @@ interface MemberRow extends EnrichedDataSetMetric {
 })
 export class CollectionDetailComponent {
   private ref = inject(MatDialogRef<CollectionDetailComponent>);
+  private router = inject(Router);
   private metrics = inject(MetricsService);
   private destroyRef = inject(DestroyRef);
   readonly watch = inject(WatchlistService);
@@ -172,6 +175,12 @@ export class CollectionDetailComponent {
   /** The collection's own landing page on the PDR. */
   collectionUrl(): string {
     return `https://data.nist.gov/od/id/${this.data.id}`;
+  }
+
+  /** Go to this collection's scoped Metrics view, closing the drawer. */
+  viewMetrics(): void {
+    this.router.navigate(['/collections', collectionSlug(this.data.id)]);
+    this.ref.close();
   }
 
   close(): void {

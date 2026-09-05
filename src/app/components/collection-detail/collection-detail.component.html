@@ -34,6 +34,11 @@
       concentration (Gini) <strong>{{ giniLabel() }}</strong>
     </p>
 
+    <button type="button" class="detail-metrics-btn" (click)="viewMetrics()">
+      <mat-icon>insights</mat-icon>
+      <span>View collection metrics</span>
+    </button>
+
     <a class="detail-metrics-link" [href]="collectionUrl()" target="_blank" rel="noopener">
       <mat-icon>open_in_new</mat-icon>
       <span>View collection on data.nist.gov</span>

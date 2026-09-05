@@ -117,6 +117,82 @@
         </mat-card>
       }
 
+      <!-- Time-series charts: expand button lives in the header, next to drag + menu -->
+      @case ('downloadSizes') {
+        <mat-card appearance="outlined" cdkDrag [cdkDragDisabled]="layout.isPinned(id)"
+                  [class.card-pinned]="layout.isPinned(id)">
+          <mat-card-header class="card-header-actions">
+            <mat-card-title>Monthly Download Sizes</mat-card-title>
+            <div class="card-tools">
+              <button mat-icon-button (click)="mg.openExpanded()" aria-label="Expand chart" matTooltip="Expand">
+                <mat-icon fontSet="material-symbols-outlined">pan_zoom</mat-icon>
+              </button>
+              @if (layout.isPinned(id)) {
+                <button mat-icon-button class="pin-toggle pinned" (click)="layout.togglePin(id)" aria-label="Unpin card" matTooltip="Unpin (keep at top)"><mat-icon>push_pin</mat-icon></button>
+              } @else {
+                <button mat-icon-button cdkDragHandle class="drag-handle" aria-label="Drag to reorder" matTooltip="Drag to reorder"><mat-icon>drag_indicator</mat-icon></button>
+              }
+              <button mat-icon-button [matMenuTriggerFor]="dsMenu" aria-label="Card actions" matTooltip="Actions"><mat-icon>more_vert</mat-icon></button>
+            </div>
+            <mat-menu #dsMenu="matMenu" class="app-menu">
+              <button mat-menu-item (click)="layout.togglePin(id)"><mat-icon>push_pin</mat-icon><span>{{ layout.isPinned(id) ? 'Unpin card' : 'Pin to top' }}</span></button>
+              <button mat-menu-item (click)="layout.toggle(id)"><mat-icon>visibility_off</mat-icon><span>Hide card</span></button>
+            </mat-menu>
+          </mat-card-header>
+          <mat-card-content><app-monthly-graph #mg /></mat-card-content>
+        </mat-card>
+      }
+
+      @case ('monthlyDownloads') {
+        <mat-card appearance="outlined" cdkDrag [cdkDragDisabled]="layout.isPinned(id)"
+                  [class.card-pinned]="layout.isPinned(id)">
+          <mat-card-header class="card-header-actions">
+            <mat-card-title>Monthly Number of Downloads</mat-card-title>
+            <div class="card-tools">
+              <button mat-icon-button (click)="md.openExpanded()" aria-label="Expand chart" matTooltip="Expand">
+                <mat-icon fontSet="material-symbols-outlined">pan_zoom</mat-icon>
+              </button>
+              @if (layout.isPinned(id)) {
+                <button mat-icon-button class="pin-toggle pinned" (click)="layout.togglePin(id)" aria-label="Unpin card" matTooltip="Unpin (keep at top)"><mat-icon>push_pin</mat-icon></button>
+              } @else {
+                <button mat-icon-button cdkDragHandle class="drag-handle" aria-label="Drag to reorder" matTooltip="Drag to reorder"><mat-icon>drag_indicator</mat-icon></button>
+              }
+              <button mat-icon-button [matMenuTriggerFor]="mdMenu" aria-label="Card actions" matTooltip="Actions"><mat-icon>more_vert</mat-icon></button>
+            </div>
+            <mat-menu #mdMenu="matMenu" class="app-menu">
+              <button mat-menu-item (click)="layout.togglePin(id)"><mat-icon>push_pin</mat-icon><span>{{ layout.isPinned(id) ? 'Unpin card' : 'Pin to top' }}</span></button>
+              <button mat-menu-item (click)="layout.toggle(id)"><mat-icon>visibility_off</mat-icon><span>Hide card</span></button>
+            </mat-menu>
+          </mat-card-header>
+          <mat-card-content><app-monthly-downloads #md /></mat-card-content>
+        </mat-card>
+      }
+
+      @case ('monthlyUsers') {
+        <mat-card appearance="outlined" cdkDrag [cdkDragDisabled]="layout.isPinned(id)"
+                  [class.card-pinned]="layout.isPinned(id)">
+          <mat-card-header class="card-header-actions">
+            <mat-card-title>Unique Users per Month</mat-card-title>
+            <div class="card-tools">
+              <button mat-icon-button (click)="mu.openExpanded()" aria-label="Expand chart" matTooltip="Expand">
+                <mat-icon fontSet="material-symbols-outlined">pan_zoom</mat-icon>
+              </button>
+              @if (layout.isPinned(id)) {
+                <button mat-icon-button class="pin-toggle pinned" (click)="layout.togglePin(id)" aria-label="Unpin card" matTooltip="Unpin (keep at top)"><mat-icon>push_pin</mat-icon></button>
+              } @else {
+                <button mat-icon-button cdkDragHandle class="drag-handle" aria-label="Drag to reorder" matTooltip="Drag to reorder"><mat-icon>drag_indicator</mat-icon></button>
+              }
+              <button mat-icon-button [matMenuTriggerFor]="muMenu" aria-label="Card actions" matTooltip="Actions"><mat-icon>more_vert</mat-icon></button>
+            </div>
+            <mat-menu #muMenu="matMenu" class="app-menu">
+              <button mat-menu-item (click)="layout.togglePin(id)"><mat-icon>push_pin</mat-icon><span>{{ layout.isPinned(id) ? 'Unpin card' : 'Pin to top' }}</span></button>
+              <button mat-menu-item (click)="layout.toggle(id)"><mat-icon>visibility_off</mat-icon><span>Hide card</span></button>
+            </mat-menu>
+          </mat-card-header>
+          <mat-card-content><app-monthly-users #mu /></mat-card-content>
+        </mat-card>
+      }
+
       <!-- Every other card: shared shell with title + drag handle + Hide menu -->
       @default {
         <mat-card appearance="outlined" cdkDrag [cdkDragDisabled]="layout.isPinned(id)"
@@ -151,10 +227,7 @@
           </mat-card-header>
           <mat-card-content>
             @switch (id) {
-              @case ('downloadSizes') { <app-monthly-graph /> }
               @case ('latestDownloads') { <app-latest-downloads /> }
-              @case ('monthlyDownloads') { <app-monthly-downloads /> }
-              @case ('monthlyUsers') { <app-monthly-users /> }
               @case ('datacite') { <app-datacite-test /> }
               @case ('engagement') { <app-engagement /> }
               @case ('seasonality') { <app-seasonality /> }
