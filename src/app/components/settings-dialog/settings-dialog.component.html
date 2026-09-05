@@ -36,8 +36,18 @@
       <div class="settings-group-head">
         <h3 class="settings-label">Widgets</h3>
         <div class="settings-actions">
-          <button type="button" class="settings-reset" (click)="layout.resetLayout()">Reset layout</button>
-          <button type="button" class="settings-reset" (click)="layout.reset()">Show all</button>
+          <button type="button" class="settings-reset" (click)="layout.restoreDefaults()"
+                  matTooltip="Restore the recommended setup: default card order, which cards show, and pins">
+            Default layout
+          </button>
+          <button type="button" class="settings-reset" (click)="layout.resetLayout()"
+                  matTooltip="Put the cards back in their default order (keeps which cards are shown or hidden)">
+            Reset layout
+          </button>
+          <button type="button" class="settings-reset" (click)="layout.reset()"
+                  matTooltip="Unhide every card so they all appear (keeps the current order)">
+            Show all
+          </button>
         </div>
       </div>
       <p class="settings-hint">Choose which cards appear on the dashboard. Drag cards by their handle to reorder.</p>
