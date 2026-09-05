@@ -195,15 +195,18 @@
 
 /* Inline icons in prose */
 .ic {
-  font-size: 1.1em;
-  width: 1.1em;
-  height: 1.1em;
-  vertical-align: -0.22em;
+  font-size: 1.15em;
+  width: 1.15em;
+  height: 1.15em;
+  line-height: 1.15em;
+  margin: 0 0.12em;
+  vertical-align: -0.28em;
   color: var(--color-accent-strong);
 }
 .guide-tips .ic {
   flex: 0 0 auto;
-  margin-top: 0.15rem;
+  margin: 0.15rem 0 0;
+  vertical-align: baseline;
 }
 
 /* Month-over-month up chip sample */

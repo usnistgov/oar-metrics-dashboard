@@ -59,8 +59,8 @@
       </li>
       <li>
         <strong>Refresh on demand.</strong> Want the very latest right now? Click the refresh
-        <mat-icon class="ic">refresh</mat-icon> button in the top bar (or the round refresh button near
-        the headline numbers). The dashboard reloads everything from scratch.
+        <mat-icon class="ic">refresh</mat-icon> button in the top bar. The dashboard reloads everything
+        from scratch.
       </li>
       <li>
         <strong>All-time by default.</strong> Unless a card says otherwise, the totals cover the entire
@@ -73,7 +73,7 @@
   <section id="kpis" class="guide-section">
     <h2>The headline numbers (top strip)</h2>
     <p>
-      The row of tiles across the top gives you the big picture in five numbers. Each tile has a small
+      The row of tiles across the top gives you the big picture at a glance. Each tile has a small
       <mat-icon class="ic">info_outline</mat-icon> you can hover for a reminder of what it means.
     </p>
     <dl class="guide-defs">
@@ -86,6 +86,10 @@
         passes 1,000 TB. This is about the <em>size</em> of what people took, not the number of
         downloads.
       </dd>
+
+      <dt>This month</dt>
+      <dd>The current month so far (month-to-date): how many downloads and how much data volume it has
+        seen. The month is still in progress, so these keep growing.</dd>
 
       <dt>Most recent download</dt>
       <dd>When the newest download happened, anywhere in the repository. A pulse-check that data is
@@ -150,7 +154,7 @@
     </div>
 
     <div class="guide-card-def">
-      <h3>Popular Science Domains</h3>
+      <h3>Science Domains</h3>
       <p>Which fields of science the most-downloaded data belongs to (materials, chemistry, physics,
         and so on). It answers “what kind of data are people actually after?”</p>
     </div>
@@ -208,16 +212,22 @@
       thing.
     </p>
     <p>
-      The <strong>Downloads by Collection</strong> card shows how much traffic each collection draws.
-      Open one to see:
+      There are two ways to explore them. The <strong>Downloads by Collection</strong> card on the main
+      dashboard shows how much traffic each collection draws; click a bar or a row to jump straight into
+      that collection. Or open the <strong>Collections</strong> <mat-icon class="ic">dataset</mat-icon>
+      view from the top navigation to browse them all as cards and pick one.
     </p>
+    <p>Open a collection to see its own metrics page, scoped to just that group:</p>
     <ul class="guide-list">
-      <li>its total downloads and what <strong>share of the whole repository</strong> that represents;</li>
-      <li>how many datasets it contains, and how much data has been downloaded from it;</li>
-      <li>a note on <strong>concentration</strong>: whether usage is spread evenly or driven by one
-        standout dataset;</li>
+      <li>headline tiles for its total downloads, user sessions, data volume, and number of datasets;</li>
+      <li>how the number of active datasets in the collection has grown over time;</li>
+      <li>its most-accessed datasets and the science domains they cover;</li>
       <li>the member datasets themselves, ranked, which you can sort and open just like anywhere else.</li>
     </ul>
+    <p class="guide-note">
+      You can switch between collections from the selector at the top of the page, or head back to the
+      full collections list at any time.
+    </p>
   </section>
 
   <!-- Customise -->
@@ -238,7 +248,7 @@
       <li>
         <strong>Hide what you don't need.</strong> That same menu has <em>Hide card</em>
         <mat-icon class="ic">visibility_off</mat-icon>. To bring cards back, open
-        <strong>Settings</strong> <mat-icon class="ic">settings</mat-icon> (the cog, bottom-right) and
+        <strong>Settings</strong> <mat-icon class="ic">settings</mat-icon> (the cog in the top bar) and
         tick the ones you want.
       </li>
       <li>
@@ -289,9 +299,9 @@
       <li><strong>View detailed metrics</strong>: its full metrics page on the PDR.</li>
     </ul>
     <p>
-      Many charts can also be <mat-icon class="ic">open_in_full</mat-icon> expanded for a closer look,
-      where you can narrow the time range (last 12 months, last 24 months, or all) or focus on a
-      particular month or year.
+      Many charts can also be <mat-icon class="ic">open_in_full</mat-icon> expanded for a closer look.
+      On the monthly charts you can narrow the time range with the quick presets (last 12 months, last
+      24 months, or all), or set an exact <strong>From</strong> and <strong>To</strong> month.
     </p>
   </section>
 
@@ -299,9 +309,9 @@
   <section id="appearance" class="guide-section">
     <h2>Dark mode &amp; colour</h2>
     <p>
-      Open <strong>Settings</strong> <mat-icon class="ic">settings</mat-icon> (the cog in the
-      bottom-right corner) to switch on <strong>Dark mode</strong> or pick an <strong>accent
-      colour</strong>, including a custom one. The whole dashboard, charts and all, follows your
+      Open <strong>Settings</strong> <mat-icon class="ic">settings</mat-icon> (the cog in the top bar)
+      to switch on <strong>Dark mode</strong> or pick an <strong>accent colour</strong>, including a
+      custom one. The whole dashboard, charts and all, follows your
       choice, and it's remembered for next time.
     </p>
   </section>
