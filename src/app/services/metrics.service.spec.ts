@@ -401,7 +401,7 @@ describe('MetricsService records and collections', () => {
     // Collection discovery by @type.
     http
       .expectOne((r) => r.url.includes('rmm/records') && r.url.includes('type='))
-      .flush({ ResultData: [{ '@id': 'col1', title: 'One', ediid: 'ediidcol1' }] });
+      .flush({ ResultData: [{ '@id': 'col1', title: 'One Collection', ediid: 'ediidcol1' }] });
     // Members of col1.
     http
       .expectOne((r) => r.url.includes('isPartOf'))
@@ -411,7 +411,7 @@ describe('MetricsService records and collections', () => {
     expect(cols?.[0]).toEqual(
       expect.objectContaining({
         id: 'col1',
-        title: 'One',
+        title: 'One Collection', // normalized: trailing "Collection" is not doubled
         memberCount: 2,
         membersWithUsage: 2,
         downloads: 150,

@@ -359,7 +359,12 @@ export class MetricsService {
       timeout(this.REQUEST_TIMEOUT_MS),
       map((r) =>
         (r?.ResultData ?? [])
-          .map((rec) => ({ id: rec['@id'] || rec.ediid || '', title: (rec.title ?? '').trim() }))
+          // Normalize titles: the catalog is inconsistent (some end in "Collection", some don't),
+          // so strip any trailing "Collection" and re-append it for a uniform "... Collection" label.
+          .map((rec) => ({
+            id: rec['@id'] || rec.ediid || '',
+            title: `${(rec.title ?? '').trim().replace(/\s+collection\s*$/i, '')} Collection`.trim(),
+          }))
           .filter((c) => c.id),
       ),
       switchMap((defs) =>
