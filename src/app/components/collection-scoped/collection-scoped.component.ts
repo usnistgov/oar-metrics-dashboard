@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ScopeBarComponent } from '../scope-bar/scope-bar.component';
 import { MostPopularComponent } from '../most-popular/most-popular.component';
@@ -25,6 +26,7 @@ import { formatCount, formatSize } from '../../format';
     RouterLink,
     MatIconModule,
     MatButtonModule,
+    MatTooltipModule,
     MatProgressSpinnerModule,
     ScopeBarComponent,
     MostPopularComponent,
