@@ -27,6 +27,7 @@ export function rollupCollections(
       let size = 0;
       let users = 0;
       let membersWithUsage = 0;
+      let firstLogged: string | null = null;
       for (const ediid of m.members) {
         const d = byEdiid.get(ediid);
         if (!d) continue;
@@ -34,6 +35,9 @@ export function rollupCollections(
         downloads += d.record_download ?? 0;
         size += d.total_size_download ?? 0;
         users += d.number_users ?? 0;
+        // ISO timestamps compare lexically, so string min gives the earliest.
+        const f = d.first_time_logged;
+        if (f && (firstLogged === null || f < firstLogged)) firstLogged = f;
       }
       return {
         id: m.id,
@@ -43,6 +47,7 @@ export function rollupCollections(
         downloads,
         size,
         users,
+        firstLogged,
       };
     })
     .sort((a, b) => b.downloads - a.downloads);
@@ -67,6 +72,7 @@ export function buildCollectionDetail(
   let downloads = 0;
   let size = 0;
   let users = 0;
+  let firstLogged: string | null = null;
   for (const ediid of membership.members) {
     const d = byEdiid.get(ediid);
     if (!d) continue;
@@ -74,6 +80,8 @@ export function buildCollectionDetail(
     downloads += d.record_download ?? 0;
     size += d.total_size_download ?? 0;
     users += d.number_users ?? 0;
+    const f = d.first_time_logged;
+    if (f && (firstLogged === null || f < firstLogged)) firstLogged = f;
   }
 
   return {
@@ -84,6 +92,7 @@ export function buildCollectionDetail(
     downloads,
     size,
     users,
+    firstLogged,
     repoSharePct: repoDownloads ? (downloads / repoDownloads) * 100 : 0,
     members,
   };

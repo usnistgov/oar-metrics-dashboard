@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,7 +17,7 @@ import { collectionSlug } from '../../scope-stats';
 @Component({
   selector: 'app-collections-landing',
   standalone: true,
-  imports: [RouterLink, MatIconModule, CollectionsComponent],
+  imports: [RouterLink, DatePipe, MatIconModule, CollectionsComponent],
   templateUrl: './collections-landing.component.html',
   styleUrl: './collections-landing.component.css',
 })
