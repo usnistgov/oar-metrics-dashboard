@@ -28,6 +28,7 @@
 }
 
 .kpi-label-text {
+  font-weight: 700;
   color: var(--color-accent-strong);
 }
 
