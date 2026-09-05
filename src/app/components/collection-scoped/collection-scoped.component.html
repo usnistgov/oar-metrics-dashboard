@@ -14,22 +14,14 @@
         <div class="kpi">
           <div class="kpi-label">Downloads</div>
           <div class="kpi-value">{{ fmtCount(d.downloads) }}</div>
-          <div class="kpi-sub">
-            {{ fmtPct(sharePct(d.downloads, scope.repo().downloads)) }} of repo
-            @if (scope.rank(); as r) {
-              <span class="dot">·</span> #{{ r.rank }} of {{ r.total }}
-            }
-          </div>
         </div>
         <div class="kpi">
           <div class="kpi-label">User-sessions</div>
           <div class="kpi-value">{{ fmtCount(d.users) }}</div>
-          <div class="kpi-sub">{{ fmtPct(sharePct(d.users, scope.repo().users)) }} of repo</div>
         </div>
         <div class="kpi">
           <div class="kpi-label">Data volume</div>
           <div class="kpi-value">{{ fmtSize(d.size) }}</div>
-          <div class="kpi-sub">{{ fmtPct(sharePct(d.size, scope.repo().size)) }} of repo</div>
         </div>
         <div class="kpi">
           <div class="kpi-label">Datasets</div>

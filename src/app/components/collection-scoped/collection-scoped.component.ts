@@ -10,14 +10,13 @@ import { PopularScienceDomainsComponent } from '../popular-science-domains/popul
 import { CollectionGrowthComponent } from '../collection-growth/collection-growth.component';
 import { SortByComponent } from '../sort-by/sort-by.component';
 import { ScopeService } from '../../services/scope.service';
-import { formatCount, formatPct, formatSize } from '../../format';
-import { sharePct } from '../../scope-stats';
+import { formatCount, formatSize } from '../../format';
 
 /**
  * Collections Metrics scoped view: every figure on this page is scoped to the collection named in the
  * route (`/collections/:id`). Phase 1 shows the totals-based summary (downloads, user-sessions, data
- * volume, dataset count) with share-of-repo and rank; monthly trend charts remain repository-wide
- * until a per-dataset monthly series exists (see the notice + ScopeService docs).
+ * volume, dataset count); monthly trend charts remain repository-wide until a per-dataset monthly
+ * series exists (see the notice + ScopeService docs).
  */
 @Component({
   selector: 'app-collection-scoped',
@@ -42,8 +41,6 @@ export class CollectionScopedComponent {
 
   readonly fmtCount = formatCount;
   readonly fmtSize = formatSize;
-  readonly fmtPct = formatPct;
-  readonly sharePct = sharePct;
 
   constructor() {
     this.route.paramMap
