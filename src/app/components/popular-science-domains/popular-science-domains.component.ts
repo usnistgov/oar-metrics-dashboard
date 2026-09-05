@@ -11,7 +11,7 @@ import { CustomCountDialogComponent } from '../custom-count-dialog/custom-count-
 import { aggregateDomains, sampleTopDatasets } from '../../science-domains';
 
 /**
- * Popular Science Domains card: ranks science domains by how many of the top datasets carry each
+ * Science Domains card: ranks science domains by how many of the top datasets carry each
  * theme/topic tag. It samples the most-downloaded datasets, fetches their metadata, and counts the
  * distinct datasets per domain.
  */
@@ -121,7 +121,7 @@ export class PopularScienceDomainsComponent implements OnInit {
       maxWidth: '95vw',
       autoFocus: 'dialog',   // focus the dialog, not the Close button
       data: {
-        title: 'Popular Science Domains',
+        title: 'Science Domains',
         items: this.mostPopularCategories.map((c, i) => ({
           rank: i + 1,
           title: c.name,
