@@ -285,11 +285,12 @@ main.is-ready > mat-card:nth-child(12) { animation-delay: 0.58s; }
 }
 /* Title with an inline meta (e.g. "As of …") pushed subtly to the right. The compound
    selector + !important beats Material's component-injected title styles. */
-.mat-mdc-card-title.title-with-meta {
+.mat-mdc-card-title .title-with-meta {
   display: flex !important;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  width: 100%;
   min-height: 32px;   /* room for an inline icon button without shifting the title */
 }
 
