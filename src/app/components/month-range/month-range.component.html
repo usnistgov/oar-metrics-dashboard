@@ -2,6 +2,7 @@
   <span class="my-filter-label">Period</span>
   <div class="my-filter-group" role="group" aria-label="Filter by month range">
     <button type="button" class="my-filter-seg" [matMenuTriggerFor]="fromMenu"
+            (menuOpened)="onMenuToggle(true)" (menuClosed)="onMenuToggle(false)"
             aria-label="Range start" matTooltip="From">
       <span class="my-filter-text">{{ fromLabel() }}</span>
       <mat-icon class="my-filter-caret">expand_more</mat-icon>
@@ -10,6 +11,7 @@
       <mat-icon>arrow_forward</mat-icon>
     </span>
     <button type="button" class="my-filter-seg" [matMenuTriggerFor]="toMenu"
+            (menuOpened)="onMenuToggle(true)" (menuClosed)="onMenuToggle(false)"
             aria-label="Range end" matTooltip="To">
       <span class="my-filter-text">{{ toLabel() }}</span>
       <mat-icon class="my-filter-caret">expand_more</mat-icon>

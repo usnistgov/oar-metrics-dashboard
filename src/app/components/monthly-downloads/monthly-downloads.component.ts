@@ -1,5 +1,5 @@
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
-import { Component, DestroyRef, ElementRef, viewChild, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, ElementRef, computed, viewChild, effect, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,25 +14,25 @@ import { ThemeService } from '../../services/theme.service';
 import { RepoMetric } from '../../models/metrics.models';
 import { barChartOptions, barDataset } from '../../chart-theme';
 import { RangeToggleComponent, RangeKey } from '../range-toggle/range-toggle.component';
-import { MonthValue, YearValue, distinctYears, filterByMonthYear } from '../../month-filter';
-import { MonthYearFilterComponent } from '../month-year-filter/month-year-filter.component';
+import { MonthOption, filterByMonthRange, matchPreset, monthYearOptions, presetRange } from '../../month-filter';
+import { MonthRangeComponent } from '../month-range/month-range.component';
 
-Chart.register(...registerables); // Registers all necessary Chart.js components (e.g., bar charts, lines, scales).
+Chart.register(...registerables);
 
 /**
  * Bar chart of successful downloads per month. Reads the shared, cached repo metrics, supports a
- * month/year filter, can open an enlarged copy in a dialog, and re-renders with theme-aware colors
- * when the theme changes.
+ * custom From -> To month range (plus 12M/24M/All presets), can open an enlarged copy in a dialog,
+ * and re-renders with theme-aware colors when the theme changes.
  */
 @Component({
   selector: 'app-monthly-downloads',
-  imports: [CommonModule, FormsModule, MatButtonModule, MatProgressSpinnerModule, MatIconModule, MatTooltipModule, MatDialogModule, RangeToggleComponent, MonthYearFilterComponent],
+  imports: [CommonModule, FormsModule, MatButtonModule, MatProgressSpinnerModule, MatIconModule, MatTooltipModule, MatDialogModule, RangeToggleComponent, MonthRangeComponent],
   templateUrl: './monthly-downloads.component.html',
   styleUrl: './monthly-downloads.component.css'
 })
 export class MonthlyDownloadsComponent implements OnInit {
-  private metrics = inject(MetricsService); // Shared, cached repo metrics.
-  private dialog = inject(MatDialog); // Opens the enlarged chart in a Material dialog.
+  private metrics = inject(MetricsService);
+  private dialog = inject(MatDialog);
   private destroyRef = inject(DestroyRef);
   private theme = inject(ThemeService);
 
@@ -44,84 +44,69 @@ export class MonthlyDownloadsComponent implements OnInit {
     });
   }
   chart: any;
-  chartCanvas = viewChild<ElementRef<HTMLCanvasElement>>('chartCanvas'); // Template ref to the <canvas> this chart renders into.
+  chartCanvas = viewChild<ElementRef<HTMLCanvasElement>>('chartCanvas');
 
-  rawData: RepoMetric[] = []; // Stores the raw, unfiltered data from the shared service.
-  range = signal<RangeKey>('all'); // Visible time window (last 12 / 24 months / all).
+  rawData: RepoMetric[] = [];
   loading = signal(true);
   errorMsg = signal<string | null>(null);
 
-  // Custom month / year selector (no native <select>).
-  readonly years = signal<number[]>([]);
-  readonly selectedMonth = signal<MonthValue>('all');
-  readonly selectedYear = signal<YearValue>('all');
+  // Custom month-year range (From -> To); defaults to the full span. Presets set these for you.
+  readonly options = signal<MonthOption[]>([]);
+  readonly from = signal<string>('');
+  readonly to = signal<string>('');
   readonly emptySelection = signal(false);
+  readonly activePreset = computed(() => matchPreset(this.options(), this.from(), this.to()));
 
   ngOnInit(): void {
     this.metrics.repoMetrics$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => {
       this.rawData = data;
-      this.years.set(distinctYears(data));
+      const opts = monthYearOptions(data);
+      this.options.set(opts);
+      if (opts.length) {
+        this.from.set(opts[0].value);
+        this.to.set(opts[opts.length - 1].value);
+      }
       this.loading.set(false);
       this.errorMsg.set(this.metrics.repoError() && data.length === 0 ? 'Failed to load data.' : null);
       this.applyFilter();
     });
   }
 
-  // Redraw for the selected time window, then the chosen month/year.
+  // Sort chronologically (the API returns newest-first), then keep the selected [from, to] range.
   applyFilter() {
-    const data = filterByMonthYear(
-      this.sliceToRange(this.rawData),
-      this.selectedMonth(),
-      this.selectedYear()
+    const sorted = [...this.rawData].sort(
+      (a, b) => new Date(a.month_year ?? '').getTime() - new Date(b.month_year ?? '').getTime()
     );
+    const data = filterByMonthRange(sorted, this.from(), this.to());
     this.emptySelection.set(data.length === 0 && this.rawData.length > 0);
     this.updateChart(data);
   }
 
-  // Sort chronologically (the API returns newest-first) and keep only the selected window.
-  private sliceToRange(data: RepoMetric[]): RepoMetric[] {
-    const sorted = [...data].sort(
-      (a, b) => new Date(a.month_year ?? '').getTime() - new Date(b.month_year ?? '').getTime()
-    );
-    if (this.range() === 'all') return sorted;
-    return sorted.slice(this.range() === 'l12' ? -12 : -24);
-  }
-
-  // Switch the visible time window and redraw.
+  setFrom(v: string) { this.from.set(v); this.applyFilter(); }
+  setTo(v: string) { this.to.set(v); this.applyFilter(); }
   setRange(key: RangeKey) {
-    this.range.set(key);
+    const r = presetRange(this.options(), key);
+    this.from.set(r.from);
+    this.to.set(r.to);
     this.applyFilter();
   }
-
-  // Update the month / year selection and redraw.
-  setMonth(month: MonthValue) {
-    this.selectedMonth.set(month);
-    this.applyFilter();
-  }
-  setYear(year: YearValue) {
-    this.selectedYear.set(year);
-    this.applyFilter();
-  }
-
-  // Resets the month/year selection and shows the full window again.
   resetFilter() {
-    this.selectedMonth.set('all');
-    this.selectedYear.set('all');
+    const opts = this.options();
+    this.from.set(opts[0]?.value ?? '');
+    this.to.set(opts[opts.length - 1]?.value ?? '');
     this.applyFilter();
   }
 
-  // Opens the enlarged chart in a Material dialog, carrying the current filter state.
   openExpanded() {
     this.dialog.open(MonthlyDownloadsPopupComponent, {
       maxWidth: '95vw',
-      data: { range: this.range(), month: this.selectedMonth(), year: this.selectedYear() },
+      data: { from: this.from(), to: this.to() },
     });
   }
 
-  // Configures and renders the Chart.js bar graph based on the provided data.
   updateChart(data: RepoMetric[]) {
-    const labels = data.map(item => item.month_year || 'Unknown');
-    const values = data.map(item => item.success_download || 0);
+    const labels = data.map((item) => item.month_year || 'Unknown');
+    const values = data.map((item) => item.success_download || 0);
 
     const config: ChartConfiguration<'bar'> = {
       type: 'bar',
@@ -131,10 +116,8 @@ export class MonthlyDownloadsComponent implements OnInit {
 
     const canvas = this.chartCanvas()?.nativeElement;
     if (canvas) {
-      if (this.chart) {
-        this.chart.destroy(); // Destroy any existing Chart.js instance to prevent memory leaks and conflicts.
-      }
-      this.chart = new Chart(canvas, config); // Create a new Chart.js instance on the canvas with the defined configuration.
+      if (this.chart) this.chart.destroy();
+      this.chart = new Chart(canvas, config);
     }
   }
 }

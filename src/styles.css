@@ -221,8 +221,10 @@ body {
     0 8px 24px rgba(16, 24, 40, 0.06) !important;
   transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
 }
-/* Depth on hover: a gentle lift, a deeper shadow, and an accent-tinted border. */
-.mat-mdc-card:hover {
+/* Depth on hover (and while one of the card's dropdowns is open, so it doesn't drop when the mouse
+   moves onto the menu overlay): a gentle lift, a deeper shadow, and an accent-tinted border. */
+.mat-mdc-card:hover,
+.mat-mdc-card.menu-open {
   transform: translateY(-3px);
   border-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-line));
   box-shadow:

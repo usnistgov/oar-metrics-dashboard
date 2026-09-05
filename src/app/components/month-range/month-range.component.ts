@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, ElementRef, computed, inject, input, output } from '@angular/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -18,6 +18,8 @@ import { MonthOption } from '../../month-filter';
   styleUrl: './month-range.component.css',
 })
 export class MonthRangeComponent {
+  private el = inject<ElementRef<HTMLElement>>(ElementRef);
+
   readonly options = input<MonthOption[]>([]);
   readonly from = input<string>('');
   readonly to = input<string>('');
@@ -38,4 +40,14 @@ export class MonthRangeComponent {
 
   readonly fromLabel = computed(() => this.options().find((o) => o.value === this.from())?.label ?? '');
   readonly toLabel = computed(() => this.options().find((o) => o.value === this.to())?.label ?? '');
+
+  /**
+   * While a From/To dropdown is open the mouse sits on the menu overlay (outside the card), so the
+   * card loses :hover. Mirror the hover state onto the ancestor card via a `menu-open` class so the
+   * card keeps its elevated look until the menu closes. No-op when not inside a card (e.g. dialogs).
+   */
+  onMenuToggle(open: boolean): void {
+    this.el.nativeElement.closest('.mat-mdc-card')?.classList.toggle('menu-open', open);
+  }
 }
+

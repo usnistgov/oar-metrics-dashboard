@@ -3,6 +3,8 @@ import { Component, DestroyRef, ElementRef, computed, viewChild, inject, OnInit,
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
@@ -18,7 +20,7 @@ Chart.register(...registerables);
 /** Enlarged "unique users per month" chart shown in a dialog (opened from the Unique Users card). */
 @Component({
   selector: 'app-monthly-users-popup',
-  imports: [CommonModule, FormsModule, MatDialogModule, MatButtonModule, MatProgressSpinnerModule, MonthRangeComponent, RangeToggleComponent],
+  imports: [CommonModule, FormsModule, MatDialogModule, MatButtonModule, MatIconModule, MatTooltipModule, MatProgressSpinnerModule, MonthRangeComponent, RangeToggleComponent],
   templateUrl: './monthly-users-popup.component.html',
   styleUrl: './monthly-users-popup.component.css'
 })

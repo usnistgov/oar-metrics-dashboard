@@ -5,6 +5,8 @@ import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MetricsService } from '../../services/metrics.service';
 import { RepoMetric } from '../../models/metrics.models';
@@ -19,7 +21,7 @@ Chart.register(...registerables);
 @Component({
   selector: 'app-monthly-popup',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule, MatButtonModule, MatProgressSpinnerModule, MonthRangeComponent, RangeToggleComponent],
+  imports: [CommonModule, FormsModule, MatDialogModule, MatButtonModule, MatIconModule, MatTooltipModule, MatProgressSpinnerModule, MonthRangeComponent, RangeToggleComponent],
   templateUrl: './monthly-popup.component.html',
   styleUrl: './monthly-popup.component.css'
 })

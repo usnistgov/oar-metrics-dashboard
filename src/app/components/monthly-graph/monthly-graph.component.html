@@ -1,9 +1,11 @@
 <!-- Filter controls -->
 <div class="filter-container">
-  <app-month-year-filter [years]="years()" [month]="selectedMonth()" [year]="selectedYear()"
-                         (monthChange)="setMonth($event)" (yearChange)="setYear($event)" />
-  <button mat-button class="tonal-btn" (click)="resetFilter()">Reset</button>
-  <app-range-toggle style="margin-left:auto" [value]="range()" (valueChange)="setRange($event)" />
+  <app-month-range [options]="options()" [from]="from()" [to]="to()"
+                   (fromChange)="setFrom($event)" (toChange)="setTo($event)" />
+  <button mat-icon-button (click)="resetFilter()" aria-label="Reset period" matTooltip="Reset period">
+    <mat-icon>replay</mat-icon>
+  </button>
+  <app-range-toggle style="margin-left:auto" [value]="activePreset()" (valueChange)="setRange($event)" />
 </div>
 
 <!-- Chart -->
