@@ -37,6 +37,13 @@ export class HeaderComponent {
   // Ticks every 30s so the relative "(X ago)" label stays current.
   private readonly tick = toSignal(timer(0, 30_000), { initialValue: 0 });
 
+  // The header lives in the app shell on every route, so subscribing to the shared base-data stream
+  // here kicks off (and keeps alive) the metrics load even on pages that don't otherwise consume it
+  // - e.g. the guide. Without this, `lastUpdated` stays null on those routes and the "Updated ..."
+  // chip never appears. shareReplay(refCount:false) means this shares the dashboard's fetch, not a
+  // second request. The emitted value is unused; we subscribe only for the side effect.
+  private readonly baseLoad = toSignal(this.metrics.repoMetrics$, { initialValue: [] });
+
   readonly relativeUpdated = computed(() => {
     this.tick();
     const updated = this.metrics.lastUpdated();

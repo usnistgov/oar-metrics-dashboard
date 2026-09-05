@@ -84,8 +84,6 @@
     </span>
   </a>
 
-  <span class="flex-1"></span>
-
   <nav class="header-nav" aria-label="Primary">
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
        class="nav-pill">
@@ -96,8 +94,7 @@
     </a>
   </nav>
 
-  <span class="flex-1"></span>
-
+  <div class="header-end">
   @if (metrics.lastUpdated(); as updated) {
     <span class="updated-chip" matTooltip="When the data was last refreshed">
       <span class="updated-dot"></span>
@@ -119,5 +116,6 @@
             [matTooltip]="metrics.refreshing() ? 'Refreshing…' : 'Refresh data'">
       <mat-icon [class.spin]="metrics.refreshing()">refresh</mat-icon>
     </button>
+  </div>
   </div>
 </mat-toolbar>
