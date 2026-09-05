@@ -9,9 +9,6 @@
             <span class="col-figure-value">{{ fmtCount(c.downloads) }}</span>
             <span class="col-figure-label">downloads</span>
           </div>
-          @if (c.firstLogged) {
-            <span class="col-since">since {{ c.firstLogged | date: 'MMM y' }}</span>
-          }
 
           <div class="col-foot">
             <span class="col-badge"><mat-icon>folder</mat-icon>{{ fmtCount(c.memberCount) }} datasets</span>

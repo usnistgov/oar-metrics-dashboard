@@ -95,7 +95,6 @@ export interface CollectionMetric {
   downloads: number; // Σ record_download across members
   size: number; // Σ total_size_download across members (bytes)
   users: number; // Σ number_users across members (user-sessions, NOT distinct people)
-  firstLogged: string | null; // earliest first_time_logged across members (how far back the metrics go)
 }
 
 /** One collection's rollup PLUS its joined member rows - powers the drill-down drawer. */

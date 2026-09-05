@@ -107,12 +107,6 @@
   color: var(--color-muted);
 }
 
-.col-since {
-  margin-top: -0.55rem;
-  font-size: 0.75rem;
-  color: var(--color-muted);
-}
-
 .col-foot {
   margin-top: auto;
   display: flex;
