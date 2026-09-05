@@ -45,7 +45,7 @@
         </mat-card>
       }
 
-      <!-- Most Popular: rich actions menu (sort / count / expand) needs the component ref -->
+      <!-- Most Accessed: rich actions menu (sort / count / expand) needs the component ref -->
       @case ('mostPopular') {
         <mat-card appearance="outlined" cdkDrag [cdkDragDisabled]="layout.isPinned(id)"
                   [class.card-pinned]="layout.isPinned(id)">
@@ -87,7 +87,7 @@
         <mat-card appearance="outlined" cdkDrag [cdkDragDisabled]="layout.isPinned(id)"
                   [class.card-pinned]="layout.isPinned(id)">
           <mat-card-header class="card-header-actions">
-            <mat-card-title>Popular Science Domains</mat-card-title>
+            <mat-card-title>Science Domains</mat-card-title>
             <div class="card-tools">
               @if (layout.isPinned(id)) {
                 <button mat-icon-button class="pin-toggle pinned" (click)="layout.togglePin(id)"
@@ -230,7 +230,7 @@
               @case ('latestDownloads') { <app-latest-downloads /> }
               @case ('datacite') { <app-datacite-test /> }
               @case ('engagement') { <app-engagement /> }
-              @case ('seasonality') { <app-seasonality /> }
+              @case ('heatmap') { <app-seasonality /> }
               @case ('concentration') { <app-concentration /> }
               @case ('repoHealth') { <app-repo-health /> }
               @case ('collections') { <app-collections /> }

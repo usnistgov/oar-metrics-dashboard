@@ -32,9 +32,14 @@ describe('ThemeService', () => {
     }
   });
 
-  it('defaults the accent to the first preset (teal) when nothing is saved', () => {
+  it('defaults the accent to the shipped default when nothing is saved', () => {
     const service = create();
-    expect(service.color()).toBe(service.presets[0].value);
+    expect(service.color()).toBe(ThemeService.DEFAULT_COLOR);
+  });
+
+  it('defaults the mode to the shipped default when nothing is saved', () => {
+    const service = create();
+    expect(service.mode()).toBe(ThemeService.DEFAULT_MODE);
   });
 
   it('setColor accepts a valid #rrggbb hex and lowercases it', () => {

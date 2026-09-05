@@ -12,9 +12,11 @@ describe('LayoutService', () => {
     return TestBed.inject(LayoutService);
   }
 
-  it('shows every widget by default', () => {
+  it('ships a default hidden set on first visit and reset shows everything', () => {
     const s = create();
     expect(s.widgets.length).toBeGreaterThan(0);
+    expect(s.widgets.some((w) => !s.isVisible(w.id))).toBe(true); // some cards ship hidden
+    s.reset();
     expect(s.widgets.every((w) => s.isVisible(w.id))).toBe(true);
   });
 
@@ -28,11 +30,11 @@ describe('LayoutService', () => {
 
   it('persists hidden widgets and reloads them', () => {
     const s = create();
-    s.toggle('datacite');
-    expect(localStorage.getItem(KEY)).toContain('datacite');
+    s.toggle('mostPopular'); // visible by default; toggling hides it
+    expect(localStorage.getItem(KEY)).toContain('mostPopular');
     TestBed.resetTestingModule();
     const s2 = create();
-    expect(s2.isVisible('datacite')).toBe(false);
+    expect(s2.isVisible('mostPopular')).toBe(false);
   });
 
   it('reset shows everything again', () => {
@@ -52,7 +54,7 @@ describe('LayoutService', () => {
   });
 
   describe('card order', () => {
-    const ORDER_KEY = 'dashboard.order.v3';
+    const ORDER_KEY = 'dashboard.order.v1';
     const cardIds = (s: LayoutService) =>
       s.widgets.filter((w) => w.id !== 'kpi').map((w) => w.id);
 
@@ -99,12 +101,12 @@ describe('LayoutService', () => {
     });
 
     it('reconciles unknown and missing ids in stored order', () => {
-      localStorage.setItem(ORDER_KEY, JSON.stringify(['seasonality', 'bogus', 'watchlist']));
+      localStorage.setItem(ORDER_KEY, JSON.stringify(['heatmap', 'bogus', 'watchlist']));
       TestBed.resetTestingModule();
       const s = create();
       const order = s.order();
       expect(order).not.toContain('bogus');
-      expect(order[0]).toBe('seasonality');
+      expect(order[0]).toBe('heatmap');
       expect(order[1]).toBe('watchlist');
       expect(order.length).toBe(cardIds(s).length);
     });
@@ -113,6 +115,7 @@ describe('LayoutService', () => {
   describe('pinning', () => {
     it('floats a pinned card to the top of the visible order', () => {
       const s = create();
+      s.reset(); // start from all-visible so we can pin any card
       const last = s.order()[s.order().length - 1];
       expect(s.visibleOrderedCards()[0]).not.toBe(last);
       s.togglePin(last);
@@ -123,13 +126,14 @@ describe('LayoutService', () => {
 
     it('keeps multiple pinned cards in front and persists them', () => {
       const s = create();
-      s.togglePin('seasonality');
+      s.reset(); // heatmap + datacite ship hidden by default; reveal them first
+      s.togglePin('heatmap');
       s.togglePin('datacite');
-      expect(s.visibleOrderedCards().slice(0, 2).sort()).toEqual(['datacite', 'seasonality']);
+      expect(s.visibleOrderedCards().slice(0, 2).sort()).toEqual(['datacite', 'heatmap']);
 
       TestBed.resetTestingModule();
       const reloaded = create();
-      expect(reloaded.isPinned('seasonality')).toBe(true);
+      expect(reloaded.isPinned('heatmap')).toBe(true);
       expect(reloaded.isPinned('datacite')).toBe(true);
     });
 
@@ -142,7 +146,8 @@ describe('LayoutService', () => {
 
     it('reorderVisible never moves a pinned card', () => {
       const s = create();
-      s.togglePin('seasonality'); // floats to index 0
+      s.reset();
+      s.togglePin('heatmap'); // floats to index 0
       const before = s.visibleOrderedCards();
       s.reorderVisible(0, 3);
       expect(s.visibleOrderedCards()).toEqual(before);
@@ -150,6 +155,7 @@ describe('LayoutService', () => {
 
     it('reorderVisible reorders only the unpinned cards below the pinned zone', () => {
       const s = create();
+      s.reset(); // watchlist ships hidden by default; reveal it first
       s.togglePin('watchlist'); // pinned, index 0
       const vis = s.visibleOrderedCards();
       s.reorderVisible(1, 2); // swap the first two unpinned cards

@@ -14,28 +14,49 @@ export interface WidgetDef {
 @Injectable({ providedIn: 'root' })
 export class LayoutService {
   private static readonly KEY = 'dashboard.hidden.v1';
-  // Bump this key whenever the default order changes so a saved order resets to the new default
-  // instead of appending new cards at the end.
-  // v2: dropped Engagement + Download Concentration and moved DataCite to the end.
-  // v3: added "Collections' Share" next to "Downloads by Collection" (DataCite stays last).
-  private static readonly ORDER_KEY = 'dashboard.order.v3';
+  // Versioned so a future change to the DEFAULT card order can force existing users onto it: bump
+  // the suffix (v1 -> v2) and old saved orders are ignored instead of preserved. Not needed for
+  // adding/removing cards (order reconciliation handles those) - only to override users' saved order.
+  private static readonly ORDER_KEY = 'dashboard.order.v1';
   private static readonly PIN_KEY = 'dashboard.pins.v1';
 
-  /** All toggleable widgets, in dashboard order. */
+  /**
+   * The shipped first-visit layout: what a brand-new user sees before customizing anything. These are
+   * compiled into the build - edit them to change the out-of-the-box dashboard. They only SEED the
+   * saved state: as soon as a user hides/shows or pins a card, their choice is written to localStorage
+   * and wins over these on every later visit.
+   *
+   * - DEFAULT_HIDDEN: widget ids hidden by default (empty = show everything).
+   * - DEFAULT_PINNED: widget ids pinned to the top by default.
+   * - Default card ORDER is just the `widgets` array order below (minus the KPI strip); reorder that
+   *   array to change the shipped order. Bump ORDER_KEY's version when you do, so existing users pick
+   *   up the new default instead of keeping their old saved order.
+   */
+  private static readonly DEFAULT_HIDDEN: string[] = [
+    'watchlist',
+    'scienceDomains',
+    'heatmap',
+    'repoHealth',
+    'collectionShare',
+    'datacite',
+  ];
+  private static readonly DEFAULT_PINNED: string[] = [];
+
+  /** All toggleable widgets, in dashboard order (this order IS the default card order, minus KPI). */
   readonly widgets: WidgetDef[] = [
     { id: 'kpi', label: 'KPI summary' },
     { id: 'watchlist', label: 'Watchlist' },
     { id: 'downloadSizes', label: 'Monthly Download Sizes' },
-    { id: 'mostPopular', label: 'Most Accessed Datasets' },
-    { id: 'scienceDomains', label: 'Popular Science Domains' },
-    { id: 'latestDownloads', label: 'Latest Downloads' },
     { id: 'monthlyDownloads', label: 'Monthly Number of Downloads' },
+    { id: 'scienceDomains', label: 'Science Domains' },
     { id: 'monthlyUsers', label: 'Unique Users per Month' },
-    { id: 'seasonality', label: 'Monthly Download Heatmap' },
+    { id: 'mostPopular', label: 'Most Accessed Datasets' },
+    { id: 'latestDownloads', label: 'Latest Downloads' },
+    { id: 'heatmap', label: 'Monthly Download Heatmap' },
     { id: 'repoHealth', label: 'Repository Health' },
     { id: 'collections', label: 'Downloads by Collection' },
     { id: 'collectionShare', label: "Collections' Share of Repository" },
-    { id: 'datacite', label: 'DataCite Metrics' }, // moved to the end of the default layout
+    { id: 'datacite', label: 'DataCite Metrics' },
     // TODO (future enhancement): Engagement + Download Concentration are disabled for now while we
     // refine how they fit the dashboard. Their components, helpers, tests, and the dashboard @case
     // blocks all remain - just uncomment these two lines to bring them back into the layout + Settings.
@@ -143,6 +164,16 @@ export class LayoutService {
     this.saveOrder();
   }
 
+  /** Restore the entire shipped default layout at once: card order, visibility, and pins. */
+  restoreDefaults(): void {
+    this._order.set([...this.defaultOrder]);
+    this._hidden.set(new Set(LayoutService.DEFAULT_HIDDEN));
+    this._pinned.set(new Set(LayoutService.DEFAULT_PINNED));
+    this.saveOrder();
+    this.save();
+    this.savePins();
+  }
+
   private loadOrder(): string[] {
     try {
       const raw = localStorage.getItem(LayoutService.ORDER_KEY);
@@ -162,13 +193,7 @@ export class LayoutService {
   }
 
   private loadPins(): Set<string> {
-    try {
-      const raw = localStorage.getItem(LayoutService.PIN_KEY);
-      const parsed = raw ? JSON.parse(raw) : [];
-      return new Set(Array.isArray(parsed) ? parsed.filter((id) => typeof id === 'string') : []);
-    } catch {
-      return new Set();
-    }
+    return this.loadSet(LayoutService.PIN_KEY, LayoutService.DEFAULT_PINNED);
   }
 
   private savePins(): void {
@@ -180,12 +205,21 @@ export class LayoutService {
   }
 
   private load(): Set<string> {
+    return this.loadSet(LayoutService.KEY, LayoutService.DEFAULT_HIDDEN);
+  }
+
+  /**
+   * Load a saved id-set from storage, or seed from `fallback` on first visit. "First visit" = the key
+   * is absent; a key present but empty (e.g. the user un-hid everything) is a real choice and kept.
+   */
+  private loadSet(key: string, fallback: string[]): Set<string> {
     try {
-      const raw = localStorage.getItem(LayoutService.KEY);
-      const parsed = raw ? JSON.parse(raw) : [];
+      const raw = localStorage.getItem(key);
+      if (raw === null) return new Set(fallback); // never saved yet -> ship the default
+      const parsed = JSON.parse(raw);
       return new Set(Array.isArray(parsed) ? parsed.filter((id) => typeof id === 'string') : []);
     } catch {
-      return new Set();
+      return new Set(fallback);
     }
   }
 

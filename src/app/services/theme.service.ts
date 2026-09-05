@@ -22,6 +22,14 @@ export class ThemeService {
   static readonly MODE_KEY = 'theme.mode';
   static readonly COLOR_KEY = 'theme.color';
 
+  /**
+   * Shipped defaults for a first-time visitor (no saved preference yet). Baked into the build - edit
+   * to change the out-of-the-box theme. Once a user toggles mode or picks a color, their choice is
+   * persisted and wins on every later visit.
+   */
+  static readonly DEFAULT_MODE: ThemeMode = 'light';
+  static readonly DEFAULT_COLOR = '#2563eb';
+
   /** Preset accents - a teal-family palette, complements, and a near-black (the header/footer tone). */
   readonly presets: AccentPreset[] = [
     { key: 'teal', label: 'Teal', value: '#0d9488' },
@@ -97,11 +105,7 @@ export class ThemeService {
     } catch {
       /* ignore */
     }
-    try {
-      return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    } catch {
-      return 'light';
-    }
+    return ThemeService.DEFAULT_MODE; // shipped default for first-time visitors
   }
 
   private initialColor(): string {
@@ -111,6 +115,6 @@ export class ThemeService {
     } catch {
       /* ignore */
     }
-    return this.presets[0].value; // teal
+    return ThemeService.DEFAULT_COLOR; // shipped default accent
   }
 }
