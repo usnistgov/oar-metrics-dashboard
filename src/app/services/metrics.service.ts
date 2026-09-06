@@ -63,7 +63,8 @@ export class MetricsService {
   private readonly RECORD_TTL_MS = 24 * 60 * 60 * 1000; // persisted record metadata TTL (static data)
   private readonly REQUEST_TIMEOUT_MS = 10_000;       // per-request timeout so one slow call can't stall a card
   private readonly PAGE_SIZE = 100;                   // server's max page size
-  private readonly PAGE_CONCURRENCY = 5;              // max parallel page requests while paginating
+  private readonly PAGE_CONCURRENCY = 3;              // max parallel page requests while paginating (gentle on rate limits)
+
   private readonly MAX_PAGES = 50;                    // safety cap (50 * 100 = 5,000 datasets)
 
   // Storage. Bump STORE_VERSION when a payload shape changes (invalidates old caches).
@@ -72,6 +73,7 @@ export class MetricsService {
   private static readonly LIST_KEY = 'metrics.datasets.v1';
   private static readonly RECORDS_KEY = 'metrics.records.v1';
   private static readonly COLLECTIONS_KEY = 'metrics.collections.v1';
+  private static readonly CATALOG_KEY = 'metrics.catalog.v1';
 
   /** NERDm `@type` that marks a resource as a collection (see docs/09-collections.md). */
   private static readonly COLLECTION_TYPE = 'nrda:ScienceTheme';
@@ -100,6 +102,7 @@ export class MetricsService {
   readonly lastUpdated = signal<Date | null>(null);
   readonly repoError = signal(false);
   readonly datasetError = signal(false);
+  readonly catalogError = signal(false);
   /** True while a manual hard refresh is re-pulling the base data (drives the toolbar spinner). */
   readonly refreshing = signal(false);
   /** Flips true once the base data (repo + dataset list) is ready - drives the initial load screen. */
@@ -118,6 +121,16 @@ export class MetricsService {
    */
   readonly datasetMetrics$: Observable<DataSetMetric[]> = this.refresh$.pipe(
     switchMap((kind) => this.loadDatasets(kind)),
+    shareReplay({ bufferSize: 1, refCount: false }),
+  );
+
+  /**
+   * The full catalog trimmed to domain-bearing fields (ediid + topic + theme). Bulk-fetched in pages
+   * and cached; powers the Science Domains card repo-wide (and per-collection by filtering on ediid),
+   * instead of resolving records one-by-one. Lazy: only pulled once something subscribes.
+   */
+  readonly catalogRecords$: Observable<RecordResult[]> = this.refresh$.pipe(
+    switchMap((kind) => this.loadCatalogRecords(kind)),
     shareReplay({ bufferSize: 1, refCount: false }),
   );
 
@@ -466,6 +479,59 @@ export class MetricsService {
     const pages: number[] = [];
     for (let p = start; p <= end; p++) pages.push(p);
     return pages;
+  }
+
+  /**
+   * Bulk-load the catalog's domain fields (ediid, topic, theme), paginated. Passive loads reuse the
+   * sessionStorage cache within the TTL. A failed page degrades to empty rather than failing the
+   * whole set; a page-1 failure flags catalogError so the card can show a graceful message.
+   */
+  private loadCatalogRecords(kind: RefreshKind): Observable<RecordResult[]> {
+    if (kind === 'passive') {
+      const cached = this.readStore<RecordResult[]>(sessionStorage, MetricsService.CATALOG_KEY, this.REFRESH_MS);
+      if (cached) {
+        this.catalogError.set(false);
+        return of(cached.data);
+      }
+    }
+    return this.fetchCatalogPage(1).pipe(
+      switchMap(({ rows, total }) => {
+        const pageCount = Math.min(Math.ceil((total || 0) / this.PAGE_SIZE) || 1, this.MAX_PAGES);
+        if (pageCount <= 1) return of(rows);
+        return from(this.pageRange(2, pageCount)).pipe(
+          mergeMap(
+            (page) =>
+              this.fetchCatalogPage(page).pipe(
+                map((p) => p.rows),
+                catchError(() => of<RecordResult[]>([])),
+              ),
+            this.PAGE_CONCURRENCY,
+          ),
+          toArray(),
+          map((rest) => [rows, ...rest].flat()),
+        );
+      }),
+      tap((rows) => {
+        this.catalogError.set(false);
+        if (rows.length) this.writeStore(sessionStorage, MetricsService.CATALOG_KEY, rows);
+      }),
+      catchError(() => {
+        this.catalogError.set(true);
+        return of<RecordResult[]>([]);
+      }),
+    );
+  }
+
+  /** One catalog page trimmed to domain fields; also returns the server's total count. */
+  private fetchCatalogPage(page: number): Observable<{ rows: RecordResult[]; total: number }> {
+    return this.http
+      .get<{ ResultData?: RecordResult[]; ResultCount?: number }>(this.recordsUrl, {
+        params: { include: 'ediid,topic,theme', size: this.PAGE_SIZE, page },
+      })
+      .pipe(
+        timeout(this.REQUEST_TIMEOUT_MS),
+        map((r) => ({ rows: r?.ResultData ?? [], total: r?.ResultCount ?? 0 })),
+      );
   }
 
   /**

@@ -89,6 +89,7 @@
           <mat-card-header class="card-header-actions">
             <mat-card-title>Science Domains</mat-card-title>
             <div class="card-tools">
+              <app-domain-level-toggle [value]="sd.level()" (valueChange)="sd.setLevel($event)" />
               @if (layout.isPinned(id)) {
                 <button mat-icon-button class="pin-toggle pinned" (click)="layout.togglePin(id)"
                         aria-label="Unpin card" matTooltip="Unpin (keep at top)">

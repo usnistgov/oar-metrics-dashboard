@@ -10,6 +10,19 @@
 
   @if (scope.detail(); as d) {
     <main class="scoped">
+      <section class="ts-note" role="note">
+        <mat-icon>info</mat-icon>
+        <div class="ts-note-body">
+          <span class="ts-note-tag">Work in progress</span>
+          <p>
+            <strong>Trends over time are repository-wide.</strong>
+            Monthly downloads, users and sizes can't yet be scoped to a single collection: the usage
+            feed stores lifetime totals per dataset, not monthly history. These charts will appear
+            here once a per-dataset monthly series is available.
+          </p>
+        </div>
+      </section>
+
       <section class="kpi-strip">
         <div class="kpi">
           <div class="kpi-label">
@@ -71,21 +84,9 @@
         <div class="s-card">
           <div class="s-card-head">
             <h3>Science domains</h3>
+            <app-domain-level-toggle [value]="sd.level()" (valueChange)="sd.setLevel($event)" />
           </div>
-          <app-popular-science-domains [datasets]="d.members" />
-        </div>
-      </section>
-
-      <section class="ts-note" role="note">
-        <mat-icon>info</mat-icon>
-        <div class="ts-note-body">
-          <span class="ts-note-tag">Work in progress</span>
-          <p>
-            <strong>Trends over time are repository-wide.</strong>
-            Monthly downloads, users and sizes can't yet be scoped to a single collection: the usage
-            feed stores lifetime totals per dataset, not monthly history. These charts will appear
-            here once a per-dataset monthly series is available.
-          </p>
+          <app-popular-science-domains #sd [datasets]="d.members" />
         </div>
       </section>
     </main>

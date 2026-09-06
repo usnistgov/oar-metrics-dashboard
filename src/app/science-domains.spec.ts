@@ -1,4 +1,4 @@
-import { aggregateDomains, normalizeDomain, sampleTopDatasets } from './science-domains';
+import { aggregateDomains, normalizeDomain, sampleTopDatasets, topLevelDomain } from './science-domains';
 import { DataSetMetric, RecordResult } from './models/metrics.models';
 
 describe('normalizeDomain', () => {
@@ -74,5 +74,26 @@ describe('aggregateDomains', () => {
       rec({ topic: [{ tag: 'C' }] }),
     ];
     expect(aggregateDomains(records, 2).length).toBe(2);
+  });
+
+  it("level 'top' collapses subdomains to their top-level bucket, once per record", () => {
+    const records: (RecordResult | null)[] = [
+      rec({ topic: [{ tag: 'Chemistry: Analytical chemistry' }, { tag: 'Chemistry: Thermochemical properties' }] }),
+      rec({ topic: [{ tag: 'Manufacturing: Robotics in manufacturing' }] }),
+    ];
+    expect(aggregateDomains(records, 5, 'top')).toEqual([
+      { name: 'Chemistry', count: 1 },
+      { name: 'Manufacturing', count: 1 },
+    ]);
+    // Same records at the subdomain level keep the full granular paths.
+    expect(aggregateDomains(records, 5, 'sub').length).toBe(3);
+  });
+});
+
+describe('topLevelDomain', () => {
+  it('returns the text before the first colon, or the whole tag when there is none', () => {
+    expect(topLevelDomain('Information Technology: Software research: Software testing')).toBe('Information Technology');
+    expect(topLevelDomain('Manufacturing:Robotics')).toBe('Manufacturing');
+    expect(topLevelDomain('Standards')).toBe('Standards');
   });
 });

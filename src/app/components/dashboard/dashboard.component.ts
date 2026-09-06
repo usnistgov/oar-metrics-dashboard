@@ -21,6 +21,7 @@ import { WatchlistComponent } from '../watchlist/watchlist.component';
 import { EngagementComponent } from '../engagement/engagement.component';
 import { SeasonalityComponent } from '../seasonality/seasonality.component';
 import { SortByComponent } from '../sort-by/sort-by.component';
+import { DomainLevelToggleComponent } from '../domain-level-toggle/domain-level-toggle.component';
 import { ConcentrationComponent } from '../concentration/concentration.component';
 import { RepoHealthComponent } from '../repo-health/repo-health.component';
 import { CollectionsComponent } from '../collections/collections.component';
@@ -36,7 +37,7 @@ import { CollectionShareComponent } from '../collection-share/collection-share.c
     MatTooltipModule, CdkDropList, CdkDrag, CdkDragHandle, KpiSummaryComponent, CurrentDateComponent,
     MonthlyGraphComponent, LatestDownloadsComponent, MostPopularComponent, PopularScienceDomainsComponent,
     MonthlyDownloadsComponent, MonthlyUsersComponent, DataciteTestComponent, WatchlistComponent,
-    EngagementComponent, SeasonalityComponent, SortByComponent,
+    EngagementComponent, SeasonalityComponent, SortByComponent, DomainLevelToggleComponent,
     ConcentrationComponent, RepoHealthComponent, CollectionsComponent, CollectionShareComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
