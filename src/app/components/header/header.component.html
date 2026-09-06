@@ -117,5 +117,19 @@
       <mat-icon [class.spin]="metrics.refreshing()">refresh</mat-icon>
     </button>
   </div>
+
+  <!-- Small screens: the three actions collapse into a single menu (icon + label per item). -->
+  <button type="button" class="action-btn header-menu-btn" [matMenuTriggerFor]="actionsMenu"
+          aria-label="Menu" matTooltip="Menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <mat-menu #actionsMenu="matMenu" class="app-menu">
+    <a mat-menu-item routerLink="/guide"><mat-icon>help_outline</mat-icon><span>Guide</span></a>
+    <button mat-menu-item type="button" (click)="openSettings()"><mat-icon>settings</mat-icon><span>Settings</span></button>
+    <button mat-menu-item type="button" (click)="metrics.refresh()">
+      <mat-icon [class.spin]="metrics.refreshing()">refresh</mat-icon>
+      <span>{{ metrics.refreshing() ? 'Refreshing…' : 'Refresh data' }}</span>
+    </button>
+  </mat-menu>
   </div>
 </mat-toolbar>

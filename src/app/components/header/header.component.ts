@@ -6,6 +6,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MetricsService } from '../../services/metrics.service';
 import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
@@ -25,6 +26,7 @@ import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.comp
     MatToolbarModule,
     MatIconModule,
     MatTooltipModule,
+    MatMenuModule,
     MatDialogModule,
   ],
   templateUrl: './header.component.html',

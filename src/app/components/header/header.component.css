@@ -72,8 +72,11 @@
   color: rgba(255, 255, 255, 0.62);
 }
 
-/* Segmented pill navigation: centered between the brand and the actions, tabs span it equally. */
+/* Segmented pill navigation: centered between the brand and the actions, tabs span it equally.
+   A single accent pill (::before) slides smoothly between the two tabs. */
 .header-nav {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
   gap: 0.25rem;
@@ -84,7 +87,37 @@
   border-radius: 999px;
 }
 
+/* The moving pill: sized to one tab, glides to the active one. Width is derived from the padding
+   box so it stays correct regardless of box-sizing; the slide uses translateX of its own width plus
+   the gap. Hidden (faded out) when no tab is active, e.g. on the Guide route. */
+.header-nav::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  left: 0.25rem;
+  width: calc((100% - 0.5rem - 0.25rem) / 2);
+  border-radius: 999px;
+  background: var(--color-accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateX(0);
+  transition:
+    transform 0.42s cubic-bezier(0.34, 1.4, 0.5, 1),
+    opacity 0.2s ease,
+    background 0.15s ease;
+}
+.header-nav:has(.nav-pill.active)::before {
+  opacity: 1;
+}
+.header-nav:has(.nav-pill:last-child.active)::before {
+  transform: translateX(calc(100% + 0.25rem));
+}
+
 .nav-pill {
+  position: relative;
+  z-index: 1;
   flex: 1 1 0;
   display: inline-flex;
   align-items: center;
@@ -96,26 +129,36 @@
   font-weight: 600;
   font-size: 0.85rem;
   text-decoration: none;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
+  transition: color 0.3s ease;
 }
 
 .nav-pill mat-icon {
   font-size: 18px;
   width: 18px;
   height: 18px;
+  transition: transform 0.42s cubic-bezier(0.34, 1.4, 0.5, 1);
 }
 
-.nav-pill:hover {
+/* Hover affordance only on inactive tabs; the active tab shows the liquid indicator. */
+.nav-pill:not(.active):hover {
   color: #fff;
   background: rgba(255, 255, 255, 0.09);
 }
 
 .nav-pill.active {
   color: var(--color-on-accent, #fff);
-  background: var(--color-accent);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+.nav-pill.active mat-icon {
+  transform: scale(1.08);
+}
+
+/* Respect reduced-motion: no slide/scale, just the instant state change. */
+@media (prefers-reduced-motion: reduce) {
+  .header-nav::before,
+  .nav-pill,
+  .nav-pill mat-icon {
+    transition: none;
+  }
 }
 
 /* Last-updated chip with a live dot */
@@ -190,14 +233,36 @@
   color: #fff;
 }
 
-/* Responsive: shed the sub-brand, nav labels, and updated chip as space tightens. */
-@media (max-width: 1100px) {
+/* Hamburger that replaces the three actions at <=1100px. Placed after .action-btn so it wins the
+   cascade (the button carries both classes); the media query below flips it back on. */
+.header-menu-btn {
+  display: none;
+}
+
+/* Responsive tiers. The 3-section grid (logo left, tabs center, actions right) is kept at every size.
+   - large  (>= 1330px):     full tabs + updated pill + the three action buttons.
+   - medium (1040 - 1329px): pill + three buttons collapse into the hamburger; full tabs stay.
+   - small  (< 1040px):      icon-only tabs and a smaller, text-free brand lockup. */
+@media (max-width: 1329px) {
   .updated-chip {
     display: none;
   }
+  .header-actions {
+    display: none;
+  }
+  .header-menu-btn {
+    display: grid;
+  }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1039px) {
+  .brand-divider,
+  .brand-sub {
+    display: none;
+  }
+  .brand-logo {
+    height: 28px;
+  }
   .header-nav {
     width: auto;
   }
@@ -207,18 +272,5 @@
   .nav-pill {
     flex: 0 0 auto;
     padding: 0.45rem 0.6rem;
-  }
-}
-
-@media (max-width: 720px) {
-  .brand-divider,
-  .brand-sub {
-    display: none;
-  }
-  .brand-logo {
-    height: 34px;
-  }
-  .header-nav {
-    display: none;
   }
 }
