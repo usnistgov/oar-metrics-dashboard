@@ -14,7 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=block" rel="stylesheet">
-  <script>
+  <script nonce="random-nonce">
     /* Apply the saved theme (mode + accent) before first paint to avoid a flash. */
     (function () {
       try {
@@ -29,10 +29,11 @@
       } catch (e) {}
     })();
   </script>
-  <script src="https://unpkg.com/vue@^2/dist/vue.min.js"></script>
-  <script src="https://unpkg.com/data-metrics-badge/dist/data-metrics-badge.min.js"></script>
+  <!-- DataCite metrics badge deps, self-hosted (see public/vendor) to avoid a third-party CDN. -->
+  <script nonce="random-nonce" src="vendor/vue.min.js"></script>
+  <script nonce="random-nonce" src="vendor/data-metrics-badge.min.js"></script>
 </head>
 <body>
-  <app-root></app-root>
+  <app-root ngCspNonce="random-nonce"></app-root>
 </body>
 </html>
