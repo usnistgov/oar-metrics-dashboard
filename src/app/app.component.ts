@@ -11,6 +11,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MetricsService } from './services/metrics.service';
 import { ThemeService } from './services/theme.service';
 import { HeaderComponent } from './components/header/header.component';
+import { FooterComponent } from './components/footer/footer.component';
 import { SettingsDialogComponent } from './components/settings-dialog/settings-dialog.component';
 
 /**
@@ -23,6 +24,7 @@ import { SettingsDialogComponent } from './components/settings-dialog/settings-d
   imports: [
     RouterOutlet,
     HeaderComponent,
+    FooterComponent,
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatButtonModule,

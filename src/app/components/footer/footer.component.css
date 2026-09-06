@@ -1,0 +1,139 @@
+/* NIST agency footer: always dark, independent of the app's light/dark theme. */
+.site-footer {
+  background: #000;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+/* Top row: NIST wordmark left, social icons right. */
+.footer-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.75rem 2rem;
+}
+
+.footer-logo {
+  display: inline-flex;
+  align-items: center;
+}
+
+.footer-logo img {
+  height: 40px;
+  width: auto;
+  max-width: 100%;
+  display: block;
+}
+
+/* Social icons: 40px hit target, white glyph, brand-colored hover (mirrors the NIST footer). */
+.footer-social {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.soc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: #fff;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.soc svg {
+  width: 22px;
+  height: 22px;
+}
+
+.soc:hover {
+  background: #6b6b6b;
+}
+.soc--x:hover {
+  background: #2b2b2b;
+}
+.soc--linkedin:hover {
+  background: #04669a;
+}
+.soc--instagram:hover {
+  background: rgb(182, 1, 253);
+}
+.soc--youtube:hover {
+  background: #e52d27;
+}
+.soc--rss:hover {
+  background: #fd8f00;
+}
+
+/* Bottom row: [spacer | centered links | seal] so the links stay centered next to the seal. */
+.footer-links-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-spacer {
+  grid-column: 1;
+  width: 108px;
+}
+
+.footer-links {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.8;
+  text-align: center;
+}
+
+.footer-links a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 6px;
+  white-space: nowrap;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-links .sep {
+  color: #999;
+}
+
+.footer-seal {
+  grid-column: 3;
+  justify-self: end;
+}
+
+.footer-seal img {
+  max-width: 108px;
+  max-height: 108px;
+  width: auto;
+  height: auto;
+  display: block;
+}
+
+/* Narrow screens: stack the seal below the links and drop the balancing spacer. */
+@media (max-width: 768px) {
+  .footer-links-row {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 0.75rem;
+  }
+  .footer-spacer {
+    display: none;
+  }
+  .footer-links,
+  .footer-seal {
+    grid-column: 1;
+    justify-self: center;
+  }
+}
