@@ -19,7 +19,7 @@
   --color-text: #1e293b;        /* primary text (slate-800) */
   --color-muted: #64748b;       /* secondary text (slate-500) */
   --color-accent: #0d9488;      /* ← BRAND ACCENT (single source of truth; runtime-swappable) */
-  --color-header: #1f2937;      /* app bar */
+  --color-header: #000000;      /* app bar (black, matches the NIST footer) */
   --color-danger: #dc2626;
 
   --card-height: 30rem;         /* uniform card height - fits a 5-item two-line list + the charts */
@@ -61,7 +61,7 @@
   --color-line: #334155;        /* slate-700 borders */
   --color-text: #e2e8f0;        /* slate-200 */
   --color-muted: #94a3b8;       /* slate-400 */
-  --color-header: #0b1220;      /* deep slate app bar */
+  --color-header: #000000;      /* app bar (black, matches the NIST footer) */
   --color-danger: #f87171;
   --color-accent-strong: color-mix(in srgb, var(--color-accent) 72%, #fff); /* lighter for contrast */
   --chart-grid: rgba(226, 232, 240, 0.16); /* gridlines: a light hairline that reads on the dark surface */
@@ -70,6 +70,8 @@
 html,
 body {
   height: 100%;
+  /* Disable the macOS/browser overscroll rubber-banding (bounce) at the top/bottom of the page. */
+  overscroll-behavior-y: none;
 }
 
 body {
