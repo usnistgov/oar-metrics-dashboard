@@ -1,9 +1,10 @@
 import { ApplicationConfig, provideZoneChangeDetection, provideAppInitializer, inject } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { ConfigService } from './services/config.service';
+import { rmmThrottleInterceptor } from './services/rmm-throttle.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -11,7 +12,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     // Single application-wide HttpClient (replaces the deprecated per-component
     // HttpClientModule imports). withFetch() uses the modern Fetch API backend.
-    provideHttpClient(withFetch()),
+    provideHttpClient(withFetch(), withInterceptors([rmmThrottleInterceptor])),
     // Load runtime config (assets/config.json) before the app starts so services read the
     // deployment's URLs/endpoints. Best-effort: falls back to built-in defaults.
     provideAppInitializer(() => inject(ConfigService).load()),
