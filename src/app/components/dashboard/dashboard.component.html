@@ -207,6 +207,12 @@
               }
             </mat-card-title>
             <div class="card-tools">
+              @if (id === 'collections') {
+                <a mat-icon-button routerLink="/collections" class="view-collections"
+                   aria-label="View collections" matTooltip="View collections">
+                  <mat-icon>visibility</mat-icon>
+                </a>
+              }
               @if (layout.isPinned(id)) {
                 <button mat-icon-button class="pin-toggle pinned" (click)="layout.togglePin(id)"
                         aria-label="Unpin card" matTooltip="Unpin (keep at top)">
