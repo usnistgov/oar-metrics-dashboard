@@ -432,7 +432,7 @@ export class MetricsService {
     return this.fetchDatasetPage(1).pipe(
       switchMap(({ rows: firstRows, total }) => {
         const pageCount = Math.min(Math.ceil((total || 0) / this.PAGE_SIZE) || 1, this.MAX_PAGES);
-        if (pageCount <= 1) return of(firstRows);
+        if (pageCount <= 1) return of(this.cleanDatasets(firstRows));
 
         // Pages 2..pageCount, throttled; a failed page degrades to empty rather than failing all.
         return from(this.pageRange(2, pageCount)).pipe(
@@ -445,7 +445,7 @@ export class MetricsService {
             this.PAGE_CONCURRENCY,
           ),
           toArray(),
-          map((restPages) => this.dedupeByEdiid([firstRows, ...restPages].flat())),
+          map((restPages) => this.cleanDatasets([firstRows, ...restPages].flat())),
         );
       }),
       tap(() => {
@@ -532,6 +532,34 @@ export class MetricsService {
         timeout(this.REQUEST_TIMEOUT_MS),
         map((r) => ({ rows: r?.ResultData ?? [], total: r?.ResultCount ?? 0 })),
       );
+  }
+
+  /**
+   * Normalize and filter the raw usage list to real PDR datasets before it reaches any widget. The
+   * usage feed is noisy: many rows are web-server path artifacts (e.g. `_vti_bin`, `_private`,
+   * `WebShop`) or per-file download paths with query strings (e.g.
+   * `ark:/88434/mds2-2121/data.zip?...`). We reduce each id to its base ediid, drop anything that is
+   * not a PDR dataset id (an `ark:/88434/<id>` or a legacy 32-hex EDI id), then dedupe. This keeps
+   * "Datasets tracked" and every downstream card honest (counts, most-accessed, science domains).
+   */
+  private cleanDatasets(rows: DataSetMetric[]): DataSetMetric[] {
+    const normalized = rows.map((row) =>
+      row.ediid ? { ...row, ediid: this.baseEdiid(row.ediid) } : row,
+    );
+    return this.dedupeByEdiid(normalized.filter((row) => this.isRealDatasetId(row.ediid)));
+  }
+
+  /** Reduce a usage `ediid` to the dataset id: drop any query string and, for arks, any path after the base. */
+  private baseEdiid(ediid: string): string {
+    const noQuery = ediid.split('?', 1)[0];
+    // ark:/88434/<id> -> keep the first four '/'-segments ("ark:", "", "88434", "<id>").
+    return noQuery.startsWith('ark:/') ? noQuery.split('/').slice(0, 4).join('/') : noQuery;
+  }
+
+  /** True only for a PDR dataset id: an `ark:/88434/<id>` (no sub-path) or a legacy 32+ hex EDI id. */
+  private isRealDatasetId(ediid?: string): boolean {
+    if (!ediid) return false;
+    return /^ark:\/88434\/[^/]+$/.test(ediid) || /^[0-9A-Fa-f]{32,}$/.test(ediid);
   }
 
   /**
