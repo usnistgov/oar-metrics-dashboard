@@ -17,6 +17,20 @@
     </section>
 
     <section class="settings-group">
+      <h3 class="settings-label">Data</h3>
+      <div class="settings-row">
+        <span class="settings-row-label">Enable reconciliation</span>
+        <mat-slide-toggle [checked]="metrics.reconcileEnabled()"
+                          (change)="metrics.setReconcileEnabled($event.checked)"
+                          aria-label="Enable reconciliation"></mat-slide-toggle>
+      </div>
+      <p class="settings-hint">
+        Merge usage that was logged under different identifiers (the ark id vs the ediid) into one
+        dataset and drop double counts. Turn off to see the raw usage rows as stored.
+      </p>
+    </section>
+
+    <section class="settings-group">
       <h3 class="settings-label">Accent color</h3>
       <div class="color-swatches">
         @for (preset of theme.presets; track preset.key) {

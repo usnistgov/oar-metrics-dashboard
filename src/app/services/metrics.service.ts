@@ -1,11 +1,14 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import {
   BehaviorSubject,
   Observable,
   catchError,
   combineLatest,
+  concatMap,
   finalize,
+  first,
   from,
   map,
   mergeMap,
@@ -75,7 +78,7 @@ export class MetricsService {
   private static readonly LIST_KEY = 'metrics.datasets.v1';
   private static readonly RECORDS_KEY = 'metrics.records.v1';
   private static readonly COLLECTIONS_KEY = 'metrics.collections.v1';
-  private static readonly CATALOG_KEY = 'metrics.catalog.v2'; // v2: added title to the projection
+  private static readonly CATALOG_KEY = 'metrics.catalog.v3'; // v3: added @id to the projection
 
   /** NERDm `@type` that marks a resource as a collection (see docs/09-collections.md). */
   private static readonly COLLECTION_TYPE = 'nrda:ScienceTheme';
@@ -110,6 +113,18 @@ export class MetricsService {
   /** Flips true once the base data (repo + dataset list) is ready - drives the initial load screen. */
   readonly ready = signal(false);
 
+  /**
+   * Whether to reconcile usage against the catalog (fold ark @id / ediid / legacy-hex aliases to the
+   * canonical ediid, merge + sum). Persisted; default on. Toggled from Settings. When off, the
+   * reconciled stream passes the raw deduped usage through unchanged.
+   */
+  readonly reconcileEnabled = signal<boolean>(localStorage.getItem('metrics.reconcile.enabled') !== 'false');
+
+  setReconcileEnabled(enabled: boolean): void {
+    this.reconcileEnabled.set(enabled);
+    localStorage.setItem('metrics.reconcile.enabled', String(enabled));
+  }
+
   /** Monthly repository aggregates (size/downloads/users per month) - shared by the 3 charts. */
   readonly repoMetrics$: Observable<RepoMetric[]> = this.refresh$.pipe(
     switchMap((kind) => this.loadRepoMetrics(kind)),
@@ -137,13 +152,29 @@ export class MetricsService {
   );
 
   /**
+   * Usage reconciled against the catalog: re-key each usage row to the record's canonical `ediid`
+   * (the ingester logs usage under whichever id the download URL used - the ark @id, the ediid, or a
+   * legacy hex), then merge rows that resolve to the same record, summing the counts. Fixes
+   * double-counting and phantom off-catalog rows. Degrades to plain dedupe when the catalog is
+   * unavailable. TEMPORARY client-side mitigation; the real fix belongs in the metrics ingester.
+   */
+  readonly reconciledDatasets$: Observable<DataSetMetric[]> = combineLatest([
+    this.datasetMetrics$,
+    this.catalogRecords$,
+    toObservable(this.reconcileEnabled),
+  ]).pipe(
+    map(([usage, catalog, enabled]) => (enabled ? this.reconcileUsage(usage, catalog) : usage)),
+    shareReplay({ bufferSize: 1, refCount: false }),
+  );
+
+  /**
    * Catalog datasets with NO recorded usage: every catalog record whose ediid is absent from the
-   * (cleaned) usage list. Published but never downloaded/logged. Powers the "Untracked Datasets" card;
-   * sorted by title. Titles come from the bulk catalog fetch (no per-record lookups).
+   * reconciled usage list. Published but never downloaded/logged. Powers the "Untracked Datasets"
+   * card; sorted by title.
    */
   readonly untrackedDatasets$: Observable<RecordResult[]> = combineLatest([
     this.catalogRecords$,
-    this.datasetMetrics$,
+    this.reconciledDatasets$,
   ]).pipe(
     map(([catalog, usage]) => {
       const tracked = new Set(usage.map((d) => d.ediid));
@@ -155,12 +186,12 @@ export class MetricsService {
   );
 
   /**
-   * Coverage of the published catalog by usage: how many cataloged datasets have usage, how many
-   * don't, and how many usage datasets sit outside the catalog. Drives the Untracked card's summary.
+   * Coverage of the published catalog by usage, computed on reconciled ids so aliases don't inflate
+   * the gap. Drives the Untracked card's summary and the Datasets tracked KPI bar.
    */
   readonly catalogCoverage$: Observable<CatalogCoverage> = combineLatest([
     this.catalogRecords$,
-    this.datasetMetrics$,
+    this.reconciledDatasets$,
   ]).pipe(
     map(([catalog, usage]) => {
       const tracked = new Set(usage.map((d) => d.ediid));
@@ -179,12 +210,11 @@ export class MetricsService {
   );
 
   /**
-   * Off-catalog datasets: have usage but are NOT in the catalog (withdrawn/removed, or missing from
-   * the bulk records list). Sorted by downloads. No titles - the records no longer resolve. Backs the
-   * expandable "+N" list on the Untracked card.
+   * Off-catalog datasets: reconciled usage rows whose canonical ediid is still NOT in the catalog
+   * (genuinely withdrawn/removed). Sorted by downloads. Backs the off-catalog modal on the Untracked card.
    */
   readonly offCatalogDatasets$: Observable<DataSetMetric[]> = combineLatest([
-    this.datasetMetrics$,
+    this.reconciledDatasets$,
     this.catalogRecords$,
   ]).pipe(
     map(([usage, catalog]) => {
@@ -195,6 +225,56 @@ export class MetricsService {
     }),
     shareReplay({ bufferSize: 1, refCount: false }),
   );
+
+  private get usageFilesUrl(): string {
+    return this.usageUrl.replace(/\/records$/, '/files');
+  }
+
+  /**
+   * TEMP: find the catalog record that re-published a withdrawn dataset's files under a NEW id (a
+   * rename not linked via @id, so reconciliation cannot fold it). Looks the dataset's files up in the
+   * usage file-metrics, then searches the catalog for a record with a matching file component.
+   * Returns the new @id/ediid or null. Called on demand (off-catalog modal), so it only fires when a
+   * gap exists. Remove once the ingester stores canonical ediids.
+   */
+  republishedId(ediid: string): Observable<string | null> {
+    return this.http.get<Record<string, unknown>>(`${this.usageFilesUrl}/${encodeURIComponent(ediid)}`).pipe(
+      timeout(this.REQUEST_TIMEOUT_MS),
+      map((r) => {
+        const arr = (r['FilesMetrics'] ?? r['FileMetrics'] ?? r['DataSetMetrics'] ?? r['ResultData'] ?? []) as Array<{
+          filepath?: string;
+          filePath?: string;
+        }>;
+        const rels = arr
+          .map((f) => String(f.filepath ?? f.filePath ?? ''))
+          .map((fp) => fp.replace(/^[^/]+\//, '')) // strip the "<ediid>/" prefix
+          .filter((fp) => fp && fp !== ediid && !fp.endsWith('.sha256'));
+        return Array.from(new Set(rels)).slice(0, 3);
+      }),
+      switchMap((rels) =>
+        rels.length === 0
+          ? of<string | null>(null)
+          : from(rels).pipe(
+              concatMap((rel) =>
+                this.http
+                  .get<{ ResultData?: RecordResult[] }>(this.recordsUrl, {
+                    params: { 'components.filepath': rel, include: 'ediid,@id' },
+                  })
+                  .pipe(
+                    timeout(this.REQUEST_TIMEOUT_MS),
+                    map((res) => {
+                      const rec = res?.ResultData?.[0];
+                      return rec ? ((rec['@id'] ?? rec.ediid) ?? null) : null;
+                    }),
+                    catchError(() => of<string | null>(null)),
+                  ),
+              ),
+              first((id): id is string => !!id, null),
+            ),
+      ),
+      catchError(() => of<string | null>(null)),
+    );
+  }
 
   /**
    * Collections (`nrda:ScienceTheme`) and their member ediids. Membership is static/curated, so it's
@@ -588,7 +668,7 @@ export class MetricsService {
   private fetchCatalogPage(page: number): Observable<{ rows: RecordResult[]; total: number }> {
     return this.http
       .get<{ ResultData?: RecordResult[]; ResultCount?: number }>(this.recordsUrl, {
-        params: { include: 'ediid,topic,theme,title', size: this.PAGE_SIZE, page },
+        params: { include: 'ediid,@id,topic,theme,title', size: this.PAGE_SIZE, page },
       })
       .pipe(
         timeout(this.REQUEST_TIMEOUT_MS),
@@ -630,6 +710,51 @@ export class MetricsService {
    * significant row per ediid - highest downloads, ties broken by most recent - so a real dataset is
    * never represented by a `0`-download duplicate.
    */
+  /**
+   * Re-key usage rows to the record's canonical `ediid` using the catalog's `@id`/`ediid` map, then
+   * merge rows that land on the same id (sum counts, widen the date range). With no catalog it falls
+   * back to keying by the row's own ediid, i.e. plain dedupe.
+   */
+  private reconcileUsage(usage: DataSetMetric[], catalog: RecordResult[]): DataSetMetric[] {
+    const toCanonical = new Map<string, string>();
+    for (const r of catalog) {
+      const canon = r.ediid;
+      if (!canon) continue;
+      toCanonical.set(canon, canon);
+      const atId = r['@id'];
+      if (atId) toCanonical.set(atId, canon);
+    }
+    const merged = new Map<string, DataSetMetric>();
+    for (const row of usage) {
+      if (!row.ediid) continue;
+      const key = toCanonical.get(row.ediid) ?? row.ediid;
+      const existing = merged.get(key);
+      if (!existing) {
+        merged.set(key, { ...row, ediid: key });
+      } else {
+        existing.record_download = (existing.record_download ?? 0) + (row.record_download ?? 0);
+        existing.number_users = (existing.number_users ?? 0) + (row.number_users ?? 0);
+        existing.total_size_download = (existing.total_size_download ?? 0) + (row.total_size_download ?? 0);
+        existing.success_get = (existing.success_get ?? 0) + (row.success_get ?? 0);
+        existing.first_time_logged = this.minStr(existing.first_time_logged, row.first_time_logged);
+        existing.last_time_logged = this.maxStr(existing.last_time_logged, row.last_time_logged);
+        existing.pdrid = existing.pdrid ?? row.pdrid;
+      }
+    }
+    return [...merged.values()];
+  }
+
+  private minStr(a?: string, b?: string): string | undefined {
+    if (!a) return b;
+    if (!b) return a;
+    return a < b ? a : b;
+  }
+  private maxStr(a?: string, b?: string): string | undefined {
+    if (!a) return b;
+    if (!b) return a;
+    return a > b ? a : b;
+  }
+
   private dedupeByEdiid(rows: DataSetMetric[]): DataSetMetric[] {
     const best = new Map<string, DataSetMetric>();
     const noId: DataSetMetric[] = [];

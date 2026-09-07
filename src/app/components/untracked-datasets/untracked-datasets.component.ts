@@ -41,7 +41,7 @@ export class UntrackedDatasetsComponent {
   /** Open the modal listing the off-catalog datasets (usage but not in the catalog). */
   openOffCatalog(): void {
     this.dialog.open(OffCatalogDialogComponent, {
-      width: '900px',
+      width: '1140px',
       maxWidth: '95vw',
       maxHeight: '85vh',
       autoFocus: 'dialog',

@@ -3,6 +3,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MetricsService } from '../../services/metrics.service';
 import { DataSetMetric } from '../../models/metrics.models';
 import { formatSize } from '../../format';
 
@@ -19,9 +20,31 @@ import { formatSize } from '../../format';
   styleUrl: './off-catalog-dialog.component.css',
 })
 export class OffCatalogDialogComponent {
+  private metrics = inject(MetricsService);
   private readonly items = (inject(MAT_DIALOG_DATA) as DataSetMetric[]) ?? [];
   readonly total = this.items.length;
   readonly query = signal('');
+
+  // TEMP (remove after the ingester fix): per-row "now lives under" lookup. undefined = checking,
+  // null = not re-published (genuinely withdrawn), string = the new catalog id. Resolved live by
+  // matching file components, so it only runs when the modal is open (i.e. when a gap exists).
+  readonly republished = signal<Record<string, string | null | undefined>>({});
+
+  constructor() {
+    for (const d of this.items) {
+      const id = d.ediid;
+      if (!id) continue;
+      this.republished.update((m) => ({ ...m, [id]: undefined }));
+      this.metrics.republishedId(id).subscribe((newId) =>
+        this.republished.update((m) => ({ ...m, [id]: newId })),
+      );
+    }
+  }
+
+  /** Resolution state for a row: undefined (checking), a new id (string), or null (none). */
+  republishedOf(ediid?: string): string | null | undefined {
+    return ediid ? this.republished()[ediid] : null;
+  }
 
   readonly rows = computed(() => {
     const q = this.query().trim().toLowerCase();

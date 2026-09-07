@@ -72,3 +72,10 @@
   text-align: center;
   color: var(--color-muted);
 }
+.oc-dash {
+  color: var(--color-muted);
+}
+.oc-checking {
+  color: var(--color-muted);
+  font-style: italic;
+}

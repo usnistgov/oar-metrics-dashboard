@@ -30,6 +30,7 @@
           <th class="num">Size</th>
           <th>First recorded</th>
           <th>Last recorded</th>
+          <th>Now lives under</th>
         </tr>
       </thead>
       <tbody>
@@ -43,9 +44,19 @@
             <td class="num">{{ size(d.total_size_download) }}</td>
             <td>{{ date(d.first_time_logged) }}</td>
             <td>{{ date(d.last_time_logged) }}</td>
+            <td class="id">
+              @if (republishedOf(d.ediid) === undefined) {
+                <span class="oc-checking">checking...</span>
+              } @else if (republishedOf(d.ediid)) {
+                <a [href]="landingUrl(republishedOf(d.ediid)!)" target="_blank" rel="noopener"
+                   [title]="republishedOf(d.ediid)!">{{ republishedOf(d.ediid) }}</a>
+              } @else {
+                <span class="oc-dash">-</span>
+              }
+            </td>
           </tr>
         } @empty {
-          <tr><td colspan="6" class="oc-none">No matches.</td></tr>
+          <tr><td colspan="7" class="oc-none">No matches.</td></tr>
         }
       </tbody>
     </table>

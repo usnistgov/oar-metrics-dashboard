@@ -46,6 +46,7 @@ export interface RecordTopic {
 /** Dataset metadata record (from /rmm/records). Only the fields used by the app are typed. */
 export interface RecordResult {
   ediid?: string;
+  '@id'?: string; // persistent ark; can differ from ediid (legacy hex or a newer version's id)
   title?: string;
   doi?: string;
   theme?: string[];

@@ -7,6 +7,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ThemeService } from '../../services/theme.service';
 import { LayoutService } from '../../services/layout.service';
+import { MetricsService } from '../../services/metrics.service';
 import {
   ColorPickerDialogComponent,
   ColorPickerData,
@@ -33,6 +34,7 @@ import {
 export class SettingsDialogComponent {
   readonly theme = inject(ThemeService);
   readonly layout = inject(LayoutService);
+  readonly metrics = inject(MetricsService);
   private ref = inject(MatDialogRef<SettingsDialogComponent>);
   private dialog = inject(MatDialog);
 

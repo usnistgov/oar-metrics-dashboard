@@ -80,7 +80,9 @@ export class KpiSummaryComponent {
   private animated = false;
 
   constructor() {
-    combineLatest([this.metrics.repoMetrics$, this.metrics.datasetMetrics$])
+    // Datasets come from the reconciled stream so the "Datasets tracked" count matches the coverage
+    // bar (aliases collapsed to their canonical ediid, no double counting).
+    combineLatest([this.metrics.repoMetrics$, this.metrics.reconciledDatasets$])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(([repo, datasets]) => this.compute(repo, datasets));
   }
