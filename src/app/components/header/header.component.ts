@@ -52,6 +52,16 @@ export class HeaderComponent {
     return updated ? this.formatRelative(updated) : '';
   });
 
+  /**
+   * A menu opened by mouse click leaves focus on its trigger, which then sits inside the CDK
+   * overlay's aria-hidden background (Chrome warns: focus hidden from assistive tech). Blur the
+   * trigger only when it still holds focus (the mouse case); keyboard-opened menus already move
+   * focus into the panel, and Material restores focus to the trigger on close regardless.
+   */
+  blurIfFocused(el: HTMLElement): void {
+    if (document.activeElement === el) el.blur();
+  }
+
   /** Open the settings dialog (dark mode, accent color, widget visibility). */
   openSettings(): void {
     this.dialog.open(SettingsDialogComponent, {

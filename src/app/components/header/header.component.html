@@ -119,8 +119,8 @@
   </div>
 
   <!-- Small screens: the three actions collapse into a single menu (icon + label per item). -->
-  <button type="button" class="action-btn header-menu-btn" [matMenuTriggerFor]="actionsMenu"
-          aria-label="Menu" matTooltip="Menu">
+  <button #menuBtn type="button" class="action-btn header-menu-btn" [matMenuTriggerFor]="actionsMenu"
+          (menuOpened)="blurIfFocused(menuBtn)" aria-label="Menu" matTooltip="Menu">
     <mat-icon>menu</mat-icon>
   </button>
   <mat-menu #actionsMenu="matMenu" class="app-menu">
