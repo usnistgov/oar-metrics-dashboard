@@ -88,6 +88,23 @@
   flex: none;
 }
 
+/* No-gap state: shown when every tracked dataset maps to the catalog */
+.ud-nogap {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.1rem 0 0;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+.ud-nogap-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: #16a34a;
+}
+
 /* Header: total badge + search box */
 .ud-head {
   display: flex;

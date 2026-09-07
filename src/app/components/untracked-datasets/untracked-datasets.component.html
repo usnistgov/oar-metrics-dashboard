@@ -15,6 +15,11 @@
           <span>{{ coverage().offCatalog | number }} datasets have usage but aren't in the catalog</span>
           <span class="ud-offcat-view">View<mat-icon class="ud-offcat-arrow">chevron_right</mat-icon></span>
         </button>
+      } @else {
+        <p class="ud-nogap">
+          <mat-icon class="ud-nogap-icon">check_circle</mat-icon>
+          All tracked datasets map to the catalog. No off-catalog gap.
+        </p>
       }
     </div>
   }

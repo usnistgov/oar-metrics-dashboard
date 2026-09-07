@@ -39,6 +39,7 @@ export class LayoutService {
     'repoHealth',
     'collectionShare',
     'datacite',
+    'untracked',
   ];
   private static readonly DEFAULT_PINNED: string[] = [];
 
