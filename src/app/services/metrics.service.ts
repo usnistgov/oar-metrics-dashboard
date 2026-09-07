@@ -66,14 +66,19 @@ export class MetricsService {
   // Auto-refresh interval + base-list cache TTL, from runtime config (minutes), default 10, min 1.
   private readonly REFRESH_MS = Math.max(1, Number(this.config.get('autoRefreshMinutes')) || 10) * 60 * 1000;
   private readonly RECORD_TTL_MS = 24 * 60 * 60 * 1000; // persisted record metadata TTL (static data)
-  private readonly REQUEST_TIMEOUT_MS = 10_000;       // per-request timeout so one slow call can't stall a card
+  // Per-request timeout. Must comfortably exceed the worst-case wait in the global RMM throttle
+  // queue (many paged calls dispatched at ~8/s): the timeout clock starts when a request is queued,
+  // so too small a value makes queued pages time out before they are sent and silently drop to empty
+  // (partial catalog/dataset loads -> wrong totals).
+  private readonly REQUEST_TIMEOUT_MS = 45_000;
   private readonly PAGE_SIZE = 100;                   // server's max page size
   private readonly PAGE_CONCURRENCY = 3;              // max parallel page requests while paginating (gentle on rate limits)
 
   private readonly MAX_PAGES = 50;                    // safety cap (50 * 100 = 5,000 datasets)
 
   // Storage. Bump STORE_VERSION when a payload shape changes (invalidates old caches).
-  private static readonly STORE_VERSION = 1;
+  // v2: dataset list is now cleaned/normalized (junk + path/query rows dropped) before caching.
+  private static readonly STORE_VERSION = 2;
   private static readonly REPO_KEY = 'metrics.repo.v1';
   private static readonly LIST_KEY = 'metrics.datasets.v1';
   private static readonly RECORDS_KEY = 'metrics.records.v1';
