@@ -13,6 +13,7 @@ import {
   map,
   mergeMap,
   of,
+  retry,
   shareReplay,
   switchMap,
   tap,
@@ -451,6 +452,7 @@ export class MetricsService {
     }
     return this.http.get<RepoMetricsResponse>(this.repoUrl).pipe(
       timeout(this.REQUEST_TIMEOUT_MS),
+      retry({ count: 3, delay: 800 }),
       map((r) => r?.RepoMetrics ?? []),
       tap((rows) => {
         this.repoError.set(false);
@@ -459,8 +461,14 @@ export class MetricsService {
         if (rows.length) this.writeStore(sessionStorage, MetricsService.REPO_KEY, rows);
       }),
       catchError(() => {
+        this.markBaseLoaded('repo'); // reveal even on failure (show data or an error state, not a stuck loader)
+        // Failed refresh: keep the last good data rather than wiping every chart to an error state.
+        const prev = this.readStore<RepoMetric[]>(sessionStorage, MetricsService.REPO_KEY, Infinity);
+        if (prev && prev.data.length) {
+          this.repoError.set(false);
+          return of(prev.data);
+        }
         this.repoError.set(true);
-        this.markBaseLoaded('repo'); // reveal even on failure (show empty/error states, not a stuck loader)
         return of<RepoMetric[]>([]);
       }),
     );
@@ -477,9 +485,20 @@ export class MetricsService {
       }
     }
     return this.fetchAllDatasets().pipe(
-      tap((rows) => {
-        this.markBaseLoaded('dataset'); // fires on success or the empty array from a page-1 failure
-        if (rows.length) this.writeStore(sessionStorage, MetricsService.LIST_KEY, rows);
+      map(({ rows, complete }) => {
+        this.markBaseLoaded('dataset');
+        let result = rows;
+        if (complete && rows.length) {
+          this.lastUpdated.set(this.now());
+          this.writeStore(sessionStorage, MetricsService.LIST_KEY, rows);
+        } else {
+          // Incomplete/failed fetch: prefer the last good cached list over a partial one, and don't
+          // cache the partial. Keeps the UI stable instead of dropping or erroring on a bad refresh.
+          const prev = this.readStore<DataSetMetric[]>(sessionStorage, MetricsService.LIST_KEY, Infinity);
+          if (prev && prev.data.length >= rows.length) result = prev.data;
+        }
+        this.datasetError.set(result.length === 0); // error only when there is genuinely no data
+        return result;
       }),
     );
   }
@@ -575,35 +594,36 @@ export class MetricsService {
    * and delete `pageRange` / `dedupeByEdiid`. The `datasetMetrics$` contract is unchanged, so no
    * widget needs to change.
    */
-  private fetchAllDatasets(): Observable<DataSetMetric[]> {
+  private fetchAllDatasets(): Observable<{ rows: DataSetMetric[]; complete: boolean }> {
     return this.fetchDatasetPage(1).pipe(
+      retry({ count: 3, delay: 800 }),
       switchMap(({ rows: firstRows, total }) => {
         const pageCount = Math.min(Math.ceil((total || 0) / this.PAGE_SIZE) || 1, this.MAX_PAGES);
-        if (pageCount <= 1) return of(this.cleanDatasets(firstRows));
+        if (pageCount <= 1) return of({ rows: this.cleanDatasets(firstRows), complete: true });
 
-        // Pages 2..pageCount, throttled; a failed page degrades to empty rather than failing all.
+        // Pages 2..pageCount, throttled. Retry a failing page a few times; only if it still fails is
+        // it recorded as null (missing) so the caller knows the load is incomplete.
         return from(this.pageRange(2, pageCount)).pipe(
           mergeMap(
             (page) =>
               this.fetchDatasetPage(page).pipe(
-                map((p) => p.rows),
-                catchError(() => of<DataSetMetric[]>([])),
+                retry({ count: 3, delay: 800 }),
+                map((p) => p.rows as DataSetMetric[] | null),
+                catchError(() => of<DataSetMetric[] | null>(null)),
               ),
             this.PAGE_CONCURRENCY,
           ),
           toArray(),
-          map((restPages) => this.cleanDatasets([firstRows, ...restPages].flat())),
+          map((pages) => {
+            const complete = pages.every((p) => p !== null);
+            const rest = pages.flatMap((p) => p ?? []);
+            return { rows: this.cleanDatasets([...firstRows, ...rest]), complete };
+          }),
         );
       }),
-      tap(() => {
-        this.datasetError.set(false);
-        this.lastUpdated.set(this.now());
-      }),
-      catchError(() => {
-        // Only reached if page 1 itself fails (per-page failures are caught above).
-        this.datasetError.set(true);
-        return of<DataSetMetric[]>([]);
-      }),
+      // Only reached if page 1 itself keeps failing (per-page failures are handled above). The error
+      // flag is set by loadDatasets based on the final result (after the last-good fallback).
+      catchError(() => of({ rows: [] as DataSetMetric[], complete: false })),
       // The full-list refetch is the slowest base call; treat its completion as "refresh done".
       finalize(() => this.refreshing.set(false)),
     );
@@ -642,29 +662,45 @@ export class MetricsService {
       }
     }
     return this.fetchCatalogPage(1).pipe(
+      retry({ count: 3, delay: 800 }),
       switchMap(({ rows, total }) => {
         const pageCount = Math.min(Math.ceil((total || 0) / this.PAGE_SIZE) || 1, this.MAX_PAGES);
-        if (pageCount <= 1) return of(rows);
+        if (pageCount <= 1) return of({ rows, complete: true });
         return from(this.pageRange(2, pageCount)).pipe(
           mergeMap(
             (page) =>
               this.fetchCatalogPage(page).pipe(
-                map((p) => p.rows),
-                catchError(() => of<RecordResult[]>([])),
+                retry({ count: 3, delay: 800 }),
+                map((p) => p.rows as RecordResult[] | null),
+                catchError(() => of<RecordResult[] | null>(null)),
               ),
             this.PAGE_CONCURRENCY,
           ),
           toArray(),
-          map((rest) => [rows, ...rest].flat()),
+          map((pages) => ({
+            rows: [rows, ...pages.map((p) => p ?? [])].flat(),
+            complete: pages.every((p) => p !== null),
+          })),
         );
       }),
-      tap((rows) => {
-        this.catalogError.set(false);
-        if (rows.length) this.writeStore(sessionStorage, MetricsService.CATALOG_KEY, rows);
+      map(({ rows, complete }) => {
+        let result = rows;
+        if (complete && rows.length) {
+          this.writeStore(sessionStorage, MetricsService.CATALOG_KEY, rows);
+        } else {
+          // Incomplete: keep the last good cached catalog rather than caching/using a partial one.
+          const prev = this.readStore<RecordResult[]>(sessionStorage, MetricsService.CATALOG_KEY, Infinity);
+          if (prev && prev.data.length >= rows.length) result = prev.data;
+        }
+        this.catalogError.set(result.length === 0);
+        return result;
       }),
       catchError(() => {
-        this.catalogError.set(true);
-        return of<RecordResult[]>([]);
+        // page 1 failed: fall back to the last good catalog if we have one.
+        const prev = this.readStore<RecordResult[]>(sessionStorage, MetricsService.CATALOG_KEY, Infinity);
+        const data = prev?.data ?? [];
+        this.catalogError.set(data.length === 0);
+        return of<RecordResult[]>(data);
       }),
     );
   }
