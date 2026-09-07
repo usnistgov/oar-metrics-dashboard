@@ -52,14 +52,15 @@ type RefreshKind =
  * - Base lists → `sessionStorage` (per-tab; {@link REFRESH_MS} TTL). A reload within the TTL skips
  *   the multi-page fetch.
  *
- * Auto-refreshes every 5 minutes; the toolbar button calls {@link refresh} for a hard refresh.
+ * Auto-refreshes every 10 minutes; the toolbar button calls {@link refresh} for a hard refresh.
  */
 @Injectable({ providedIn: 'root' })
 export class MetricsService {
   private http = inject(HttpClient);
   private config = inject(ConfigService);
 
-  private readonly REFRESH_MS = 5 * 60 * 1000;        // auto-refresh + base-list cache TTL
+  // Auto-refresh interval + base-list cache TTL, from runtime config (minutes), default 10, min 1.
+  private readonly REFRESH_MS = Math.max(1, Number(this.config.get('autoRefreshMinutes')) || 10) * 60 * 1000;
   private readonly RECORD_TTL_MS = 24 * 60 * 60 * 1000; // persisted record metadata TTL (static data)
   private readonly REQUEST_TIMEOUT_MS = 10_000;       // per-request timeout so one slow call can't stall a card
   private readonly PAGE_SIZE = 100;                   // server's max page size

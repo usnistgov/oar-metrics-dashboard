@@ -19,6 +19,8 @@ export interface AppConfig {
   dataciteApi: string;
   /** Human-readable build/deploy version, shown in the UI and useful for support. */
   version: string;
+  /** Auto-refresh interval for the base data, in minutes (also the base-list cache TTL). */
+  autoRefreshMinutes: number;
 }
 
 /**
@@ -32,6 +34,7 @@ export const DEFAULT_CONFIG: AppConfig = {
   apiURLRecords: environment.apiURLRecords,
   dataciteApi: 'https://api.datacite.org/dois',
   version: 'dev',
+  autoRefreshMinutes: 10,
 };
 
 /**
