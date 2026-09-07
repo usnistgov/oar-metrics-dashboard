@@ -102,7 +102,15 @@
       </button>
     </div>
     <div class="kpi-main"><span class="kpi-value">{{ datasetsLabel() }}</span></div>
-    <div class="kpi-sub">distinct datasets</div>
+    @if (coverage().catalog > 0) {
+      <div class="kpi-cov-bar" role="img"
+           [attr.aria-label]="coveragePct() + '% of ' + catalogLabel() + ' cataloged datasets have usage'">
+        <div class="kpi-cov-fill" [style.width.%]="coverage().coverage * 100"></div>
+      </div>
+      <div class="kpi-sub">{{ coveragePct() }}% of {{ catalogLabel() }} cataloged</div>
+    } @else {
+      <div class="kpi-sub">distinct datasets</div>
+    }
   </div>
 
   <!-- Tracked since -->

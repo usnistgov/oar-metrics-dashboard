@@ -27,6 +27,7 @@ import { ConcentrationComponent } from '../concentration/concentration.component
 import { RepoHealthComponent } from '../repo-health/repo-health.component';
 import { CollectionsComponent } from '../collections/collections.component';
 import { CollectionShareComponent } from '../collection-share/collection-share.component';
+import { UntrackedDatasetsComponent } from '../untracked-datasets/untracked-datasets.component';
 
 /**
  * Dashboard shell: the top toolbar (brand, last-updated indicator, manual refresh) and the
@@ -39,7 +40,8 @@ import { CollectionShareComponent } from '../collection-share/collection-share.c
     MonthlyGraphComponent, LatestDownloadsComponent, MostPopularComponent, PopularScienceDomainsComponent,
     MonthlyDownloadsComponent, MonthlyUsersComponent, DataciteTestComponent, WatchlistComponent,
     EngagementComponent, SeasonalityComponent, SortByComponent, DomainLevelToggleComponent,
-    ConcentrationComponent, RepoHealthComponent, CollectionsComponent, CollectionShareComponent],
+    ConcentrationComponent, RepoHealthComponent, CollectionsComponent, CollectionShareComponent,
+    UntrackedDatasetsComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

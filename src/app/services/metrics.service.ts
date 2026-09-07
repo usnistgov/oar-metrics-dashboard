@@ -19,6 +19,7 @@ import {
 } from 'rxjs';
 import { ConfigService } from './config.service';
 import {
+  CatalogCoverage,
   CatalogQueryResponse,
   CollectionDetail,
   CollectionMembership,
@@ -74,7 +75,7 @@ export class MetricsService {
   private static readonly LIST_KEY = 'metrics.datasets.v1';
   private static readonly RECORDS_KEY = 'metrics.records.v1';
   private static readonly COLLECTIONS_KEY = 'metrics.collections.v1';
-  private static readonly CATALOG_KEY = 'metrics.catalog.v1';
+  private static readonly CATALOG_KEY = 'metrics.catalog.v2'; // v2: added title to the projection
 
   /** NERDm `@type` that marks a resource as a collection (see docs/09-collections.md). */
   private static readonly COLLECTION_TYPE = 'nrda:ScienceTheme';
@@ -132,6 +133,66 @@ export class MetricsService {
    */
   readonly catalogRecords$: Observable<RecordResult[]> = this.refresh$.pipe(
     switchMap((kind) => this.loadCatalogRecords(kind)),
+    shareReplay({ bufferSize: 1, refCount: false }),
+  );
+
+  /**
+   * Catalog datasets with NO recorded usage: every catalog record whose ediid is absent from the
+   * (cleaned) usage list. Published but never downloaded/logged. Powers the "Untracked Datasets" card;
+   * sorted by title. Titles come from the bulk catalog fetch (no per-record lookups).
+   */
+  readonly untrackedDatasets$: Observable<RecordResult[]> = combineLatest([
+    this.catalogRecords$,
+    this.datasetMetrics$,
+  ]).pipe(
+    map(([catalog, usage]) => {
+      const tracked = new Set(usage.map((d) => d.ediid));
+      return catalog
+        .filter((r) => r.ediid && !tracked.has(r.ediid))
+        .sort((a, b) => (a.title ?? '').localeCompare(b.title ?? ''));
+    }),
+    shareReplay({ bufferSize: 1, refCount: false }),
+  );
+
+  /**
+   * Coverage of the published catalog by usage: how many cataloged datasets have usage, how many
+   * don't, and how many usage datasets sit outside the catalog. Drives the Untracked card's summary.
+   */
+  readonly catalogCoverage$: Observable<CatalogCoverage> = combineLatest([
+    this.catalogRecords$,
+    this.datasetMetrics$,
+  ]).pipe(
+    map(([catalog, usage]) => {
+      const tracked = new Set(usage.map((d) => d.ediid));
+      const catalogIds = new Set(catalog.map((r) => r.ediid).filter(Boolean));
+      const withUsage = catalog.filter((r) => r.ediid && tracked.has(r.ediid)).length;
+      const offCatalog = usage.filter((d) => !catalogIds.has(d.ediid)).length;
+      return {
+        catalog: catalog.length,
+        withUsage,
+        untracked: catalog.length - withUsage,
+        offCatalog,
+        coverage: catalog.length ? withUsage / catalog.length : 0,
+      };
+    }),
+    shareReplay({ bufferSize: 1, refCount: false }),
+  );
+
+  /**
+   * Off-catalog datasets: have usage but are NOT in the catalog (withdrawn/removed, or missing from
+   * the bulk records list). Sorted by downloads. No titles - the records no longer resolve. Backs the
+   * expandable "+N" list on the Untracked card.
+   */
+  readonly offCatalogDatasets$: Observable<DataSetMetric[]> = combineLatest([
+    this.datasetMetrics$,
+    this.catalogRecords$,
+  ]).pipe(
+    map(([usage, catalog]) => {
+      const catalogIds = new Set(catalog.map((r) => r.ediid).filter(Boolean));
+      return usage
+        .filter((d) => !catalogIds.has(d.ediid))
+        .sort((a, b) => (b.record_download ?? 0) - (a.record_download ?? 0));
+    }),
     shareReplay({ bufferSize: 1, refCount: false }),
   );
 
@@ -527,7 +588,7 @@ export class MetricsService {
   private fetchCatalogPage(page: number): Observable<{ rows: RecordResult[]; total: number }> {
     return this.http
       .get<{ ResultData?: RecordResult[]; ResultCount?: number }>(this.recordsUrl, {
-        params: { include: 'ediid,topic,theme', size: this.PAGE_SIZE, page },
+        params: { include: 'ediid,topic,theme,title', size: this.PAGE_SIZE, page },
       })
       .pipe(
         timeout(this.REQUEST_TIMEOUT_MS),

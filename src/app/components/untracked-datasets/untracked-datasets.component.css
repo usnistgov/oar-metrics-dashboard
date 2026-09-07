@@ -1,0 +1,165 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.untracked {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  gap: 0.7rem;
+}
+
+/* Coverage strip: how much of the catalog has usage */
+.ud-coverage {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ud-cov-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.ud-cov-pct {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.ud-cov-text {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.ud-bar {
+  height: 8px;
+  border-radius: 999px;
+  /* Track is the accent at low alpha, so filled vs unfilled are the same hue with clear contrast. */
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  overflow: hidden;
+}
+
+.ud-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-accent);
+  transition: width 0.5s ease;
+}
+
+/* Obvious clickable row that opens the off-catalog modal */
+.ud-offcat-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0.1rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  color: var(--color-accent);
+  cursor: pointer;
+  font-size: 0.8rem;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+.ud-offcat-btn:hover {
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+}
+.ud-offcat-btn > span:first-of-type {
+  flex: 1;
+}
+.ud-offcat-view {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
+  flex: none;
+}
+.ud-offcat-icon,
+.ud-offcat-arrow {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+/* Header: total badge + search box */
+.ud-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.ud-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.2rem;
+  height: 1.7rem;
+  padding: 0 0.55rem;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: var(--color-on-accent, #fff);
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex: none;
+}
+
+.ud-search {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0.42rem 0.7rem;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-size: 0.85rem;
+}
+
+.ud-search:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+/* Scrollable list within the fixed card height */
+.ud-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.ud-item {
+  padding: 0.42rem 0.2rem;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.ud-title {
+  display: block;
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ud-title:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+.ud-msg {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  padding: 0.4rem 0.2rem;
+  margin: 0;
+}

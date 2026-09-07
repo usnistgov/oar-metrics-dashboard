@@ -52,6 +52,15 @@ export interface RecordResult {
   topic?: RecordTopic[];
 }
 
+/** Coverage of the published catalog by usage metrics (drives the Untracked card's coverage strip). */
+export interface CatalogCoverage {
+  catalog: number;    // published datasets in the catalog
+  withUsage: number;  // catalog datasets that have recorded usage
+  untracked: number;  // catalog datasets with no usage (catalog - withUsage)
+  offCatalog: number; // datasets with usage that are NOT in the catalog
+  coverage: number;   // withUsage / catalog, 0..1
+}
+
 /** A dataset returned by the catalog search, trimmed to what the lookup UI needs. */
 export interface DatasetSearchResult {
   ediid: string;

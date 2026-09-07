@@ -1,0 +1,74 @@
+.oc-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.oc-intro {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0 0 0.8rem;
+}
+
+.oc-search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+.oc-search:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.oc-table-wrap {
+  overflow: auto;
+  max-height: 58vh;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+}
+
+.oc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.oc-table th,
+.oc-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-line);
+  white-space: nowrap;
+}
+.oc-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-weight: 700;
+  z-index: 1;
+}
+.oc-table tbody tr:hover {
+  background: color-mix(in srgb, var(--color-accent) 6%, transparent);
+}
+.oc-table td.id a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.oc-table td.id a:hover {
+  text-decoration: underline;
+}
+.oc-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.oc-none {
+  text-align: center;
+  color: var(--color-muted);
+}

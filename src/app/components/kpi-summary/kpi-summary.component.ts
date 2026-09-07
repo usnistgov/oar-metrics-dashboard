@@ -1,10 +1,10 @@
 import { Component, DestroyRef, WritableSignal, computed, inject, input, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { combineLatest } from 'rxjs';
 import { MetricsService } from '../../services/metrics.service';
-import { DataSetMetric, RepoMetric } from '../../models/metrics.models';
+import { CatalogCoverage, DataSetMetric, RepoMetric } from '../../models/metrics.models';
 import { formatSize } from '../../format';
 
 /**
@@ -34,6 +34,13 @@ export class KpiSummaryComponent {
   readonly volumeTb = signal(0);
   readonly datasets = signal(0);
   readonly volTargetTb = signal(0); // final volume, so the unit (TB/PB) is stable during count-up
+
+  // Catalog coverage (how many cataloged datasets have usage) - drives the Datasets tracked bar.
+  readonly coverage = toSignal(this.metrics.catalogCoverage$, {
+    initialValue: { catalog: 0, withUsage: 0, untracked: 0, offCatalog: 0, coverage: 0 } as CatalogCoverage,
+  });
+  readonly coveragePct = computed(() => Math.round(this.coverage().coverage * 100));
+  readonly catalogLabel = computed(() => this.coverage().catalog.toLocaleString());
 
   // "This year" sub-stats (preformatted), the most-recent download, and the date-range tiles.
   readonly downloadsYear = signal('');

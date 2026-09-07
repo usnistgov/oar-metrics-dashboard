@@ -1,0 +1,49 @@
+<div class="untracked">
+  @if (coverage().catalog > 0) {
+    <div class="ud-coverage">
+      <div class="ud-cov-line">
+        <span class="ud-cov-pct">{{ (coverage().coverage * 100) | number: '1.0-0' }}%</span>
+        <span class="ud-cov-text">usage coverage · {{ coverage().withUsage | number }} of {{ coverage().catalog | number }} cataloged</span>
+      </div>
+      <div class="ud-bar" role="img"
+           [attr.aria-label]="coverage().withUsage + ' of ' + coverage().catalog + ' cataloged datasets have usage'">
+        <div class="ud-bar-fill" [style.width.%]="coverage().coverage * 100"></div>
+      </div>
+      @if (coverage().offCatalog > 0) {
+        <button type="button" class="ud-offcat-btn" (click)="openOffCatalog()">
+          <mat-icon class="ud-offcat-icon">link_off</mat-icon>
+          <span>{{ coverage().offCatalog | number }} datasets have usage but aren't in the catalog</span>
+          <span class="ud-offcat-view">View<mat-icon class="ud-offcat-arrow">chevron_right</mat-icon></span>
+        </button>
+      }
+    </div>
+  }
+
+  <div class="ud-head">
+    <span class="ud-badge" [attr.aria-label]="total() + ' untracked datasets'">{{ total() | number }}</span>
+    <input
+      #search
+      type="search"
+      class="ud-search"
+      placeholder="Search by title..."
+      [value]="query()"
+      (input)="query.set(search.value)"
+      aria-label="Search untracked datasets by title"
+    />
+  </div>
+
+  @if (total() === 0) {
+    <p class="ud-msg">Every catalog dataset has recorded usage.</p>
+  } @else {
+    <ul class="ud-list">
+      @for (d of filtered(); track d.ediid) {
+        <li class="ud-item">
+          <a class="ud-title" [href]="landingUrl(d.ediid)" target="_blank" rel="noopener"
+             [title]="d.title || d.ediid">{{ d.title || d.ediid }}</a>
+        </li>
+      } @empty {
+        <li class="ud-msg">No matches for "{{ query() }}".</li>
+      }
+    </ul>
+  }
+</div>

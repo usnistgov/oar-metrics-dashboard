@@ -1,0 +1,57 @@
+<h2 mat-dialog-title class="oc-title">
+  <mat-icon>link_off</mat-icon>
+  Usage without a catalog record
+</h2>
+
+<mat-dialog-content class="oc-content">
+  <p class="oc-intro">
+    {{ total | number }} datasets have recorded usage but are not in the current catalog. They are
+    either withdrawn, or logged under a different identifier (the ark) than the catalog uses (the
+    ediid). Identifiers link to the PDR landing page where one still exists.
+  </p>
+
+  <input
+    #q
+    type="search"
+    class="oc-search"
+    placeholder="Search by identifier..."
+    [value]="query()"
+    (input)="query.set(q.value)"
+    aria-label="Search by identifier"
+  />
+
+  <div class="oc-table-wrap">
+    <table class="oc-table">
+      <thead>
+        <tr>
+          <th>Identifier</th>
+          <th class="num">Downloads</th>
+          <th class="num">Users</th>
+          <th class="num">Size</th>
+          <th>First recorded</th>
+          <th>Last recorded</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (d of rows(); track d.ediid) {
+          <tr>
+            <td class="id">
+              <a [href]="landingUrl(d.ediid)" target="_blank" rel="noopener" [title]="d.ediid">{{ d.ediid }}</a>
+            </td>
+            <td class="num">{{ d.record_download | number }}</td>
+            <td class="num">{{ d.number_users | number }}</td>
+            <td class="num">{{ size(d.total_size_download) }}</td>
+            <td>{{ date(d.first_time_logged) }}</td>
+            <td>{{ date(d.last_time_logged) }}</td>
+          </tr>
+        } @empty {
+          <tr><td colspan="6" class="oc-none">No matches.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

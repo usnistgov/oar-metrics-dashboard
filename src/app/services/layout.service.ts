@@ -56,6 +56,7 @@ export class LayoutService {
     { id: 'repoHealth', label: 'Repository Health' },
     { id: 'collections', label: 'Downloads by Collection' },
     { id: 'collectionShare', label: "Collections' Share of Repository" },
+    { id: 'untracked', label: 'Untracked Datasets' },
     { id: 'datacite', label: 'DataCite Metrics' },
     // TODO (future enhancement): Engagement + Download Concentration are disabled for now while we
     // refine how they fit the dashboard. Their components, helpers, tests, and the dashboard @case
