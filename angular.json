@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "data-practice": {
+    "oar-metrics-dashboard": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/data-practice",
+            "outputPath": "dist/oar-metrics-dashboard",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -78,10 +78,10 @@
           },
           "configurations": {
             "production": {
-              "buildTarget": "data-practice:build:production"
+              "buildTarget": "oar-metrics-dashboard:build:production"
             },
             "development": {
-              "buildTarget": "data-practice:build:development"
+              "buildTarget": "oar-metrics-dashboard:build:development"
             }
           },
           "defaultConfiguration": "development"

@@ -45,10 +45,10 @@ echo "$prog: building metrics-dashboard $VERSION (base-href $BASE_HREF) in $NODE
 docker run --rm -v "$PACKAGE_DIR":/app -w /app "$NODE_IMAGE" \
     sh -c "npm ci && npx ng build --configuration production --base-href '$BASE_HREF'"
 
-BROWSER="$PACKAGE_DIR/dist/data-practice/browser"
+BROWSER="$PACKAGE_DIR/dist/oar-metrics-dashboard/browser"
 [ -d "$BROWSER" ] || { echo "$prog: build output not found at $BROWSER"; exit 1; }
 
 ZIP="$DISTDIR/metrics-dashboard-$VERSION.zip"
 rm -f "$ZIP"
-( cd "$PACKAGE_DIR/dist/data-practice" && zip -qr "$ZIP" browser )
+( cd "$PACKAGE_DIR/dist/oar-metrics-dashboard" && zip -qr "$ZIP" browser )
 echo "$prog: wrote $ZIP"
