@@ -66,10 +66,10 @@
 }
 
 .brand-sub-desc {
-  font-size: 0.76rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
   letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.62);
+  color: var(--color-accent);
 }
 
 /* Segmented pill navigation: centered between the brand and the actions, tabs span it equally.
