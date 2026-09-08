@@ -143,8 +143,8 @@ export class ConcentrationComponent implements AfterViewInit {
             displayColors: false,
             filter: (item) => item.datasetIndex === 1,
             callbacks: {
-              title: (items) => `Top ${Math.round(items[0].parsed.x)}% of datasets`,
-              label: (item) => `${Math.round(item.parsed.y)}% of all downloads`,
+              title: (items) => `Top ${Math.round(items[0].parsed.x ?? 0)}% of datasets`,
+              label: (item) => `${Math.round(item.parsed.y ?? 0)}% of all downloads`,
             },
           },
         },
