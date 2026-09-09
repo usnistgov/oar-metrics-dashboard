@@ -201,10 +201,11 @@
   font-size: 1.25rem;
 }
 .kpi-unit {
-  margin-left: 0.25rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--color-muted);
+  margin-left: 0.2rem;
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
 }
 .kpi-sub {
   font-size: 0.75rem;
