@@ -644,3 +644,38 @@ describe('MetricsService dedupe edges', () => {
     http.verify();
   });
 });
+
+/** Verifies the graceful "nothing to show" flag that drives the dashboard/collections retry state. */
+describe('MetricsService baseUnavailable', () => {
+  function configure() {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+    return TestBed.inject(HttpTestingController);
+  }
+
+  beforeEach(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+  });
+  afterEach(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+  });
+
+  it('is true only when both the repo and dataset loads have errored', () => {
+    configure();
+    const svc = TestBed.inject(MetricsService);
+
+    expect(svc.baseUnavailable()).toBe(false);
+
+    svc.repoError.set(true);
+    expect(svc.baseUnavailable()).toBe(false); // one source failing is a partial failure, not total
+
+    svc.datasetError.set(true);
+    expect(svc.baseUnavailable()).toBe(true); // both failed with no data -> show the retry state
+
+    svc.repoError.set(false);
+    expect(svc.baseUnavailable()).toBe(false); // recovered
+  });
+});

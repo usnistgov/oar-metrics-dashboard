@@ -12,6 +12,14 @@ interface NavItem {
 }
 
 /**
+ * Index of the nav item matching `url` (exact match for '/', prefix match otherwise), or -1 when the
+ * route is not in the nav (e.g. the guide) so the indicator can be hidden. Pure, for testability.
+ */
+export function navActiveIndex(url: string, items: { path: string; exact: boolean }[]): number {
+  return items.findIndex((it) => (it.exact ? url === it.path : url.startsWith(it.path)));
+}
+
+/**
  * Frosted-glass navigation pill for the header. A blurred, rounded segmented control with a single
  * accent indicator that slides to the active route. Space-thrifty, clearly navigation, and keyboard
  * accessible. Motion is disabled for users who prefer reduced motion (see the stylesheet).
@@ -43,10 +51,7 @@ export class NavDockComponent {
 
   /** Index of the active item (exact match for '/', prefix match otherwise), or -1 if the current
    *  route is not in this nav (e.g. the guide) - in which case the indicator is hidden. */
-  readonly activeIndex = computed(() => {
-    const u = this.url();
-    return this.items.findIndex((it) => (it.exact ? u === it.path : u.startsWith(it.path)));
-  });
+  readonly activeIndex = computed(() => navActiveIndex(this.url(), this.items));
 
   private readonly links = viewChildren<ElementRef<HTMLElement>>('link');
 
