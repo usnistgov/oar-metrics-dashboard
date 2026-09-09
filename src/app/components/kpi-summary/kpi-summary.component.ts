@@ -1,4 +1,4 @@
-import { Component, DestroyRef, WritableSignal, computed, inject, input, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -6,6 +6,7 @@ import { combineLatest } from 'rxjs';
 import { MetricsService } from '../../services/metrics.service';
 import { CatalogCoverage, DataSetMetric, RepoMetric } from '../../models/metrics.models';
 import { formatSize } from '../../format';
+import { animateCount } from '../../animate';
 
 /**
  * Executive KPI strip across the top of the dashboard: all-time downloads and download volume (each
@@ -163,27 +164,14 @@ export class KpiSummaryComponent {
       this.datasets.set(datasets.length);
     } else {
       this.animated = true;
-      this.animateTo(this.downloads, totalDownloads);
-      this.animateTo(this.volumeTb, totalVolume);
-      this.animateTo(this.datasets, datasets.length);
+      animateCount(this.downloads, totalDownloads);
+      animateCount(this.volumeTb, totalVolume);
+      animateCount(this.datasets, datasets.length);
     }
   }
 
   private prefersReducedMotion(): boolean {
     return typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  }
-
-  /** Ease a signal from 0 to its target with a short count-up animation. */
-  private animateTo(sig: WritableSignal<number>, target: number, ms = 900): void {
-    const start = performance.now();
-    const step = (now: number) => {
-      const t = Math.min(1, (now - start) / ms);
-      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
-      sig.set(target * eased);
-      if (t < 1) requestAnimationFrame(step);
-      else sig.set(target);
-    };
-    requestAnimationFrame(step);
   }
 
   /** Percent change from prev to cur, rounded; null when prev is 0 (growth is undefined). */

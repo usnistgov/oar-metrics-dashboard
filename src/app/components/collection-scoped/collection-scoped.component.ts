@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,6 +13,7 @@ import { SortByComponent } from '../sort-by/sort-by.component';
 import { DomainLevelToggleComponent } from '../domain-level-toggle/domain-level-toggle.component';
 import { ScopeService } from '../../services/scope.service';
 import { formatCount, formatSize } from '../../format';
+import { animateCount } from '../../animate';
 
 /**
  * Collections Metrics scoped view: every figure on this page is scoped to the collection named in the
@@ -46,9 +47,25 @@ export class CollectionScopedComponent {
   readonly fmtCount = formatCount;
   readonly fmtSize = formatSize;
 
+  // Count-up copies of the headline figures, matching the dashboard KPI motion.
+  readonly downloadsAnim = signal(0);
+  readonly usersAnim = signal(0);
+  readonly sizeAnim = signal(0);
+  readonly datasetsAnim = signal(0);
+
   constructor() {
     this.route.paramMap
       .pipe(takeUntilDestroyed())
       .subscribe((p) => this.scope.setCollection(p.get('id')));
+
+    // Count the headline numbers up whenever a collection's detail loads (or changes).
+    effect(() => {
+      const d = this.scope.detail();
+      if (!d) return;
+      animateCount(this.downloadsAnim, d.downloads);
+      animateCount(this.usersAnim, d.users);
+      animateCount(this.sizeAnim, d.size);
+      animateCount(this.datasetsAnim, d.membersWithUsage);
+    });
   }
 }

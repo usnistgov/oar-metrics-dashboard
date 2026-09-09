@@ -32,7 +32,7 @@
               <mat-icon>info_outline</mat-icon>
             </button>
           </div>
-          <div class="kpi-value">{{ fmtCount(d.downloads) }}</div>
+          <div class="kpi-value">{{ fmtCount(downloadsAnim()) }}</div>
         </div>
         <div class="kpi">
           <div class="kpi-label">
@@ -42,7 +42,7 @@
               <mat-icon>info_outline</mat-icon>
             </button>
           </div>
-          <div class="kpi-value">{{ fmtCount(d.users) }}</div>
+          <div class="kpi-value">{{ fmtCount(usersAnim()) }}</div>
         </div>
         <div class="kpi">
           <div class="kpi-label">
@@ -52,7 +52,7 @@
               <mat-icon>info_outline</mat-icon>
             </button>
           </div>
-          <div class="kpi-value">{{ fmtSize(d.size) }}</div>
+          <div class="kpi-value">{{ fmtSize(sizeAnim()) }}</div>
         </div>
         <div class="kpi">
           <div class="kpi-label">
@@ -62,7 +62,7 @@
               <mat-icon>info_outline</mat-icon>
             </button>
           </div>
-          <div class="kpi-value">{{ fmtCount(d.membersWithUsage) }}</div>
+          <div class="kpi-value">{{ fmtCount(datasetsAnim()) }}</div>
           <div class="kpi-sub">of {{ fmtCount(d.memberCount) }} in collection</div>
         </div>
       </section>

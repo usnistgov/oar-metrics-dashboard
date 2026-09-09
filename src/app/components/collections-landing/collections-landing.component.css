@@ -1,7 +1,13 @@
 .landing {
-  padding: 1.25rem 1rem 2rem;
+  padding: 0 0.75rem 0.75rem; /* no top gap; keep side + bottom padding */
   max-width: 1200px;
   margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+  .landing {
+    padding: 0 1rem 1rem;
+  }
 }
 
 .landing-head h1 {
@@ -183,3 +189,29 @@
   color: var(--color-muted);
   padding: 3rem 0;
 }
+
+/* Staggered entrance, matching the dashboard cards (reuses the global `card-rise` keyframe). The grid
+   only renders once collections have loaded, so the animation runs on that first paint. */
+.landing-grid > .col-card,
+.landing-wide {
+  animation: card-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+.landing-grid > .col-card:nth-child(1) { animation-delay: 0.03s; }
+.landing-grid > .col-card:nth-child(2) { animation-delay: 0.08s; }
+.landing-grid > .col-card:nth-child(3) { animation-delay: 0.13s; }
+.landing-grid > .col-card:nth-child(4) { animation-delay: 0.18s; }
+.landing-grid > .col-card:nth-child(5) { animation-delay: 0.23s; }
+.landing-grid > .col-card:nth-child(6) { animation-delay: 0.28s; }
+.landing-grid > .col-card:nth-child(7) { animation-delay: 0.33s; }
+.landing-grid > .col-card:nth-child(8) { animation-delay: 0.38s; }
+.landing-grid > .col-card:nth-child(9) { animation-delay: 0.43s; }
+.landing-grid > .col-card:nth-child(10) { animation-delay: 0.48s; }
+.landing-wide { animation-delay: 0.3s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-grid > .col-card,
+  .landing-wide {
+    animation: none;
+  }
+}
+
