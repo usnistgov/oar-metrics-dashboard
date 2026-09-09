@@ -21,8 +21,8 @@ describe('MetricsService persistence', () => {
     req.flush({
       DataSetMetricsCount: 2,
       DataSetMetrics: [
-        { ediid: 'ark:/a', record_download: 10, last_time_logged: '2026-01-01T00:00:00' },
-        { ediid: 'ark:/b', record_download: 5, last_time_logged: '2026-01-02T00:00:00' },
+        { ediid: 'ark:/88434/mds2-a', record_download: 10, last_time_logged: '2026-01-01T00:00:00' },
+        { ediid: 'ark:/88434/mds2-b', record_download: 5, last_time_logged: '2026-01-02T00:00:00' },
       ],
     });
   }
@@ -208,8 +208,8 @@ describe('MetricsService dedupe', () => {
     page1.flush({
       DataSetMetricsCount: 101,
       DataSetMetrics: [
-        { ediid: 'ark:/dup', record_download: 3, last_time_logged: '2026-01-01T00:00:00' },
-        { ediid: 'ark:/solo', record_download: 1, last_time_logged: '2026-01-03T00:00:00' },
+        { ediid: 'ark:/88434/dup', record_download: 3, last_time_logged: '2026-01-01T00:00:00' },
+        { ediid: 'ark:/88434/solo', record_download: 1, last_time_logged: '2026-01-03T00:00:00' },
       ],
     });
 
@@ -217,13 +217,13 @@ describe('MetricsService dedupe', () => {
     page2.flush({
       DataSetMetricsCount: 101,
       DataSetMetrics: [
-        { ediid: 'ark:/dup', record_download: 9, last_time_logged: '2026-01-02T00:00:00' },
+        { ediid: 'ark:/88434/dup', record_download: 9, last_time_logged: '2026-01-02T00:00:00' },
       ],
     });
 
     expect(emitted?.length).toBe(2);
-    const dup = emitted?.find((r) => r.ediid === 'ark:/dup');
-    const solo = emitted?.find((r) => r.ediid === 'ark:/solo');
+    const dup = emitted?.find((r) => r.ediid === 'ark:/88434/dup');
+    const solo = emitted?.find((r) => r.ediid === 'ark:/88434/solo');
     expect(dup?.record_download).toBe(9);
     expect(solo?.record_download).toBe(1);
     http.verify();
@@ -272,7 +272,7 @@ describe('MetricsService repoMetrics$', () => {
     sessionStorage.setItem(
       REPO_KEY,
       JSON.stringify({
-        v: 1,
+        v: 2,
         savedAt: Date.now(),
         data: [{ month_year: 'June 2025', total_size: 0, success_download: 1, unique_users: 1 }],
       }),
@@ -287,19 +287,28 @@ describe('MetricsService repoMetrics$', () => {
   });
 
   it('sets repoError and emits [] on HTTP error', () => {
-    const http = configure();
-    const svc = TestBed.inject(MetricsService);
+    jest.useFakeTimers();
+    try {
+      const http = configure();
+      const svc = TestBed.inject(MetricsService);
 
-    let emitted: unknown[] | undefined;
-    svc.repoMetrics$.subscribe((d) => (emitted = d));
+      let emitted: unknown[] | undefined;
+      svc.repoMetrics$.subscribe((d) => (emitted = d));
 
-    http
-      .expectOne((r) => r.url.includes('usagemetrics/repo'))
-      .flush('boom', { status: 500, statusText: 'Server Error' });
+      // The request retries 3 times (delay 800ms) before giving up; fail every attempt.
+      for (let attempt = 0; attempt < 4; attempt++) {
+        http
+          .expectOne((r) => r.url.includes('usagemetrics/repo'))
+          .flush('boom', { status: 500, statusText: 'Server Error' });
+        jest.advanceTimersByTime(800);
+      }
 
-    expect(svc.repoError()).toBe(true);
-    expect(emitted).toEqual([]);
-    http.verify();
+      expect(svc.repoError()).toBe(true);
+      expect(emitted).toEqual([]);
+      http.verify();
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });
 
@@ -330,7 +339,7 @@ describe('MetricsService refresh (hard)', () => {
 
     http.expectOne((r) => r.url.includes('usagemetrics/records')).flush({
       DataSetMetricsCount: 1,
-      DataSetMetrics: [{ ediid: 'ark:/a', record_download: 1 }],
+      DataSetMetrics: [{ ediid: 'ark:/88434/mds2-a', record_download: 1 }],
     });
     expect(sessionStorage.getItem(LIST_KEY)).toBeTruthy();
 
@@ -342,7 +351,7 @@ describe('MetricsService refresh (hard)', () => {
     // The hard refresh re-pulls the list; completion clears the spinner and rewrites the cache.
     http.expectOne((r) => r.url.includes('usagemetrics/records')).flush({
       DataSetMetricsCount: 1,
-      DataSetMetrics: [{ ediid: 'ark:/a', record_download: 2 }],
+      DataSetMetrics: [{ ediid: 'ark:/88434/mds2-a', record_download: 2 }],
     });
     expect(svc.refreshing()).toBe(false);
     expect(sessionStorage.getItem(LIST_KEY)).toBeTruthy();
@@ -394,8 +403,8 @@ describe('MetricsService records and collections', () => {
     http.expectOne((r) => r.url.includes('usagemetrics/records')).flush({
       DataSetMetricsCount: 2,
       DataSetMetrics: [
-        { ediid: 'a', record_download: 100, total_size_download: 1000, number_users: 10 },
-        { ediid: 'b', record_download: 50, total_size_download: 500, number_users: 5 },
+        { ediid: 'ark:/88434/a', record_download: 100, total_size_download: 1000, number_users: 10 },
+        { ediid: 'ark:/88434/b', record_download: 50, total_size_download: 500, number_users: 5 },
       ],
     });
     // Collection discovery by @type.
@@ -405,7 +414,7 @@ describe('MetricsService records and collections', () => {
     // Members of col1.
     http
       .expectOne((r) => r.url.includes('isPartOf'))
-      .flush({ ResultData: [{ ediid: 'a' }, { ediid: 'b' }] });
+      .flush({ ResultData: [{ ediid: 'ark:/88434/a' }, { ediid: 'ark:/88434/b' }] });
 
     expect(cols?.length).toBe(1);
     expect(cols?.[0]).toEqual(
@@ -464,16 +473,25 @@ describe('MetricsService dataset load failure', () => {
     const svc = TestBed.inject(MetricsService);
 
     let emitted: unknown[] | undefined;
-    svc.datasetMetrics$.subscribe((d) => (emitted = d));
+    jest.useFakeTimers();
+    try {
+      svc.datasetMetrics$.subscribe((d) => (emitted = d));
 
-    http
-      .expectOne((r) => r.url.includes('usagemetrics/records'))
-      .flush('boom', { status: 500, statusText: 'Server Error' });
+      // Page 1 retries 3 times (delay 800ms) before the load gives up; fail every attempt.
+      for (let attempt = 0; attempt < 4; attempt++) {
+        http
+          .expectOne((r) => r.url.includes('usagemetrics/records'))
+          .flush('boom', { status: 500, statusText: 'Server Error' });
+        jest.advanceTimersByTime(800);
+      }
 
-    expect(svc.datasetError()).toBe(true);
-    expect(emitted).toEqual([]);
-    expect(svc.refreshing()).toBe(false); // finalize() always clears the spinner
-    http.verify();
+      expect(svc.datasetError()).toBe(true);
+      expect(emitted).toEqual([]);
+      expect(svc.refreshing()).toBe(false); // finalize() always clears the spinner
+      http.verify();
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });
 
@@ -565,7 +583,7 @@ describe('MetricsService no-flash reveal', () => {
   });
 
   it('is ready synchronously (no subscription) when both base caches are fresh', () => {
-    const envelope = (data: unknown) => JSON.stringify({ v: 1, savedAt: Date.now(), data });
+    const envelope = (data: unknown) => JSON.stringify({ v: 2, savedAt: Date.now(), data });
     sessionStorage.setItem(REPO_KEY, envelope([{ month_year: 'January 2025' }]));
     sessionStorage.setItem(LIST_KEY, envelope([{ ediid: 'a', record_download: 1 }]));
 
@@ -594,7 +612,7 @@ describe('MetricsService dedupe edges', () => {
     localStorage.clear();
   });
 
-  it('keeps rows without an ediid and, on equal downloads, keeps the more recent row', () => {
+  it('drops rows without a real dataset id and, on equal downloads, keeps the more recent row', () => {
     const http = configure();
     let emitted: any[] | undefined;
     TestBed.inject(MetricsService).datasetMetrics$.subscribe((d) => (emitted = d));
@@ -605,8 +623,8 @@ describe('MetricsService dedupe edges', () => {
       .flush({
         DataSetMetricsCount: 101,
         DataSetMetrics: [
-          { ediid: 'ark:/tie', record_download: 7, last_time_logged: '2026-01-01T00:00:00' },
-          { record_download: 3 }, // no ediid -> preserved as-is
+          { ediid: 'ark:/88434/tie', record_download: 7, last_time_logged: '2026-01-01T00:00:00' },
+          { record_download: 3 }, // no ediid -> dropped by cleanDatasets
         ],
       });
     http
@@ -615,14 +633,14 @@ describe('MetricsService dedupe edges', () => {
         DataSetMetricsCount: 101,
         DataSetMetrics: [
           // Same downloads as page-1 'tie' but newer -> wins on the recency tie-break.
-          { ediid: 'ark:/tie', record_download: 7, last_time_logged: '2026-06-01T00:00:00' },
+          { ediid: 'ark:/88434/tie', record_download: 7, last_time_logged: '2026-06-01T00:00:00' },
         ],
       });
 
-    const tie = emitted?.find((r) => r.ediid === 'ark:/tie');
+    const tie = emitted?.find((r) => r.ediid === 'ark:/88434/tie');
     const noId = emitted?.filter((r) => !r.ediid);
     expect(tie?.last_time_logged).toBe('2026-06-01T00:00:00');
-    expect(noId?.length).toBe(1);
+    expect(noId?.length).toBe(0); // non-dataset rows are cleaned out
     http.verify();
   });
 });

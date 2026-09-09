@@ -2,13 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
 import { KpiSummaryComponent } from './kpi-summary.component';
 import { MetricsService } from '../../services/metrics.service';
-import { DataSetMetric, RepoMetric } from '../../models/metrics.models';
+import { CatalogCoverage, DataSetMetric, RepoMetric } from '../../models/metrics.models';
 
 describe('KpiSummaryComponent', () => {
   let component: KpiSummaryComponent;
   let fixture: ComponentFixture<KpiSummaryComponent>;
   let repo$: BehaviorSubject<RepoMetric[]>;
   let datasets$: BehaviorSubject<DataSetMetric[]>;
+  let coverage$: BehaviorSubject<CatalogCoverage>;
 
   // Realistic repo rows, returned newest-first (as the real API does). The component parses
   // month_year strings to dates and sorts them oldest-first internally.
@@ -28,7 +29,17 @@ describe('KpiSummaryComponent', () => {
   beforeEach(async () => {
     repo$ = new BehaviorSubject<RepoMetric[]>(repoRows);
     datasets$ = new BehaviorSubject<DataSetMetric[]>(datasetRows);
-    const stub = { repoMetrics$: repo$, datasetMetrics$: datasets$ };
+    coverage$ = new BehaviorSubject<CatalogCoverage>({
+      catalog: 0, withUsage: 0, untracked: 0, offCatalog: 0, coverage: 0,
+    });
+    // The KPI component reads the reconciled dataset stream and the catalog-coverage stream;
+    // reconciliation is identity here, so reuse datasets$.
+    const stub = {
+      repoMetrics$: repo$,
+      datasetMetrics$: datasets$,
+      reconciledDatasets$: datasets$,
+      catalogCoverage$: coverage$,
+    };
 
     await TestBed.configureTestingModule({
       imports: [KpiSummaryComponent],
