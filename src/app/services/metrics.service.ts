@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import {
   BehaviorSubject,
@@ -66,6 +66,8 @@ export class MetricsService {
 
   // Auto-refresh interval + base-list cache TTL, from runtime config (minutes), default 10, min 1.
   private readonly REFRESH_MS = Math.max(1, Number(this.config.get('autoRefreshMinutes')) || 10) * 60 * 1000;
+  // How often to check whether the data has gone stale (cheap; only fetches when it is actually due).
+  private readonly STALE_CHECK_MS = 60 * 1000;
   private readonly RECORD_TTL_MS = 24 * 60 * 60 * 1000; // persisted record metadata TTL (static data)
   // Per-request timeout. Must comfortably exceed the worst-case wait in the global RMM throttle
   // queue (many paged calls dispatched at ~8/s): the timeout clock starts when a request is queued,
@@ -340,8 +342,31 @@ export class MetricsService {
       this.ready.set(true);
     }
 
-    // Auto-refresh: refetch the lists but KEEP the per-record cache (titles/dois/themes are static).
-    timer(this.REFRESH_MS, this.REFRESH_MS).subscribe(() => this.refresh$.next('soft'));
+    // Auto-refresh (keeps the per-record cache; only the base lists refetch). A single long timer is
+    // unreliable: browsers throttle or freeze timers in background tabs and the OS pauses them on
+    // sleep, so a 10-minute tick can be silently skipped for hours. Instead, check staleness on a
+    // short cadence and refetch only when the data is actually older than the interval. That resumes
+    // and catches up within one check after the tab wakes, however long it was away. Tab focus and
+    // visibility changes trigger the same check immediately for a snappier return.
+    const maybeRefresh = () => {
+      const last = this.lastUpdated();
+      if (last && this.now().getTime() - last.getTime() >= this.REFRESH_MS) {
+        this.refresh$.next('soft');
+      }
+    };
+    timer(this.STALE_CHECK_MS, this.STALE_CHECK_MS).subscribe(maybeRefresh);
+
+    if (typeof document !== 'undefined') {
+      const onVisible = () => {
+        if (document.visibilityState === 'visible') maybeRefresh();
+      };
+      document.addEventListener('visibilitychange', onVisible);
+      window.addEventListener('focus', maybeRefresh);
+      inject(DestroyRef).onDestroy(() => {
+        document.removeEventListener('visibilitychange', onVisible);
+        window.removeEventListener('focus', maybeRefresh);
+      });
+    }
   }
 
   /** Mark a base data set as loaded; reveal the dashboard once both are in. */

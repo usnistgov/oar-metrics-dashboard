@@ -645,6 +645,68 @@ describe('MetricsService dedupe edges', () => {
   });
 });
 
+/** Verifies the 10-minute auto-refresh timer actually refetches the base data. */
+describe('MetricsService auto-refresh', () => {
+  function configure() {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+    return TestBed.inject(HttpTestingController);
+  }
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    sessionStorage.clear();
+    localStorage.clear();
+  });
+  afterEach(() => {
+    jest.useRealTimers();
+    sessionStorage.clear();
+    localStorage.clear();
+  });
+
+  it('refetches repo metrics when the auto-refresh timer fires (~10 min)', () => {
+    const http = configure();
+    const svc = TestBed.inject(MetricsService);
+    svc.repoMetrics$.subscribe();
+
+    // Initial load.
+    http
+      .expectOne((r) => r.url.includes('usagemetrics/repo'))
+      .flush({ RepoMetrics: [{ month_year: 'January 2025', total_size: 1, success_download: 1, unique_users: 1 }] });
+
+    // Advance past the refresh interval -> the timer should trigger a soft refetch.
+    jest.advanceTimersByTime(10 * 60 * 1000 + 100);
+    http
+      .expectOne((r) => r.url.includes('usagemetrics/repo'))
+      .flush({ RepoMetrics: [] });
+
+    http.verify();
+  });
+
+  it('refetches when the tab becomes visible after the data has gone stale', () => {
+    jest.setSystemTime(new Date('2026-01-01T00:00:00Z'));
+    const http = configure();
+    const svc = TestBed.inject(MetricsService);
+    svc.repoMetrics$.subscribe();
+
+    http
+      .expectOne((r) => r.url.includes('usagemetrics/repo'))
+      .flush({ RepoMetrics: [{ month_year: 'January 2025', total_size: 1, success_download: 1, unique_users: 1 }] });
+
+    // Jump the wall clock past the interval WITHOUT firing the timer (as a frozen background tab would).
+    jest.setSystemTime(new Date('2026-01-01T00:11:00Z'));
+
+    // Returning to the tab should trigger a refetch because the data is now stale.
+    document.dispatchEvent(new Event('visibilitychange'));
+    http
+      .expectOne((r) => r.url.includes('usagemetrics/repo'))
+      .flush({ RepoMetrics: [] });
+
+    http.verify();
+  });
+});
+
 /** Verifies the graceful "nothing to show" flag that drives the dashboard/collections retry state. */
 describe('MetricsService baseUnavailable', () => {
   function configure() {
