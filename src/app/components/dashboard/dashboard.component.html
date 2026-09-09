@@ -1,3 +1,8 @@
+@if (metrics.baseUnavailable()) {
+  <!-- Graceful whole-dashboard state when both base loads settled with no data. -->
+  <app-load-error (retry)="metrics.refresh()" />
+} @else {
+
 <!-- Executive KPI strip + action stack. Always rendered so the Settings / Refresh buttons stay
      available even when the KPI tiles are hidden (the band collapses to a compact action bar). -->
 <app-kpi-summary [showTiles]="layout.isVisible('kpi')" [ready]="metrics.ready()" />
@@ -250,6 +255,8 @@
     }
   }
 </main>
+
+}
 
 <!-- Footer bar (responsive: never wider than the viewport). Temporarily hidden. -->
 <!-- <footer class="p-4">

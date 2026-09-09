@@ -22,6 +22,8 @@
         <app-collections [linkToPage]="true" [extraStats]="true" />
       </section>
     </div>
+  } @else if (metrics.baseUnavailable()) {
+    <app-load-error (retry)="metrics.refresh()" />
   } @else {
     <div class="landing-empty">
       <mat-icon>hourglass_empty</mat-icon>

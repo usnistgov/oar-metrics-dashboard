@@ -1,0 +1,8 @@
+<div class="load-error" role="alert">
+  <mat-icon class="load-error-icon">cloud_off</mat-icon>
+  <h2 class="load-error-title">Couldn't load the metrics</h2>
+  <p class="load-error-msg">The metrics service did not respond. This is usually temporary.</p>
+  <button type="button" class="load-error-retry" (click)="retry.emit()">
+    <mat-icon>refresh</mat-icon><span>Retry</span>
+  </button>
+</div>

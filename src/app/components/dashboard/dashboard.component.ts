@@ -28,6 +28,7 @@ import { RepoHealthComponent } from '../repo-health/repo-health.component';
 import { CollectionsComponent } from '../collections/collections.component';
 import { CollectionShareComponent } from '../collection-share/collection-share.component';
 import { UntrackedDatasetsComponent } from '../untracked-datasets/untracked-datasets.component';
+import { LoadErrorComponent } from '../load-error/load-error.component';
 
 /**
  * Dashboard shell: the top toolbar (brand, last-updated indicator, manual refresh) and the
@@ -41,7 +42,7 @@ import { UntrackedDatasetsComponent } from '../untracked-datasets/untracked-data
     MonthlyDownloadsComponent, MonthlyUsersComponent, DataciteTestComponent, WatchlistComponent,
     EngagementComponent, SeasonalityComponent, SortByComponent, DomainLevelToggleComponent,
     ConcentrationComponent, RepoHealthComponent, CollectionsComponent, CollectionShareComponent,
-    UntrackedDatasetsComponent],
+    UntrackedDatasetsComponent, LoadErrorComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

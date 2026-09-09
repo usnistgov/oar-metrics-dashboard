@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MetricsService } from '../../services/metrics.service';
 import { CollectionsComponent } from '../collections/collections.component';
+import { LoadErrorComponent } from '../load-error/load-error.component';
 import { CollectionMetric } from '../../models/metrics.models';
 import { formatCount } from '../../format';
 import { collectionSlug } from '../../scope-stats';
@@ -16,12 +17,12 @@ import { collectionSlug } from '../../scope-stats';
 @Component({
   selector: 'app-collections-landing',
   standalone: true,
-  imports: [RouterLink, MatIconModule, CollectionsComponent],
+  imports: [RouterLink, MatIconModule, CollectionsComponent, LoadErrorComponent],
   templateUrl: './collections-landing.component.html',
   styleUrl: './collections-landing.component.css',
 })
 export class CollectionsLandingComponent {
-  private metrics = inject(MetricsService);
+  readonly metrics = inject(MetricsService);
 
   readonly collections = toSignal(this.metrics.collectionMetrics$, {
     initialValue: [] as CollectionMetric[],

@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import {
   BehaviorSubject,
@@ -118,6 +118,13 @@ export class MetricsService {
   readonly refreshing = signal(false);
   /** Flips true once the base data (repo + dataset list) is ready - drives the initial load screen. */
   readonly ready = signal(false);
+
+  /**
+   * True when both base data sources (monthly repo + dataset list) settled with no data to show -
+   * i.e. the load failed and there was no cached fallback. Drives the dashboard's graceful
+   * "couldn't load, retry" state instead of revealing empty cards.
+   */
+  readonly baseUnavailable = computed(() => this.repoError() && this.datasetError());
 
   /**
    * Whether to reconcile usage against the catalog (fold ark @id / ediid / legacy-hex aliases to the

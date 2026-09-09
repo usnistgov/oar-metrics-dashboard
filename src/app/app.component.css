@@ -36,7 +36,21 @@ app-header {
   display: block;
 }
 
+/* Sticky footer: the shell is a full-height column, and the routed content grows to fill the space
+   between header and footer. So short content (loading / error / guide) still pushes the footer to
+   the bottom of the viewport instead of letting it ride up into view. */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+app-footer {
+  flex-shrink: 0;
+}
+
 .app-shell {
+  flex: 1 0 auto; /* fill the gap between header and footer */
   transition: filter 0.4s ease, opacity 0.4s ease;
 }
 .app-shell.app-loading {
