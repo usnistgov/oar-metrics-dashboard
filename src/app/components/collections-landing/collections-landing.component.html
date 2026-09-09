@@ -6,7 +6,7 @@
           <h2 class="col-title">{{ c.title }}</h2>
 
           <div class="col-figure">
-            <span class="col-figure-value">{{ fmtCount(c.downloads) }}</span>
+            <span class="col-figure-value"><app-count [value]="c.downloads" /></span>
             <span class="col-figure-label">downloads</span>
           </div>
 

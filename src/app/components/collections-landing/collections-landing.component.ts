@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MetricsService } from '../../services/metrics.service';
 import { CollectionsComponent } from '../collections/collections.component';
 import { LoadErrorComponent } from '../load-error/load-error.component';
+import { CountComponent } from '../count/count.component';
 import { CollectionMetric } from '../../models/metrics.models';
 import { formatCount } from '../../format';
 import { collectionSlug } from '../../scope-stats';
@@ -17,7 +18,7 @@ import { collectionSlug } from '../../scope-stats';
 @Component({
   selector: 'app-collections-landing',
   standalone: true,
-  imports: [RouterLink, MatIconModule, CollectionsComponent, LoadErrorComponent],
+  imports: [RouterLink, MatIconModule, CollectionsComponent, LoadErrorComponent, CountComponent],
   templateUrl: './collections-landing.component.html',
   styleUrl: './collections-landing.component.css',
 })
