@@ -19,13 +19,36 @@
     0 2px 12px rgba(0, 0, 0, 0.18);
 }
 
+/* Brand column: the co-brand lockup plus the beta badge to its right. */
+.brand-wrap {
+  justify-self: start;
+  display: inline-flex;
+  align-items: flex-end; /* sit the beta badge on the app-name (bottom) line */
+  gap: 0.5rem;
+}
+
 /* Co-brand lockup: NIST logo + divider + dashboard sub-brand */
 .brand {
-  justify-self: start;
   display: inline-flex;
   align-items: center;
   gap: 1rem;
   text-decoration: none;
+}
+
+/* "beta" badge: small accent-outlined pill next to the app name; tooltip explains the caveat. */
+.brand-beta {
+  margin-bottom: 4px; /* nudge up to align with the app-name baseline */
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.35;
+  padding: 1px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  color: #fff;
+  cursor: default;
+  user-select: none;
 }
 
 /* Right-hand block: updated chip + action buttons, pinned to the toolbar's right edge. */
@@ -44,7 +67,7 @@
 
 .brand-divider {
   width: 3px;
-  align-self: center;
+  align-self: flex-end;
   height: 44px;
   border-radius: 999px;
   background: var(--color-accent);
@@ -53,23 +76,27 @@
 .brand-sub {
   display: flex;
   flex-direction: column;
-  align-self: flex-end; /* anchor to the logo's baseline, not vertically centered */
-  padding-bottom: 2px;
+  align-self: flex-end; /* bottom-align with the divider */
+  padding-bottom: 0;
   line-height: 1.15;
   color: #fff;
 }
 
-.brand-sub-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+/* Platform context label ("eyebrow") above the app name: small, muted, uppercase. */
+.brand-eyebrow {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-.brand-sub-desc {
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--color-accent);
+/* The app name: the prominent line (the hero of the lockup). */
+.brand-app {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #fff;
 }
 
 /* Segmented pill navigation: centered between the brand and the actions, tabs span it equally.

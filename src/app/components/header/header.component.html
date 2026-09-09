@@ -1,6 +1,7 @@
 <mat-toolbar class="header-bar">
-  <!-- Co-brand lockup: official NIST logo + a divider + this dashboard's name -->
-  <a routerLink="/" class="brand" aria-label="Public Data Repository - Data Usage Metrics home">
+  <!-- Co-brand lockup: official NIST logo + a divider + this dashboard's name, with a beta badge -->
+  <div class="brand-wrap">
+  <a routerLink="/" class="brand" aria-label="Data Usage Metrics - Public Data Repository home">
     <svg class="brand-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 275.3 38.5" fill="#fff" role="img" aria-label="National Institute of Standards and Technology">
       <g>
         <path d="M121.9 6.2h1.5l2.5 4.2.5 1V6.2h1.5v7.5h-1.5l-2.6-4.1-.5-1v5.2h-1.5V6.2h.1z"/>
@@ -79,10 +80,14 @@
     </svg>
     <span class="brand-divider" aria-hidden="true"></span>
     <span class="brand-sub">
-      <span class="brand-sub-title">Public Data Repository</span>
-      <span class="brand-sub-desc">Data Usage Metrics</span>
+      <span class="brand-eyebrow">Public Data Repository</span>
+      <span class="brand-app">Data Usage Metrics</span>
     </span>
   </a>
+    <span class="brand-beta" tabindex="0"
+          matTooltip="Beta: this dashboard is a work in progress. Numbers may be incomplete and features may change as we refine it."
+          matTooltipPosition="below" aria-label="Beta - work in progress">beta</span>
+  </div>
 
   <nav class="header-nav" aria-label="Primary">
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
