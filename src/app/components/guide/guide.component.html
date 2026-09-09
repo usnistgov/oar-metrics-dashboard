@@ -196,6 +196,28 @@
     </div>
 
     <div class="guide-card-def">
+      <h3>Collections' Share of Repository</h3>
+      <p>
+        How the repository's activity splits across its collections. Switch between
+        <em>Downloads</em> and <em>Data volume</em> to see which collections draw the most, each shown
+        as a share of the collections total, plus how much of the whole repository the curated
+        collections account for together.
+      </p>
+    </div>
+
+    <div class="guide-card-def">
+      <h3>Untracked Datasets</h3>
+      <p>
+        A coverage check: how much of the published catalog actually has usage on record. A strip at
+        the top shows the percentage covered and how many of the catalogued datasets that is, and you
+        can search the list beneath it. It also flags the opposite case, datasets that have usage but
+        are <strong>not in the catalog</strong> (often ones re-published under a new id); open that
+        list to see where each one now lives. When every catalogued dataset has usage, the card just
+        shows an all-clear.
+      </p>
+    </div>
+
+    <div class="guide-card-def">
       <h3>DataCite Metrics</h3>
       <p>Pick a dataset's DOI to see its official DataCite citation and usage badge. Handy if you care
         about how data is being cited in the literature, not just downloaded.</p>
@@ -334,6 +356,16 @@
         <strong>Duplicates are cleaned up.</strong> A dataset is counted once, even where the raw
         records list it more than once, so the “datasets tracked” number reflects real, distinct
         datasets.
+      </li>
+      <li>
+        <strong>Usage is matched to the catalog.</strong> A dataset can appear in the usage records
+        under an older or alternative id. Those are reconciled to the catalog's current id, so a
+        dataset is not counted twice and the totals line up with the published catalog. You can turn
+        this off under <strong>Settings</strong> if you want the raw, unreconciled figures.
+      </li>
+      <li>
+        <strong>This dashboard is in beta.</strong> It is still being refined, so some figures may be
+        incomplete and details may change as the underlying data and features improve.
       </li>
       <li>
         <strong>Some datasets have no downloads yet.</strong> That's normal. Newer or niche datasets
