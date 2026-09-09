@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DataSetMetric, DataSetMetricsResponse } from '../../models/metrics.models';
+import { log } from '../../logger';
 
 // Registers all necessary components for Chart.js to work, like scales, elements, and chart types.
 Chart.register(...registerables);
@@ -50,7 +51,7 @@ export class DailyGraphComponent implements OnInit {
     if (month >= 0 && month <= 11) {
       this._actualMonth = month;
     } else {
-      console.warn('Invalid month number. Keeping previous month.');
+      log.warn('Invalid month number. Keeping previous month.');
     }
   }
 
@@ -65,7 +66,7 @@ export class DailyGraphComponent implements OnInit {
     if (year >= 2018 && year <= new Date().getFullYear()) {
       this._actualYear = year;
     } else {
-      console.warn('Invalid year number. Keeping previous year.');
+      log.warn('Invalid year number. Keeping previous year.');
     }
   }
 
@@ -102,7 +103,7 @@ export class DailyGraphComponent implements OnInit {
       this.actualMonth = monthNumber;
       this.fetchData();
     } else {
-      console.warn('Invalid month input:', this.selectedMonthInput);
+      log.warn('Invalid month input:', this.selectedMonthInput);
       alert('Please enter a valid month name (e.g., "April") or number (1-12).');
     }
   }
@@ -124,7 +125,7 @@ export class DailyGraphComponent implements OnInit {
       this.actualYear = yearNumber;
       this.fetchData();
     } else {
-      console.warn('Invalid year input:', this.selectedYearInput);
+      log.warn('Invalid year input:', this.selectedYearInput);
       alert('Please enter a valid year (e.g., "2019").');
     }
   }
@@ -154,8 +155,8 @@ export class DailyGraphComponent implements OnInit {
           const allLogs = response?.DataSetMetrics || []; // Extracts DataSetMetrics or defaults to an empty array.
 
           // Filters the logs to include only those from the currently selected year and month.
-          const filteredLogs = allLogs.filter((log: DataSetMetric) => {
-            const logDate = new Date(log.last_time_logged ?? 0);
+          const filteredLogs = allLogs.filter((row: DataSetMetric) => {
+            const logDate = new Date(row.last_time_logged ?? 0);
             return (
               logDate.getFullYear() === this.actualYear &&
               logDate.getMonth() === this.actualMonth
@@ -166,7 +167,7 @@ export class DailyGraphComponent implements OnInit {
           this.updateChart(filteredLogs); // Updates the chart with the filtered data.
         },
         error => {
-          console.error('Error fetching data:', error); // Logs any errors during data fetching.
+          log.error('Error fetching data', error);
           this.errorMsg.set('Failed to load data.');
           this.loading.set(false);
         });
@@ -269,7 +270,7 @@ export class DailyGraphComponent implements OnInit {
       if (this.chart) this.chart.destroy(); // Destroys any existing chart instance before creating a new one.
       this.chart = new Chart(canvas, config); // Creates a new Chart.js chart.
     } else {
-      console.error('Chart canvas element not found.');
+      log.error('Chart canvas element not found');
     }
   }
 }
