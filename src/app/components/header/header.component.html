@@ -89,15 +89,10 @@
           matTooltipPosition="below" aria-label="Beta - work in progress">beta</span>
   </div>
 
-  <nav class="header-nav" aria-label="Primary">
-    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-       class="nav-pill">
-      <mat-icon>bar_chart</mat-icon><span>All Metrics</span>
-    </a>
-    <a routerLink="/collections" routerLinkActive="active" class="nav-pill">
-      <mat-icon>dataset</mat-icon><span>Collections</span>
-    </a>
-  </nav>
+  <!-- Primary nav: frosted sliding-pill dock, centered in the gap between the brand and the actions. -->
+  <div class="header-nav-slot">
+    <app-nav-dock />
+  </div>
 
   <div class="header-end">
   @if (metrics.lastUpdated(); as updated) {

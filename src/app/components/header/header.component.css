@@ -7,11 +7,10 @@
   height: auto;
   min-height: 82px;
   padding: 0 1.5rem;
-  /* 3-column grid: the middle (nav) column is centered in the toolbar regardless of how
-     wide the brand or the right-hand block are, so the nav never shifts when the updated
-     chip appears/disappears. */
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  /* Flex row: brand (left) and actions (right) take their natural width; the nav slot between them
+     grows to fill the gap and centers the nav within it, so the nav stays centered in that gap at
+     every screen size regardless of how wide either side is. */
+  display: flex;
   align-items: center;
   gap: 1.25rem;
   box-shadow:
@@ -21,10 +20,18 @@
 
 /* Brand column: the co-brand lockup plus the beta badge to its right. */
 .brand-wrap {
-  justify-self: start;
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: flex-end; /* sit the beta badge on the app-name (bottom) line */
   gap: 0.5rem;
+}
+
+/* Nav slot: grows to fill the space between brand and actions, and centers the nav inside it. */
+.header-nav-slot {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
 }
 
 /* Co-brand lockup: NIST logo + divider + dashboard sub-brand */
@@ -53,7 +60,7 @@
 
 /* Right-hand block: updated chip + action buttons, pinned to the toolbar's right edge. */
 .header-end {
-  justify-self: end;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -284,7 +291,8 @@
 
 @media (max-width: 1039px) {
   .brand-divider,
-  .brand-sub {
+  .brand-sub,
+  .brand-beta {
     display: none;
   }
   .brand-logo {

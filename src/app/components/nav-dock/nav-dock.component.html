@@ -1,0 +1,23 @@
+<nav class="dock" aria-label="Primary">
+  <span
+    class="dock-indicator"
+    [class.is-hidden]="activeIndex() < 0"
+    [style.transform]="'translateX(' + indicator().x + 'px)'"
+    [style.width.px]="indicator().w"
+    aria-hidden="true"
+  ></span>
+
+  @for (item of items; track item.path) {
+    <a
+      #link
+      class="dock-item"
+      [routerLink]="item.path"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: item.exact }"
+      [attr.aria-label]="item.label"
+    >
+      <mat-icon>{{ item.icon }}</mat-icon>
+      <span class="dock-label">{{ item.label }}</span>
+    </a>
+  }
+</nav>

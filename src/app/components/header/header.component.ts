@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MetricsService } from '../../services/metrics.service';
+import { NavDockComponent } from '../nav-dock/nav-dock.component';
 import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
 
 /**
@@ -28,6 +29,7 @@ import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.comp
     MatTooltipModule,
     MatMenuModule,
     MatDialogModule,
+    NavDockComponent,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
