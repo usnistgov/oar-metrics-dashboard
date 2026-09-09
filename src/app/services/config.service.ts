@@ -33,7 +33,7 @@ export const DEFAULT_CONFIG: AppConfig = {
   apiURLUsageRecord: environment.apiURLUsageRecord,
   apiURLRecords: environment.apiURLRecords,
   dataciteApi: 'https://api.datacite.org/dois',
-  version: 'dev',
+  version: '1.0.0',
   autoRefreshMinutes: 10,
 };
 

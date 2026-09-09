@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MetricsService } from '../../services/metrics.service';
+import { ConfigService } from '../../services/config.service';
 import { NavDockComponent } from '../nav-dock/nav-dock.component';
 import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
 
@@ -37,6 +38,9 @@ import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.comp
 export class HeaderComponent {
   readonly metrics = inject(MetricsService);
   private dialog = inject(MatDialog);
+
+  // Deployment version (runtime config), shown beside the beta badge.
+  readonly version = inject(ConfigService).get('version');
 
   // Ticks every 30s so the relative "(X ago)" label stays current.
   private readonly tick = toSignal(timer(0, 30_000), { initialValue: 0 });

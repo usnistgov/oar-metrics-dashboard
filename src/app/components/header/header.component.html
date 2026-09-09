@@ -86,7 +86,7 @@
   </a>
     <span class="brand-beta" tabindex="0"
           matTooltip="Beta: this dashboard is a work in progress. Numbers may be incomplete and features may change as we refine it."
-          matTooltipPosition="below" aria-label="Beta - work in progress">beta</span>
+          matTooltipPosition="below" aria-label="Beta - work in progress">@if (version) {<span class="brand-version">{{ version }}</span>}beta</span>
   </div>
 
   <!-- Primary nav: frosted sliding-pill dock, centered in the gap between the brand and the actions. -->

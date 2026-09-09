@@ -53,9 +53,17 @@
   padding: 1px 7px;
   border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: 999px;
-  color: #fff;
+  color: rgba(255, 255, 255, 0.5); /* "beta" grayed; the version is the emphasized token */
   cursor: default;
   user-select: none;
+}
+
+/* Deployment version, inside the beta pill (becomes the standalone badge post-beta). Inherits the
+   pill's font/size/casing; just spaced and slightly dimmed to read as a second token. */
+.brand-version {
+  margin-right: 0.35rem;
+  font-weight: 700;
+  color: #fff;
 }
 
 /* Right-hand block: updated chip + action buttons, pinned to the toolbar's right edge. */

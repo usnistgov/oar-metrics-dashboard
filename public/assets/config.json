@@ -3,6 +3,6 @@
   "apiURLUsageRecord": "/rmm/usagemetrics/records",
   "apiURLRecords": "/rmm/records",
   "dataciteApi": "https://api.datacite.org/dois",
-  "version": "dev",
+  "version": "1.0.0",
   "autoRefreshMinutes": 10
 }
