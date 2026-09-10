@@ -2,7 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { timer } from 'rxjs';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -24,7 +24,6 @@ import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.comp
   imports: [
     CommonModule,
     RouterLink,
-    RouterLinkActive,
     MatToolbarModule,
     MatIconModule,
     MatTooltipModule,

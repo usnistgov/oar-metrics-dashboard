@@ -34,12 +34,21 @@
   justify-content: center;
 }
 
-/* Co-brand lockup: NIST logo + divider + dashboard sub-brand */
+/* Co-brand lockup: NIST logo (links to nist.gov) + divider + dashboard name (links to the app). */
 .brand {
   display: inline-flex;
   align-items: center;
   gap: 1rem;
+}
+
+/* Logo -> NIST homepage. */
+.brand-logo-link {
+  display: inline-flex;
+  align-items: center;
   text-decoration: none;
+}
+.brand-logo-link:hover {
+  opacity: 0.85;
 }
 
 /* "beta" badge: small accent-outlined pill next to the app name; tooltip explains the caveat. */
@@ -106,12 +115,15 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* The app name: the prominent line (the hero of the lockup). */
+/* The app name: the prominent line (the hero of the lockup); links to the app root. */
 .brand-app {
   font-size: 1.35rem;
   font-weight: 700;
   letter-spacing: 0.01em;
   color: #fff;
+  text-decoration: none;
+  width: fit-content;
+  cursor: pointer;
 }
 
 /* Segmented pill navigation: centered between the brand and the actions, tabs span it equally.
