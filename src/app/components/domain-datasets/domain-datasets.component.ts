@@ -9,6 +9,7 @@ import { combineLatest } from 'rxjs';
 import { MetricsService } from '../../services/metrics.service';
 import { WatchlistService } from '../../services/watchlist.service';
 import { EnrichedDataSetMetric } from '../../models/metrics.models';
+import { formatCount, formatSize } from '../../format';
 import { DomainLevel, domainLabelsOf } from '../../science-domains';
 import { PopularSort, popularComparator, popularSubLabel } from '../../popular-sort';
 import { SortByComponent } from '../sort-by/sort-by.component';
@@ -47,6 +48,10 @@ export class DomainDatasetsComponent {
   readonly sortKey = signal<PopularSort>('downloads');
   private readonly all = signal<EnrichedDataSetMetric[]>([]);
 
+  // Shared formatters, exposed for the template's totals line.
+  readonly formatCount = formatCount;
+  readonly formatSize = formatSize;
+
   // Matches the Most Popular card's Sort-by options so the control reads the same everywhere.
   readonly sortOptions: { value: PopularSort; label: string }[] = [
     { value: 'downloads', label: 'Downloads' },
@@ -63,6 +68,21 @@ export class DomainDatasetsComponent {
       (r) => !q || r.title.toLowerCase().includes(q) || r.ediid.toLowerCase().includes(q),
     );
     return [...list].sort(popularComparator(this.sortKey()));
+  });
+
+  /** Aggregate usage for the datasets currently listed (the domain within this scope; narrows with
+   *  the search box so it always matches the visible count). Sums mirror CollectionStats: downloads
+   *  and volume are true totals, users are summed user-sessions (NOT distinct people). */
+  readonly totals = computed(() => {
+    let downloads = 0;
+    let users = 0;
+    let volume = 0;
+    for (const r of this.rows()) {
+      downloads += r.record_download ?? 0;
+      users += r.number_users ?? 0;
+      volume += r.total_size_download ?? 0;
+    }
+    return { downloads, users, volume };
   });
 
   constructor() {

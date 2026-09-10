@@ -3,12 +3,32 @@
     <div class="domain-headings">
       <div class="domain-eyebrow">Science domain</div>
       <h2 class="domain-title">{{ data.domain }}</h2>
-      <div class="domain-count">{{ rows().length | number }} dataset{{ rows().length === 1 ? '' : 's' }}</div>
     </div>
     <button type="button" class="domain-close" (click)="close()" aria-label="Close">
       <mat-icon>close</mat-icon>
     </button>
   </header>
+
+  @if (!loading()) {
+    <div class="domain-stats" aria-label="Totals for this domain in the current scope">
+      <div class="domain-stat">
+        <span class="domain-stat-label">Datasets</span>
+        <span class="domain-stat-value">{{ rows().length | number }}</span>
+      </div>
+      <div class="domain-stat">
+        <span class="domain-stat-label">Downloads</span>
+        <span class="domain-stat-value">{{ formatCount(totals().downloads) }}</span>
+      </div>
+      <div class="domain-stat">
+        <span class="domain-stat-label">Data volume</span>
+        <span class="domain-stat-value">{{ formatSize(totals().volume) }}</span>
+      </div>
+      <div class="domain-stat">
+        <span class="domain-stat-label">Unique users</span>
+        <span class="domain-stat-value">{{ formatCount(totals().users) }}</span>
+      </div>
+    </div>
+  }
 
   <div class="domain-controls">
     <div class="ds-search">

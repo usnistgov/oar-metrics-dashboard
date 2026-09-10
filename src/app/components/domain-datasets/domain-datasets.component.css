@@ -32,6 +32,39 @@
   font-size: 0.8rem;
   color: var(--color-muted);
 }
+/* Per-domain (per-scope) totals, using the same stat-pill language as the dataset/collection
+   detail drawers (.detail-stat): a surface-2 rounded box with an uppercase label + big value. */
+/* Per-domain (per-scope) totals as a compact 2x2 of stat pills, using the same visual language as
+   the dataset/collection detail drawers (.detail-stat): a surface-2 rounded box with an uppercase
+   label + value, sized down to stay tidy in the drawer header. */
+.domain-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+  padding: 0.75rem 1.25rem 0.25rem;
+}
+.domain-stat {
+  padding: 0.45rem 0.6rem;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+}
+.domain-stat-label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.domain-stat-value {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
 .domain-close {
   flex: none;
   border: none;
@@ -78,13 +111,15 @@
 }
 
 /* Scroll container for the dataset rows (the shared .ds-list scroll rules are scoped to the
-   dashboard card containers, so the drawer owns its own scroll). */
+   dashboard card containers, so the drawer owns its own scroll). The top padding gives the first
+   row's hover lift (translateY + shadow) room inside the scroller so it is not clipped against the
+   controls, and reads as a gap between the search/sort bar and the list. */
 .domain-body {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 0 0.75rem 1rem;
+  padding: 0.6rem 0.75rem 1rem;
 }
 
 .domain-msg {
