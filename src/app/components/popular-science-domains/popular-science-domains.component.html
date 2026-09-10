@@ -19,14 +19,22 @@
       <p class="empty-state-text">{{ emptyText }}</p>
     </div>
   } @else {
-    <div class="ds-search">
-      <mat-icon aria-hidden="true">search</mat-icon>
-      <input
-        type="search"
-        [ngModel]="search()"
-        (ngModelChange)="search.set($event)"
-        placeholder="Search domains"
-        aria-label="Search science domains"
+    <div class="ds-controls">
+      <div class="ds-search">
+        <mat-icon aria-hidden="true">search</mat-icon>
+        <input
+          type="search"
+          [ngModel]="search()"
+          (ngModelChange)="search.set($event)"
+          placeholder="Search domains"
+          aria-label="Search science domains"
+        />
+      </div>
+      <app-sort-by
+        label="Sort by"
+        [options]="sortOptions"
+        [value]="sortKey()"
+        (valueChange)="setSort($any($event))"
       />
     </div>
     <ul class="ds-list ds-scroll">
@@ -43,7 +51,7 @@
           <span class="ds-rank">{{ i + 1 }}</span>
           <div class="ds-main">
             <div class="ds-title" [title]="category.name">{{ category.name }}</div>
-            <div class="ds-sub">{{ category.count | number }} datasets</div>
+            <div class="ds-sub">{{ subLabel(category) }}</div>
           </div>
         </li>
       } @empty {

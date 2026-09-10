@@ -80,10 +80,17 @@ export interface EnrichedDataSetMetric extends DataSetMetric {
   doi?: string;
 }
 
-/** A science-domain / category name with an occurrence count. */
+/**
+ * A science-domain / category name with how many datasets carry it, plus that domain's total usage
+ * when usage is joined in (so the Science Domains card can rank by access, not only dataset count).
+ * The usage fields stay undefined when the domains are aggregated without a usage lookup.
+ */
 export interface CategoryCount {
   name: string;
-  count: number;
+  count: number;      // number of distinct datasets carrying this domain
+  downloads?: number; // total downloads across those datasets
+  users?: number;     // total user-sessions across those datasets (not distinct people)
+  volume?: number;    // total volume downloaded across those datasets, in bytes
 }
 
 /**

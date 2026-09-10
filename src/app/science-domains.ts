@@ -71,8 +71,9 @@ export function aggregateDomains(
   records: (RecordResult | null)[],
   amount: number,
   level: DomainLevel = 'sub',
+  usageByEdiid?: Map<string, DataSetMetric>,
 ): CategoryCount[] {
-  const counts: Record<string, number> = {};
+  const agg: Record<string, { count: number; downloads: number; users: number; volume: number }> = {};
   const label = (raw: string) => (level === 'top' ? topLevelDomain(raw) : normalizeDomain(raw));
 
   for (const record of records) {
@@ -97,11 +98,47 @@ export function aggregateDomains(
       }
     }
 
-    for (const name of domains) counts[name] = (counts[name] || 0) + 1;
+    // Roll this dataset's usage into every domain it belongs to. When no usage lookup is given the
+    // sums stay at zero and the domains are ranked by dataset count alone, as before.
+    const usage = usageByEdiid && record.ediid ? usageByEdiid.get(record.ediid) : undefined;
+    const downloads = usage?.record_download ?? 0;
+    const users = usage?.number_users ?? 0;
+    const volume = usage?.total_size_download ?? 0;
+
+    for (const name of domains) {
+      const bucket = agg[name] ?? (agg[name] = { count: 0, downloads: 0, users: 0, volume: 0 });
+      bucket.count += 1;
+      bucket.downloads += downloads;
+      bucket.users += users;
+      bucket.volume += volume;
+    }
   }
 
-  return Object.keys(counts)
-    .map((name) => ({ name, count: counts[name] }))
+  // Only attach the usage totals when a usage lookup was given; otherwise the result is a plain
+  // name/count list, unchanged from the count-only ranking.
+  return Object.keys(agg)
+    .map((name) => {
+      const bucket = agg[name];
+      return usageByEdiid
+        ? { name, count: bucket.count, downloads: bucket.downloads, users: bucket.users, volume: bucket.volume }
+        : { name, count: bucket.count };
+    })
     .sort((a, b) => b.count - a.count)
     .slice(0, amount);
+}
+
+/** How the Science Domains card can be ordered: by dataset count or by a joined-in usage total. */
+export type DomainSort = 'datasets' | 'downloads' | 'users' | 'volume';
+
+/**
+ * A comparator that orders domains by the chosen metric, highest first. Ties fall back to dataset
+ * count and then the name, so the order is stable and predictable.
+ */
+export function domainComparator(key: DomainSort): (a: CategoryCount, b: CategoryCount) => number {
+  const value = (c: CategoryCount) =>
+    key === 'downloads' ? c.downloads ?? 0
+    : key === 'users' ? c.users ?? 0
+    : key === 'volume' ? c.volume ?? 0
+    : c.count;
+  return (a, b) => value(b) - value(a) || b.count - a.count || a.name.localeCompare(b.name);
 }

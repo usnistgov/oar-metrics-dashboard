@@ -1,4 +1,4 @@
-import { aggregateDomains, normalizeDomain, sampleTopDatasets, topLevelDomain } from './science-domains';
+import { aggregateDomains, domainComparator, normalizeDomain, sampleTopDatasets, topLevelDomain } from './science-domains';
 import { DataSetMetric, RecordResult } from './models/metrics.models';
 
 describe('normalizeDomain', () => {
@@ -87,6 +87,53 @@ describe('aggregateDomains', () => {
     ]);
     // Same records at the subdomain level keep the full granular paths.
     expect(aggregateDomains(records, 5, 'sub').length).toBe(3);
+  });
+
+  it('totals each dataset usage into every domain it carries when a usage lookup is given', () => {
+    const records: (RecordResult | null)[] = [
+      rec({ ediid: 'a', topic: [{ tag: 'Chemistry' }, { tag: 'Physics' }] }),
+      rec({ ediid: 'b', topic: [{ tag: 'Chemistry' }] }),
+    ];
+    const usage = new Map([
+      ['a', { ediid: 'a', record_download: 100, number_users: 10, total_size_download: 2000 }],
+      ['b', { ediid: 'b', record_download: 5, number_users: 1, total_size_download: 50 }],
+    ]);
+    const result = aggregateDomains(records, 5, 'sub', usage);
+    expect(result).toEqual([
+      { name: 'Chemistry', count: 2, downloads: 105, users: 11, volume: 2050 },
+      { name: 'Physics', count: 1, downloads: 100, users: 10, volume: 2000 },
+    ]);
+  });
+
+  it('treats missing usage rows as zero and omits usage fields entirely without a lookup', () => {
+    const records: (RecordResult | null)[] = [rec({ ediid: 'a', topic: [{ tag: 'Chemistry' }] })];
+    expect(aggregateDomains(records, 5, 'sub', new Map())).toEqual([
+      { name: 'Chemistry', count: 1, downloads: 0, users: 0, volume: 0 },
+    ]);
+    expect(aggregateDomains(records, 5)).toEqual([{ name: 'Chemistry', count: 1 }]);
+  });
+});
+
+describe('domainComparator', () => {
+  const cat = (name: string, count: number, downloads: number, users = 0, volume = 0) => ({
+    name, count, downloads, users, volume,
+  });
+
+  it('orders by the chosen usage metric, highest first', () => {
+    const cats = [cat('Few but busy', 2, 900), cat('Many but quiet', 40, 100)];
+    expect([...cats].sort(domainComparator('downloads')).map((c) => c.name)).toEqual([
+      'Few but busy',
+      'Many but quiet',
+    ]);
+    expect([...cats].sort(domainComparator('datasets')).map((c) => c.name)).toEqual([
+      'Many but quiet',
+      'Few but busy',
+    ]);
+  });
+
+  it('breaks ties on dataset count then name for a stable order', () => {
+    const cats = [cat('B', 3, 500), cat('A', 3, 500), cat('C', 9, 500)];
+    expect([...cats].sort(domainComparator('downloads')).map((c) => c.name)).toEqual(['C', 'A', 'B']);
   });
 });
 
