@@ -585,13 +585,7 @@ app-watchlist {
     radial-gradient(farthest-side at 50% 100%, rgba(16, 24, 40, 0.16), rgba(16, 24, 40, 0)) 0 100% / 100% 0.85rem no-repeat;
   background-attachment: local, local, scroll, scroll;
 
-  /* Scroll cue #2 - a soft bottom fog: an alpha mask fades the last items so the list does not cut
-     off sharply. It is naturally hidden for short lists (the masked strip is empty) and only fades
-     real content once the list overflows, hinting that more items exist below. */
-  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 2rem), transparent);
-  mask-image: linear-gradient(to bottom, #000 calc(100% - 2rem), transparent);
-
-  /* Scroll cue #3 - a slim, always-visible (when scrollable) themed scrollbar. */
+  /* Scroll cue #2 - a slim, always-visible (when scrollable) themed scrollbar. */
   scrollbar-width: thin;
   scrollbar-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-line)) transparent;
 }
