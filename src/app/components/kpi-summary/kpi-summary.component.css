@@ -165,38 +165,6 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-/* Month-over-month change pill (green up / red down). */
-.kpi-mom {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.15rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  padding: 0.1rem 0.4rem 0.1rem 0.3rem;
-  border-radius: 6px;
-  white-space: nowrap;
-}
-.kpi-mom-icon {
-  font-size: 15px;
-  width: 15px;
-  height: 15px;
-}
-.kpi-mom.up {
-  color: #047857;
-  background: color-mix(in srgb, #10b981 16%, transparent);
-}
-.kpi-mom.down {
-  color: #b91c1c;
-  background: color-mix(in srgb, #ef4444 16%, transparent);
-}
-:root[data-theme="dark"] .kpi-mom.up {
-  color: #6ee7b7;
-}
-:root[data-theme="dark"] .kpi-mom.down {
-  color: #fca5a5;
-}
 .kpi-value-sm {
   font-size: 1.25rem;
 }

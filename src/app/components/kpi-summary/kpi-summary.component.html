@@ -13,13 +13,6 @@
     <div class="kpi-main">
       <div class="kpi-value-wrap">
         <span class="kpi-value">{{ downloadsLabel() }}</span>
-        @if (downloadsMoMChip(); as mom) {
-          <span class="kpi-mom" [class.up]="mom.dir === 'up'" [class.down]="mom.dir === 'down'"
-                matTooltip="vs last month">
-            <mat-icon class="kpi-mom-icon">{{ mom.dir === 'up' ? 'trending_up' : 'trending_down' }}</mat-icon>
-            {{ mom.text }}
-          </span>
-        }
       </div>
       <svg class="kpi-spark" viewBox="0 0 100 28" preserveAspectRatio="none" aria-hidden="true">
         <polygon class="kpi-spark-area" [attr.points]="dlArea()"></polygon>
@@ -41,13 +34,6 @@
     <div class="kpi-main">
       <div class="kpi-value-wrap">
         <span class="kpi-value">{{ volumeLabel() }}<span class="kpi-unit">{{ volumeUnit() }}</span></span>
-        @if (volumeMoMChip(); as mom) {
-          <span class="kpi-mom" [class.up]="mom.dir === 'up'" [class.down]="mom.dir === 'down'"
-                matTooltip="vs last month">
-            <mat-icon class="kpi-mom-icon">{{ mom.dir === 'up' ? 'trending_up' : 'trending_down' }}</mat-icon>
-            {{ mom.text }}
-          </span>
-        }
       </div>
       <svg class="kpi-spark" viewBox="0 0 100 28" preserveAspectRatio="none" aria-hidden="true">
         <polygon class="kpi-spark-area" [attr.points]="volArea()"></polygon>

@@ -212,24 +212,6 @@ describe('KpiSummaryComponent', () => {
     });
   });
 
-  describe('month-over-month', () => {
-    it('pctChange rounds the percent and returns null for a zero base', () => {
-      expect((component as any).pctChange(100, 120)).toBe(20);
-      expect((component as any).pctChange(200, 150)).toBe(-25);
-      expect((component as any).pctChange(0, 50)).toBeNull();
-    });
-
-    it('momChip formats an up/down chip and null when unavailable', () => {
-      const up = (component as any).momChip(8);
-      expect(up.dir).toBe('up');
-      expect(up.text).toContain('8%');
-      const down = (component as any).momChip(-3);
-      expect(down.dir).toBe('down');
-      expect(down.text).toContain('3%');
-      expect((component as any).momChip(null)).toBeNull();
-    });
-  });
-
   describe('empty data', () => {
     it('keeps placeholder values when there are no metrics', () => {
       // The component computes on construction, so test a fresh instance that only ever sees empty

@@ -5,7 +5,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { combineLatest } from 'rxjs';
 import { MetricsService } from '../../services/metrics.service';
 import { CatalogCoverage, DataSetMetric, RepoMetric } from '../../models/metrics.models';
-import { formatSize } from '../../format';
+import { formatSize, parseApiDate } from '../../format';
 import { animateCount } from '../../animate';
 
 /**
@@ -55,12 +55,6 @@ export class KpiSummaryComponent {
   readonly monthName = signal('');
   readonly monthDownloads = signal('-');
   readonly monthVolume = signal('-');
-
-  // Month-over-month change (latest month vs the previous one) for the two download tiles.
-  readonly downloadsMoM = signal<number | null>(null);
-  readonly volumeMoM = signal<number | null>(null);
-  readonly downloadsMoMChip = computed(() => this.momChip(this.downloadsMoM()));
-  readonly volumeMoMChip = computed(() => this.momChip(this.volumeMoM()));
 
   // Sparkline geometry (SVG point strings over a 100x28 viewBox).
   readonly dlLine = signal('');
@@ -126,22 +120,12 @@ export class KpiSummaryComponent {
       this.span.set(
         years >= 1 ? `~${years.toFixed(1)} years of data` : `${months.length} months of data`,
       );
-
-      if (months.length >= 2) {
-        const cur = latest.m;
-        const prev = months[months.length - 2].m;
-        this.downloadsMoM.set(this.pctChange(prev.success_download ?? 0, cur.success_download ?? 0));
-        this.volumeMoM.set(this.pctChange(prev.total_size ?? 0, cur.total_size ?? 0));
-      } else {
-        this.downloadsMoM.set(null);
-        this.volumeMoM.set(null);
-      }
     }
 
     // Most recent download = the newest last_time_logged across all datasets.
     let recentMs = 0;
     for (const d of datasets) {
-      const t = d.last_time_logged ? new Date(d.last_time_logged).getTime() : NaN;
+      const t = parseApiDate(d.last_time_logged);
       if (!isNaN(t) && t > recentMs) recentMs = t;
     }
     if (recentMs > 0) {
@@ -152,7 +136,8 @@ export class KpiSummaryComponent {
           day: 'numeric',
           hour: 'numeric',
           minute: '2-digit',
-        }),
+          timeZone: 'UTC',
+        }) + ' UTC',
       );
     }
 
@@ -172,19 +157,6 @@ export class KpiSummaryComponent {
 
   private prefersReducedMotion(): boolean {
     return typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  }
-
-  /** Percent change from prev to cur, rounded; null when prev is 0 (growth is undefined). */
-  private pctChange(prev: number, cur: number): number | null {
-    if (!prev) return null;
-    return Math.round(((cur - prev) / prev) * 100);
-  }
-
-  /** Formats a percent into an up/down chip (the template picks the trend icon), or null. */
-  private momChip(pct: number | null): { text: string; dir: 'up' | 'down' } | null {
-    if (pct === null) return null;
-    const dir: 'up' | 'down' = pct >= 0 ? 'up' : 'down';
-    return { text: `${Math.abs(pct)}%`, dir };
   }
 
   private compact(n: number): string {
