@@ -75,8 +75,6 @@
         <div class="s-card">
           <div class="s-card-head">
             <h3>Most Accessed</h3>
-            <app-sort-by label="Sort by" [options]="mp.sortOptions" [value]="mp.sortKey()"
-                         (valueChange)="mp.setSort($any($event))" />
           </div>
           <app-most-popular #mp [datasets]="d.members" />
         </div>

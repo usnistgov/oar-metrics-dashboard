@@ -9,7 +9,6 @@ import { ScopeBarComponent } from '../scope-bar/scope-bar.component';
 import { MostPopularComponent } from '../most-popular/most-popular.component';
 import { PopularScienceDomainsComponent } from '../popular-science-domains/popular-science-domains.component';
 import { CollectionGrowthComponent } from '../collection-growth/collection-growth.component';
-import { SortByComponent } from '../sort-by/sort-by.component';
 import { DomainLevelToggleComponent } from '../domain-level-toggle/domain-level-toggle.component';
 import { ScopeService } from '../../services/scope.service';
 import { formatCount, formatSize } from '../../format';
@@ -34,7 +33,6 @@ import { animateCount } from '../../animate';
     MostPopularComponent,
     PopularScienceDomainsComponent,
     CollectionGrowthComponent,
-    SortByComponent,
     DomainLevelToggleComponent,
   ],
   templateUrl: './collection-scoped.component.html',

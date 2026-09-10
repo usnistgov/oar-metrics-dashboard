@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject, Input, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { forkJoin, map } from 'rxjs';
@@ -11,6 +13,7 @@ import { DataSetMetric, EnrichedDataSetMetric } from '../../models/metrics.model
 import { DatasetDialogComponent } from '../dataset-dialog/dataset-dialog.component';
 import { CustomCountDialogComponent } from '../custom-count-dialog/custom-count-dialog.component';
 import { DatasetDetailComponent } from '../dataset-detail/dataset-detail.component';
+import { SortByComponent } from '../sort-by/sort-by.component';
 import { PopularSort, popularSubLabel, rankDatasets } from '../../popular-sort';
 
 // Re-exported so existing importers (e.g. collection-detail) keep resolving it from here.
@@ -24,7 +27,7 @@ export type { PopularSort };
 @Component({
   selector: 'app-most-popular',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatTooltipModule, MatDialogModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatMenuModule, MatTooltipModule, MatDialogModule, SortByComponent],
   templateUrl: './most-popular.component.html',
   styleUrl: './most-popular.component.css'
 })
@@ -53,6 +56,14 @@ export class MostPopularComponent implements OnInit {
       this.render(this.parsedCount());
     }
   }
+
+  /** True in the Collections view (a `datasets` list was bound). Gates the in-card search + sort bar
+   *  and the tighter rows, so the dashboard card keeps its header-driven controls unchanged. */
+  get isScoped(): boolean {
+    return this.scoped != null;
+  }
+
+  readonly search = signal(''); // Filters the shown top-N by title / ediid (collection view only).
   readonly sortKey = signal<PopularSort>('downloads'); // Active ranking metric.
   // Options for the header "Sort by" dropdown (value matches PopularSort).
   readonly sortOptions: { value: PopularSort; label: string }[] = [
@@ -168,6 +179,15 @@ export class MostPopularComponent implements OnInit {
   // The sub-line shown under each title, reflecting the active sort metric.
   subLabel(log: EnrichedDataSetMetric): string {
     return popularSubLabel(log, this.sortKey());
+  }
+
+  /** The rows to render, each carrying its true rank (its position in the full ranked list) so the
+   *  number stays meaningful when the search box narrows the list. */
+  get visibleRows(): { log: EnrichedDataSetMetric; rank: number }[] {
+    const q = this.search().trim().toLowerCase();
+    return this.mostPopularLog
+      .map((log, i) => ({ log, rank: i + 1 }))
+      .filter(({ log }) => !q || log.title.toLowerCase().includes(q) || log.ediid.toLowerCase().includes(q));
   }
 
   // Takes the top `amount` datasets by the active metric and resolves titles via the cached service.

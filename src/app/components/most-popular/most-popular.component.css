@@ -1,1 +1,76 @@
 /* Layout + item styling come from the shared `.ds-*` / `.popular-container` rules in styles.css. */
+
+/* Collection view only (a bound dataset list adds .is-scoped): an in-card search + sort bar and
+   tighter rows, matching the Science Domains card so the two cards sit consistently side by side.
+   The dashboard card keeps its full-size rows and header-driven controls, untouched. */
+.ds-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.ds-search {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  color: var(--color-muted);
+}
+.ds-search mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+.ds-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  outline: none;
+}
+
+/* "How many to show" menu trigger, sharing the sort-by control's bordered look. */
+.mp-count-btn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.mp-count-btn:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+.mp-count-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+.mp-count-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Cap the list height so raising the count scrolls within the card instead of growing it, matching
+   the Science Domains card's scroll area. The shared rules already provide overflow + scroll cues;
+   this only overrides their `max-height: none` for the collection view. */
+.popular-container.is-scoped .ds-list {
+  gap: 0.35rem;
+  max-height: 320px;
+}
+.popular-container.is-scoped .ds-item {
+  padding: 0.4rem 0.7rem;
+}

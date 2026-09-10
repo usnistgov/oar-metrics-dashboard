@@ -1,4 +1,4 @@
-<div class="popular-container">
+<div class="popular-container" [class.is-scoped]="isScoped">
   @if (loading()) {
     <ul class="ds-list" aria-hidden="true">
       @for (i of [1, 2, 3, 4, 5]; track i) {
@@ -14,31 +14,61 @@
   } @else if (errorMsg()) {
     <p class="status-msg error">{{ errorMsg() }}</p>
   } @else {
+    @if (isScoped) {
+      <div class="ds-controls">
+        <div class="ds-search">
+          <mat-icon aria-hidden="true">search</mat-icon>
+          <input
+            type="search"
+            [ngModel]="search()"
+            (ngModelChange)="search.set($event)"
+            placeholder="Search datasets"
+            aria-label="Search datasets"
+          />
+        </div>
+        <app-sort-by
+          label="Sort by"
+          [options]="sortOptions"
+          [value]="sortKey()"
+          (valueChange)="setSort($any($event))"
+        />
+        <button type="button" class="mp-count-btn" [matMenuTriggerFor]="countMenu"
+                aria-label="How many datasets to show" matTooltip="How many to show">
+          <mat-icon>format_list_numbered</mat-icon>
+        </button>
+        <mat-menu #countMenu="matMenu" class="app-menu">
+          <button mat-menu-item (click)="showCount(5)"><mat-icon>{{ count === '5' ? 'check' : '' }}</mat-icon><span>Show 5</span></button>
+          <button mat-menu-item (click)="showCount(10)"><mat-icon>{{ count === '10' ? 'check' : '' }}</mat-icon><span>Show 10</span></button>
+          <button mat-menu-item (click)="enableCustom()"><mat-icon>tune</mat-icon><span>Custom…</span></button>
+          <button mat-menu-item (click)="resetCount()"><mat-icon>refresh</mat-icon><span>Reset</span></button>
+        </mat-menu>
+      </div>
+    }
     <ul class="ds-list">
-      @for (log of mostPopularLog; track log.ediid; let i = $index) {
+      @for (row of visibleRows; track row.log.ediid) {
         <li class="ds-item" role="button" tabindex="0"
-            (click)="openDetail(log)" (keydown.enter)="openDetail(log)"
-            (keydown.space)="$event.preventDefault(); openDetail(log)"
-            [attr.aria-label]="'Open details for ' + log.title">
-          <span class="ds-rank">{{ i + 1 }}</span>
+            (click)="openDetail(row.log)" (keydown.enter)="openDetail(row.log)"
+            (keydown.space)="$event.preventDefault(); openDetail(row.log)"
+            [attr.aria-label]="'Open details for ' + row.log.title">
+          <span class="ds-rank">{{ row.rank }}</span>
           <div class="ds-main">
-            <div class="ds-title" [title]="log.title">{{ log.title }}</div>
-            <div class="ds-sub">{{ subLabel(log) }}</div>
+            <div class="ds-title" [title]="row.log.title">{{ row.log.title }}</div>
+            <div class="ds-sub">{{ subLabel(row.log) }}</div>
           </div>
-          <a class="ds-view" [href]="datasetUrl(log.ediid)" target="_blank" rel="noopener"
+          <a class="ds-view" [href]="datasetUrl(row.log.ediid)" target="_blank" rel="noopener"
              (click)="$event.stopPropagation()" aria-label="View dataset detail page">
             View Dataset<mat-icon>open_in_new</mat-icon>
           </a>
-          <button type="button" class="ds-star" [class.watched]="watch.isWatched(log.ediid)"
-                  (click)="$event.stopPropagation(); watch.toggle(log.ediid)"
-                  [attr.aria-pressed]="watch.isWatched(log.ediid)"
-                  [attr.aria-label]="(watch.isWatched(log.ediid) ? 'Remove from' : 'Add to') + ' watchlist'"
-                  [matTooltip]="watch.isWatched(log.ediid) ? 'Remove from watchlist' : 'Add to watchlist'">
-            <mat-icon>{{ watch.isWatched(log.ediid) ? 'star' : 'star_border' }}</mat-icon>
+          <button type="button" class="ds-star" [class.watched]="watch.isWatched(row.log.ediid)"
+                  (click)="$event.stopPropagation(); watch.toggle(row.log.ediid)"
+                  [attr.aria-pressed]="watch.isWatched(row.log.ediid)"
+                  [attr.aria-label]="(watch.isWatched(row.log.ediid) ? 'Remove from' : 'Add to') + ' watchlist'"
+                  [matTooltip]="watch.isWatched(row.log.ediid) ? 'Remove from watchlist' : 'Add to watchlist'">
+            <mat-icon>{{ watch.isWatched(row.log.ediid) ? 'star' : 'star_border' }}</mat-icon>
           </button>
         </li>
       } @empty {
-        <li class="ds-empty">No datasets found.</li>
+        <li class="ds-empty">{{ search().trim() ? 'No datasets match "' + search() + '".' : 'No datasets found.' }}</li>
       }
     </ul>
   }
