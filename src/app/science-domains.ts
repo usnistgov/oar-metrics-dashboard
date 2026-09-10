@@ -41,6 +41,32 @@ export function sampleTopDatasets(datasets: DataSetMetric[], sampleSize: number)
  * `level` chooses the grouping: `'top'` collapses tags to their generic top-level bucket, `'sub'`
  * keeps the full granular subdomain path.
  */
+/**
+ * The distinct domain labels a record carries at the given level: its `topic` tags (preferred),
+ * falling back to `theme` names when it has no tags. Mirrors the per-record logic in
+ * {@link aggregateDomains}, so "which domains a dataset belongs to" stays consistent with the ranking.
+ */
+export function domainLabelsOf(record: RecordResult | null, level: DomainLevel): string[] {
+  if (!record) return [];
+  const label = (raw: string) => (level === 'top' ? topLevelDomain(raw) : normalizeDomain(raw));
+  const set = new Set<string>();
+  if (Array.isArray(record.topic) && record.topic.length > 0) {
+    for (const t of record.topic) {
+      if (t && typeof t === 'object' && 'tag' in t) {
+        const name = label(t.tag);
+        if (name) set.add(name);
+      }
+    }
+  }
+  if (set.size === 0 && Array.isArray(record.theme) && record.theme.length > 0) {
+    for (const th of record.theme) {
+      const name = label(th);
+      if (name) set.add(name);
+    }
+  }
+  return [...set];
+}
+
 export function aggregateDomains(
   records: (RecordResult | null)[],
   amount: number,

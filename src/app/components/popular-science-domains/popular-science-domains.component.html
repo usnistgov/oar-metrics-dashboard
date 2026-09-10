@@ -11,7 +11,7 @@
         </li>
       }
     </ul>
-  } @else if (errorMsg() || mostPopularCategories.length === 0) {
+  } @else if (errorMsg() || categories.length === 0) {
     <!-- Polished, non-alarming fallback when there are no science domains to show. -->
     <div class="empty-state">
       <span class="empty-state-icon"><mat-icon>category</mat-icon></span>
@@ -19,15 +19,35 @@
       <p class="empty-state-text">{{ emptyText }}</p>
     </div>
   } @else {
-    <ul class="ds-list">
-      @for (category of mostPopularCategories; track category.name; let i = $index) {
-        <li class="ds-item">
+    <div class="ds-search">
+      <mat-icon aria-hidden="true">search</mat-icon>
+      <input
+        type="search"
+        [ngModel]="search()"
+        (ngModelChange)="search.set($event)"
+        placeholder="Search domains"
+        aria-label="Search science domains"
+      />
+    </div>
+    <ul class="ds-list ds-scroll">
+      @for (category of visibleCategories; track category.name; let i = $index) {
+        <li
+          class="ds-item"
+          role="button"
+          tabindex="0"
+          (click)="openDomain(category.name)"
+          (keydown.enter)="openDomain(category.name)"
+          (keydown.space)="$event.preventDefault(); openDomain(category.name)"
+          [attr.aria-label]="'View datasets in ' + category.name"
+        >
           <span class="ds-rank">{{ i + 1 }}</span>
           <div class="ds-main">
             <div class="ds-title" [title]="category.name">{{ category.name }}</div>
             <div class="ds-sub">{{ category.count | number }} datasets</div>
           </div>
         </li>
+      } @empty {
+        <li class="ds-nomatch">No domains match "{{ search() }}".</li>
       }
     </ul>
   }

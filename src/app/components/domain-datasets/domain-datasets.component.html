@@ -1,0 +1,80 @@
+<div class="domain-drawer">
+  <header class="domain-head">
+    <div class="domain-headings">
+      <div class="domain-eyebrow">Science domain</div>
+      <h2 class="domain-title">{{ data.domain }}</h2>
+      <div class="domain-count">{{ rows().length | number }} dataset{{ rows().length === 1 ? '' : 's' }}</div>
+    </div>
+    <button type="button" class="domain-close" (click)="close()" aria-label="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  <div class="domain-controls">
+    <div class="ds-search">
+      <mat-icon aria-hidden="true">search</mat-icon>
+      <input
+        type="search"
+        [ngModel]="search()"
+        (ngModelChange)="search.set($event)"
+        placeholder="Search datasets"
+        aria-label="Search datasets in this domain"
+      />
+    </div>
+    <app-sort-by
+      label="Sort by"
+      [options]="sortOptions"
+      [value]="sortKey()"
+      (valueChange)="setSort($any($event))"
+    />
+  </div>
+
+  @if (loading()) {
+    <p class="domain-msg">Loading datasets…</p>
+  } @else {
+    <div class="domain-body">
+      <ul class="ds-list">
+        @for (log of rows(); track log.ediid; let i = $index) {
+          <li
+            class="ds-item"
+            role="button"
+            tabindex="0"
+            (click)="openDataset(log)"
+            (keydown.enter)="openDataset(log)"
+            (keydown.space)="$event.preventDefault(); openDataset(log)"
+            [attr.aria-label]="'Open details for ' + log.title"
+          >
+            <span class="ds-rank">{{ i + 1 }}</span>
+            <div class="ds-main">
+              <div class="ds-title" [title]="log.title">{{ log.title }}</div>
+              <div class="ds-sub">{{ subLabel(log) }}</div>
+            </div>
+            <a
+              class="ds-view"
+              [href]="datasetUrl(log.ediid)"
+              target="_blank"
+              rel="noopener"
+              (click)="$event.stopPropagation()"
+              aria-label="View dataset detail page"
+            >
+              View Dataset<mat-icon>open_in_new</mat-icon>
+            </a>
+            <button
+              type="button"
+              class="ds-star"
+              [class.watched]="watch.isWatched(log.ediid)"
+              (click)="$event.stopPropagation(); watch.toggle(log.ediid)"
+              [attr.aria-pressed]="watch.isWatched(log.ediid)"
+              [attr.aria-label]="(watch.isWatched(log.ediid) ? 'Remove from' : 'Add to') + ' watchlist'"
+              [matTooltip]="watch.isWatched(log.ediid) ? 'Remove from watchlist' : 'Add to watchlist'"
+            >
+              <mat-icon>{{ watch.isWatched(log.ediid) ? 'star' : 'star_border' }}</mat-icon>
+            </button>
+          </li>
+        } @empty {
+          <li class="ds-empty">No datasets match "{{ search() }}".</li>
+        }
+      </ul>
+    </div>
+  }
+</div>

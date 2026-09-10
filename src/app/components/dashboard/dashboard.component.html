@@ -110,11 +110,6 @@
               </button>
             </div>
             <mat-menu #sdMenu="matMenu" class="app-menu">
-              <button mat-menu-item (click)="sd.showCount(5)"><mat-icon>format_list_numbered</mat-icon><span>Show 5</span></button>
-              <button mat-menu-item (click)="sd.showCount(10)"><mat-icon>format_list_numbered</mat-icon><span>Show 10</span></button>
-              <button mat-menu-item (click)="sd.enableCustom()"><mat-icon>tune</mat-icon><span>Custom…</span></button>
-              <button mat-menu-item (click)="sd.resetCount()"><mat-icon>refresh</mat-icon><span>Reset</span></button>
-              <button mat-menu-item (click)="sd.openExpanded()"><mat-icon>open_in_full</mat-icon><span>Expand</span></button>
               <button mat-menu-item (click)="layout.togglePin(id)"><mat-icon>push_pin</mat-icon><span>{{ layout.isPinned(id) ? 'Unpin card' : 'Pin to top' }}</span></button>
               <button mat-menu-item (click)="layout.toggle(id)"><mat-icon>visibility_off</mat-icon><span>Hide card</span></button>
             </mat-menu>

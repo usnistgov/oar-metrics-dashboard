@@ -1,3 +1,50 @@
 
 .status-msg { margin: 4px 0; font-style: italic; opacity: 0.85; }
 .status-msg.error { color: #ff6b6b; font-style: normal; }
+
+/* Search box above the domain list. */
+.ds-search {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  color: var(--color-muted);
+}
+.ds-search mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+.ds-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  outline: none;
+}
+
+/* Scrollable list so all domains are reachable without stretching the card. */
+.ds-scroll {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+/* Domain rows carry no hover pill or star, so they can be tighter than dataset rows: this fits ~5
+   in the card's default height. Scoped to this component (Angular view encapsulation). */
+.ds-list {
+  gap: 0.35rem;
+}
+.ds-item {
+  padding: 0.4rem 0.7rem;
+}
+
+.ds-nomatch {
+  padding: 0.75rem 0.25rem;
+  color: var(--color-muted);
+  font-style: italic;
+}

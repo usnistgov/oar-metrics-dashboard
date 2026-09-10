@@ -1,0 +1,93 @@
+.domain-drawer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 380px;
+  max-width: 92vw;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.domain-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-line);
+}
+.domain-eyebrow {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-muted);
+}
+.domain-title {
+  margin: 0.15rem 0 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+.domain-count {
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+.domain-close {
+  flex: none;
+  border: none;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 8px;
+}
+.domain-close:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+
+.domain-controls {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+}
+.domain-controls .ds-search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  color: var(--color-muted);
+}
+.domain-controls .ds-search mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+.domain-controls .ds-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  outline: none;
+}
+
+/* Scroll container for the dataset rows (the shared .ds-list scroll rules are scoped to the
+   dashboard card containers, so the drawer owns its own scroll). */
+.domain-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 0.75rem 1rem;
+}
+
+.domain-msg {
+  padding: 1rem 1.25rem;
+  color: var(--color-muted);
+}
