@@ -12,7 +12,7 @@
 #   trailing args    component names (accepted and ignored; this repo is a single component)
 #
 # Env:
-#   BASE_HREF        URL sub-path the app is served under (default: /metrics/, the gateway location)
+#   BASE_HREF        URL sub-path the app is served under (default: /metrics-dashboard/, the gateway location)
 #   NODE_IMAGE       build image (default: node:20-alpine)
 #
 set -e
@@ -22,7 +22,7 @@ execdir=`dirname $0`
 PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
 
 DISTDIR="$PACKAGE_DIR/dist"
-BASE_HREF="${BASE_HREF:-/metrics/}"
+BASE_HREF="${BASE_HREF:-/metrics-dashboard/}"
 NODE_IMAGE="${NODE_IMAGE:-node:20-alpine}"
 
 while [ "$1" != "" ]; do
