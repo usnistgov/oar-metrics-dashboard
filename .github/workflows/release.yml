@@ -1,0 +1,102 @@
+name: Release
+
+# Component release, run by hand from the Actions tab (not automatic).
+# It merges integration into main, tags a release candidate or a final release,
+# and publishes a GitHub Release with the built app attached. Mirrors the manual
+# recipe in the release doc, so nobody has to run the git commands by hand.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Base version, e.g. 1.0.0'
+        required: true
+      kind:
+        description: 'Release candidate or final'
+        required: true
+        default: rc
+        type: choice
+        options: [rc, final]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0            # full history + all branches, needed to merge and tag
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Build and test
+        run: |
+          npm ci
+          npm run build -- --base-href /metrics-dashboard/
+          npm test -- --ci --watchAll=false
+
+      - name: Configure git
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge integration into main
+        run: |
+          git fetch origin integration main
+          git checkout main
+          git merge --no-edit origin/integration
+          git push origin main
+
+      - name: Compute the tag
+        id: tag
+        run: |
+          base='${{ inputs.version }}'
+          if [ '${{ inputs.kind }}' = 'final' ]; then
+            tag="$base"
+            prerelease=false
+          else
+            n=1
+            while git rev-parse -q --verify "refs/tags/${base}rc${n}" >/dev/null; do n=$((n+1)); done
+            tag="${base}rc${n}"
+            prerelease=true
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
+
+      - name: Tag and push
+        run: |
+          git tag -m '${{ steps.tag.outputs.tag }}' -m 'Released-by: ${{ github.actor }}' '${{ steps.tag.outputs.tag }}'
+          git push origin '${{ steps.tag.outputs.tag }}'
+
+      - name: Package the built app
+        run: |
+          cd dist/*/browser
+          zip -qr "$GITHUB_WORKSPACE/metrics-dashboard-${{ steps.tag.outputs.tag }}.zip" .
+
+      - name: Publish the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag='${{ steps.tag.outputs.tag }}'
+          zip="metrics-dashboard-${tag}.zip"
+          flag=''
+          [ '${{ steps.tag.outputs.prerelease }}' = 'true' ] && flag='--prerelease'
+
+          # Release notes come from a version file the team writes (markdown, in the repo).
+          # If it exists, use it as the body and append a Released-by footer; otherwise fall back
+          # to GitHub's auto-generated notes so the release still publishes.
+          notes_file="docs/release-notes/${{ inputs.version }}.md"
+          if [ -f "$notes_file" ]; then
+            body="$RUNNER_TEMP/release-notes.md"
+            cat "$notes_file" > "$body"
+            printf '\n\n---\nReleased-by: %s\n' '${{ github.actor }}' >> "$body"
+            gh release create "$tag" "$zip" --title "$tag" --notes-file "$body" $flag
+          else
+            echo "::warning::No notes file at $notes_file; using auto-generated notes."
+            gh release create "$tag" "$zip" --title "$tag" \
+              --notes 'Released-by: ${{ github.actor }}' --generate-notes $flag
+          fi
