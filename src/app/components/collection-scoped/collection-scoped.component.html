@@ -1,4 +1,4 @@
-@if (!scope.membershipsLoaded()) {
+@if (!scope.membershipsLoaded() || !scope.datasetsLoaded()) {
   <main class="scoped">
     <section class="loading">
       <mat-spinner [diameter]="40" [strokeWidth]="4"></mat-spinner>

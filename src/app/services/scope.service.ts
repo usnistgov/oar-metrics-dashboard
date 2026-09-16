@@ -1,5 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 import { MetricsService } from './metrics.service';
 import { buildCollectionDetail } from '../collection-stats';
 import { collectionRank, matchesCollectionKey, repoTotals } from '../scope-stats';
@@ -60,6 +61,16 @@ export class ScopeService {
 
   /** True once collection memberships have loaded (distinguishes "loading" from "unknown id"). */
   readonly membershipsLoaded = computed(() => this.memberships().length > 0);
+
+  /**
+   * True once the per-dataset usage feed has emitted. Memberships are localStorage-cached and resolve
+   * almost instantly, but every figure on the page is derived from the dataset feed, which takes a few
+   * seconds. Gate the loading state on this too, so the page shows the spinner instead of a zero-value
+   * flash until the usage data lands.
+   */
+  readonly datasetsLoaded = toSignal(this.metrics.datasetMetrics$.pipe(map(() => true)), {
+    initialValue: false,
+  });
 
   setCollection(id: string | null): void {
     this.activeCollectionId.set(id);
