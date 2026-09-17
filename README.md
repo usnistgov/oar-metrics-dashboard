@@ -1,5 +1,14 @@
 # Public Data Repository: Usage Metrics Dashboard
 
+[![Build and Test](https://github.com/usnistgov/oar-metrics-dashboard/actions/workflows/build-test.yml/badge.svg)](https://github.com/usnistgov/oar-metrics-dashboard/actions/workflows/build-test.yml)
+[![Release](https://github.com/usnistgov/oar-metrics-dashboard/actions/workflows/release.yml/badge.svg)](https://github.com/usnistgov/oar-metrics-dashboard/actions/workflows/release.yml)
+
+![Angular](https://img.shields.io/badge/Angular-20-DD0031?logo=angular&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
+![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?logo=chartdotjs&logoColor=white)
+[![License](https://img.shields.io/badge/license-NIST-blue)](LICENSE.md)
+
 An Angular 20 dashboard that visualizes usage metrics for the NIST Public Data Repository (downloads,
 users, most-accessed datasets, science domains, collections, and DataCite citation metrics). Data is
 pulled live from the NIST RMM API.

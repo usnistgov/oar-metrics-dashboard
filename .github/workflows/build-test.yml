@@ -1,0 +1,30 @@
+name: Build and test
+
+# Runs on pushes to the shared branches and on pull requests into integration,
+# so a branch is verified to build and pass tests before it is released.
+on:
+  push:
+    branches: [integration, main]
+  pull_request:
+    branches: [integration]
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test -- --ci --watchAll=false
