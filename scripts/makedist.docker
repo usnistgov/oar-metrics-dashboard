@@ -42,7 +42,8 @@ VERSION=`node -p "require('$PACKAGE_DIR/package.json').version" 2>/dev/null || e
 echo "oar-metrics-dashboard $VERSION" > "$PACKAGE_DIR/VERSION"
 
 echo "$prog: building metrics-dashboard $VERSION (base-href $BASE_HREF) in $NODE_IMAGE ..."
-docker run --rm -v "$PACKAGE_DIR":/app -w /app "$NODE_IMAGE" \
+# Build as the host user (not image root) so output is not root-owned on Linux; HOME set for npm cache.
+docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PACKAGE_DIR":/app -w /app "$NODE_IMAGE" \
     sh -c "npm ci && npx ng build --configuration production --base-href '$BASE_HREF'"
 
 BROWSER="$PACKAGE_DIR/dist/oar-metrics-dashboard/browser"
