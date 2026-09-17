@@ -5,7 +5,7 @@
   <button mat-icon-button (click)="resetFilter()" aria-label="Reset period" matTooltip="Reset period">
     <mat-icon>replay</mat-icon>
   </button>
-  <app-range-toggle style="margin-left:auto" [value]="activePreset()" (valueChange)="setRange($event)" />
+  <app-range-toggle [value]="activePreset()" (valueChange)="setRange($event)" />
 </div>
 <!-- Container for the Chart.js canvas element. -->
 <div class="chart-container">

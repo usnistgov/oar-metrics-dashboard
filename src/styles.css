@@ -186,6 +186,11 @@ body {
   margin-bottom: 0.75rem;
 }
 
+/* Push the range toggle to the right end of the filter row. */
+.filter-container app-range-toggle {
+  margin-left: auto;
+}
+
 /* The search bar takes most of the row width; buttons keep their natural size. */
 .filter-input {
   flex: 1 1 0;

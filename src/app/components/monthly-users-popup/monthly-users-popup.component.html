@@ -1,13 +1,13 @@
 <h2 mat-dialog-title>Unique Users per Month</h2>
 
 <mat-dialog-content>
-  <div class="filter-container" style="margin-bottom: 0.75rem;">
+  <div class="filter-container">
     <app-month-range [options]="options()" [from]="from()" [to]="to()"
                      (fromChange)="setFrom($event)" (toChange)="setTo($event)" />
     <button mat-icon-button (click)="resetFilter()" aria-label="Reset period" matTooltip="Reset period">
       <mat-icon>replay</mat-icon>
     </button>
-    <app-range-toggle style="margin-left:auto" [value]="activePreset()" (valueChange)="setRange($event)" />
+    <app-range-toggle [value]="activePreset()" (valueChange)="setRange($event)" />
   </div>
 
   @if (loading()) { <div class="card-spinner"><mat-spinner diameter="40"></mat-spinner></div> }
