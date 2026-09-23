@@ -94,7 +94,7 @@ export function barChartOptions(xTitle: string, yTitle: string): ChartOptions<'b
       },
       y: {
         title: { display: true, text: yTitle, color: tick },
-        ticks: { color: tick },
+        ticks: { color: tick, precision: 0 },
         grid: { color: grid },
         border: { display: false },
         beginAtZero: true,
@@ -155,7 +155,7 @@ export function lineChartOptions(xTitle: string, yTitle: string): ChartOptions<'
       },
       y: {
         title: { display: true, text: yTitle, color: tick },
-        ticks: { color: tick },
+        ticks: { color: tick, precision: 0 },
         grid: { color: grid },
         border: { display: false },
         beginAtZero: true,
